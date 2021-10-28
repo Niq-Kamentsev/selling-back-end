@@ -1,18 +1,19 @@
 package com.main.sellplatform.controller.rest;
 
-
-import com.main.sellplatform.controller.dto.UserDto;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("api")
 public class UserRestController {
+
 
     private final UserService userService;
 
@@ -20,15 +21,34 @@ public class UserRestController {
     public UserRestController(final UserService userService) {
         this.userService = userService;
     }
-    @GetMapping(value = "/id", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public UserDto getUser(){
-        User user = userService.getUser();
-        return new UserDto(user.getFirstName(), user.getFirstName());
+
+
+    @PreAuthorize("hasAnyAuthority('user:read')")
+    @GetMapping(value = "/getUsers", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public List<User> getUsersJdbc(){
+        return userService.getUsers();
 
     }
-    @GetMapping("/hello")
-    public String hello(){
-        return "Hello World";
+
+
+    @PreAuthorize("hasAnyAuthority('user:write')")
+    @PostMapping(value = "/postUser", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public void createUser(@RequestBody User user ) {
+        System.out.println(user);
+        userService.saveUser(user);
+    }
+
+
+    @PreAuthorize("hasAnyAuthority('user:read')")
+    @GetMapping(value = "/getUser{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public User getUser(@PathVariable Integer id){
+        return userService.getUser(id);
+    }
+
+    @PreAuthorize("hasAnyAuthority('user:delete')")
+    @DeleteMapping(value = "/delete{id}", produces = {MediaType.APPLICATION_JSON_VALUE} )
+    public void deleteUser(@PathVariable Integer id){
+        userService.deleteUser(id);
     }
 
 }
