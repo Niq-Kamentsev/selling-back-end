@@ -1,4 +1,4 @@
-package com.main.sellplatform.persistence.model;
+package com.main.sellplatform.persistence.entity.enums;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 public enum Role {
     USER(Set.of(Permission.USER_READ)),
+    MODER(Set.of()),
     ADMIN(Set.of(Permission.USER_DELETE,Permission.USER_WRITE,Permission.USER_READ));
 
     private final Set<Permission> permissions;
@@ -24,5 +25,4 @@ public enum Role {
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
                 .collect(Collectors.toSet());
     }
-
 }

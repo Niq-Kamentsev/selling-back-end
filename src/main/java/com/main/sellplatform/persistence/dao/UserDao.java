@@ -1,13 +1,13 @@
 package com.main.sellplatform.persistence.dao;
 
 import com.main.sellplatform.persistence.entity.User;
-import com.main.sellplatform.persistence.model.Role;
+import com.main.sellplatform.persistence.entity.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class UserDao {
@@ -16,7 +16,6 @@ public class UserDao {
     @Autowired
     public UserDao(Connection connection) {
         this.connection = connection;
-
     }
 
     public List<User> getUsers(){
@@ -25,12 +24,11 @@ public class UserDao {
             ResultSet resultSet = statement.executeQuery("select * from test_user");
             while (resultSet.next()){
                 User user = new User();
-                user.setId(resultSet.getInt("id"));
+                user.setId(resultSet.getLong("id"));
                 user.setFirstName(resultSet.getString("first_name"));
                 user.setLastName(resultSet.getString("last_name"));
                 user.setRole(getRoleUser(resultSet.getString("role")));
                 userList.add(user);
-
             }
             resultSet.close();
         } catch (SQLException throwables) {
@@ -45,7 +43,7 @@ public class UserDao {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                user.setId(resultSet.getInt("id"));
+                user.setId(resultSet.getLong("id"));
                 user.setEmail(resultSet.getNString("email"));
                 user.setFirstName(resultSet.getString("first_name"));
                 user.setLastName(resultSet.getString("last_name"));
@@ -58,7 +56,6 @@ public class UserDao {
         }
         return user;
     }
-
 
     public void saveUser(User user){
         try(PreparedStatement preparedStatement = connection.prepareStatement("insert into test_user(id,email,first_name,last_name,password,role)  values (3,?,?,?,?,?)")) {
@@ -79,7 +76,6 @@ public class UserDao {
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-
         }
     }
 
@@ -89,7 +85,7 @@ public class UserDao {
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                user.setId(resultSet.getInt("id"));
+                user.setId(resultSet.getLong("id"));
                 user.setEmail(resultSet.getNString("email"));
                 user.setFirstName(resultSet.getString("first_name"));
                 user.setLastName(resultSet.getString("last_name"));
@@ -100,7 +96,6 @@ public class UserDao {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
         return user;
     }
 
@@ -110,6 +105,4 @@ public class UserDao {
         }
         return Role.USER;
     }
-
-
 }

@@ -15,16 +15,12 @@ public class UserJdbcTemplateDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
-
     public List<User> getUsers(){
         return jdbcTemplate.query("select * from userproject", ((resultSet , rowNum) -> {
             final User user = new User();
-            user.setId(resultSet.getInt("id"));
+            user.setId(resultSet.getLong("id"));
             user.setFirstName(resultSet.getString("first_name"));
             return user;
         }));
     }
-
-
 }
