@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 import java.util.List;
 
+
+
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("api")
 public class UserRestController {
-
 
     private final UserService userService;
 
@@ -24,12 +26,11 @@ public class UserRestController {
 
 
     @PreAuthorize("hasAnyAuthority('user:read')")
-    @GetMapping(value = "/getUsers", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = "/getUsers", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public List<User> getUsersJdbc(){
         return userService.getUsers();
 
     }
-
 
     @PreAuthorize("hasAnyAuthority('user:write')")
     @PostMapping(value = "/postUser", produces = {MediaType.APPLICATION_JSON_VALUE})

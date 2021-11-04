@@ -1,11 +1,7 @@
 package com.main.sellplatform.persistence.entity;
-
 import com.main.sellplatform.persistence.entity.enums.Role;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class User {
     private Long id;
@@ -14,11 +10,11 @@ public class User {
     @Email
     private String email;
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
-            message = "Password is incorrect, a digit must occur at least once.\n" +
-            "A lower case letter must occur at least once.\n" +
-            "An upper case letter must occur at least once.\n" +
-            "A special character must occur at least once.\n" +
-            "No whitespace allowed in the entire string.")
+            message = "Password is incorrect, a digit must occur at least once." +
+                    "A lower case letter must occur at least once." +
+                    "An upper case letter must occur at least once." +
+                    "A special character must occur at least once." +
+                    "No whitespace allowed in the entire string.")
     private String password;
     @NotEmpty
     @Size(min = 3, max = 20, message = "First name has incorrect length")
@@ -29,7 +25,17 @@ public class User {
     @Size(min = 10, max = 20, message = "Phone number has incorrect length")
     private String phoneNumber;
     private Role role;
-    private boolean active;
+    private String activationCode;
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
+    }
+
+    private boolean isActive;
 
     public Long getId() {
         return id;
@@ -88,11 +94,11 @@ public class User {
     }
 
     public boolean isActive() {
-        return active;
+        return isActive;
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        this.isActive = active;
     }
 
     @Override
@@ -105,7 +111,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", role=" + role +
-                ", active=" + active +
+                ", active=" + isActive +
                 '}';
     }
 }

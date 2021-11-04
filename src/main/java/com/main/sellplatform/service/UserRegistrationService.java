@@ -3,23 +3,27 @@ package com.main.sellplatform.service;
 import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.Objects;
+import java.util.UUID;
+
 
 @Service
 public class UserRegistrationService {
 
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
-
+    private final MailSender mailSender;
 
     @Autowired
-    public UserRegistrationService(UserDao userDao, PasswordEncoder passwordEncoder) {
+    public UserRegistrationService(UserDao userDao, PasswordEncoder passwordEncoder, MailSender mailSender) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
     }
 
     public boolean registrationUser(User user){
@@ -28,12 +32,30 @@ public class UserRegistrationService {
             return false;
         String password = user.getPassword();
         user.setPassword(passwordEncoder.encode(password));
+        user.setActivationCode(UUID.randomUUID().toString());
         userDao.saveUser(user);
+        String message = String.format("Hello , %s! \n" +
+                "Welcome to our project .Please visit next link: http://localhost:8080/api/v1/registration/activation%s",user.getFirstName(), user.getActivationCode());
+        mailSender.send(user.getEmail(), "Activated code ",message );
         return true;
     }
+
+    public boolean activeUser(String code){
+        User user = userDao.getUserByActivatedCode(code);
+        if(user.getId() == null)
+            return false;
+        user.setActivationCode("activated");
+        user.setActive(true);
+        userDao.updateActiveUser(user);
+        return true;
+
+    }
+
 
     private boolean UserByEmailIsEmpty(String email){
         User userByEmail = userDao.getUserByEmail(email);
         return !Objects.isNull(userByEmail.getId());
     }
+
+
 }

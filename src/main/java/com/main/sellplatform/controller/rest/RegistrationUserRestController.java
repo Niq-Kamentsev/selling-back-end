@@ -9,9 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("api/v1/registration")
 public class RegistrationUserRestController {
+
     private final UserRegistrationService userRegistrationService;
 
     @Autowired
@@ -25,6 +29,13 @@ public class RegistrationUserRestController {
             return ResponseEntity.ok("success");
         }
         else return new ResponseEntity<>("such user already exists ", HttpStatus.CONFLICT);
+    }
+
+    @PostMapping(value = "/activation{code}")
+    public ResponseEntity<?> activateAccount(@PathVariable String code){
+        if(userRegistrationService.activeUser(code))
+            return ResponseEntity.ok("success");
+        else return new ResponseEntity<>("Error", HttpStatus.CONFLICT);
     }
 
 }
