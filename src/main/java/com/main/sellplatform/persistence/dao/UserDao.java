@@ -20,7 +20,7 @@ public class UserDao {
 
     public List<User> getUsers(){
         List<User> userList = new ArrayList<>();
-        try(Statement statement = connection.createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("select * from test_user");
             while (resultSet.next()){
                 User user = new User();
@@ -30,17 +30,16 @@ public class UserDao {
                 user.setRole(getRoleUser(resultSet.getString("role")));
                 userList.add(user);
             }
-            resultSet.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return userList;
     }
 
-    public User getUser(Integer id){
+    public User getUser(Long id){
         final User user = new User();
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from test_user where id = (?)")) {
-            preparedStatement.setInt(1, id);
+        try (PreparedStatement preparedStatement = connection.prepareStatement("select * from test_user where id = (?)")) {
+            preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 user.setId(resultSet.getLong("id"));
@@ -50,7 +49,6 @@ public class UserDao {
                 user.setPassword(resultSet.getNString("password"));
                 user.setRole(getRoleUser(resultSet.getString("role")));
             }
-            resultSet.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -58,21 +56,21 @@ public class UserDao {
     }
 
     public void saveUser(User user){
-        try(PreparedStatement preparedStatement = connection.prepareStatement("insert into test_user(id,email,first_name,last_name,password,role)  values (3,?,?,?,?,?)")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("insert into test_user(id,email,first_name,last_name,password,role)  values (3,?,?,?,?,?)")) {
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.setString(2, user.getFirstName());
             preparedStatement.setString(3, user.getLastName());
             preparedStatement.setNString(4, user.getPassword());
-            preparedStatement.setString( 5,Role.USER.name());
+            preparedStatement.setString( 5, Role.USER.name());
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    public void deleteUser(Integer id){
-        try(PreparedStatement preparedStatement = connection.prepareStatement("delete test_user where id = (?)")) {
-            preparedStatement.setInt(1, id);
+    public void deleteUser(Long id){
+        try (PreparedStatement preparedStatement = connection.prepareStatement("delete from test_user where id = (?)")) {
+            preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -81,7 +79,7 @@ public class UserDao {
 
     public User getUserByEmail(String email){
         User user = new User();
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from test_user where email = (?)")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("select * from test_user where email = (?)")) {
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -92,16 +90,17 @@ public class UserDao {
                 user.setPassword(resultSet.getNString("password"));
                 user.setRole(getRoleUser(resultSet.getString("role")));
             }
-            resultSet.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return user;
     }
 
-    private Role getRoleUser(String role){
-        if ("ADMIN".equals(role)) {
+    private Role getRoleUser(String role) {
+        if (role.equals("ADMIN")) {
             return Role.ADMIN;
+        } else if (role.equals("MODER")) {
+            return Role.MODER;
         }
         return Role.USER;
     }

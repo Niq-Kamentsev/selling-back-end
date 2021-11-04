@@ -14,10 +14,10 @@ public class User {
     @Email
     private String email;
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
-            message = "Password is incorrect, a digit must occur at least once.\n" +
-            "A lower case letter must occur at least once.\n" +
-            "An upper case letter must occur at least once.\n" +
-            "A special character must occur at least once.\n" +
+            message = "Password is incorrect, a digit must occur at least once. " +
+            "A lower case letter must occur at least once. " +
+            "An upper case letter must occur at least once. " +
+            "A special character must occur at least once. " +
             "No whitespace allowed in the entire string.")
     private String password;
     @NotEmpty

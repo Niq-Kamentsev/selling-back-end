@@ -1,5 +1,6 @@
 package com.main.sellplatform.persistence.entity;
 
+import com.main.sellplatform.persistence.entity.enums.LotStatus;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
@@ -30,7 +31,7 @@ public class Lot {
     private Integer minPrice;
     @NotNull
     private Category category;
-    private boolean active;
+    private LotStatus status;
     private String location;
     private String deliveryAddress;
     @NotNull
@@ -123,12 +124,12 @@ public class Lot {
         this.category = category;
     }
 
-    public boolean isActive() {
-        return active;
+    public LotStatus getStatus() {
+        return status;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setStatus(LotStatus status) {
+        this.status = status;
     }
 
     public String getLocation() {
