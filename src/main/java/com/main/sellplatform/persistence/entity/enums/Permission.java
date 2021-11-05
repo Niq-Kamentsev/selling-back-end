@@ -3,7 +3,8 @@ package com.main.sellplatform.persistence.entity.enums;
 public enum Permission {
     USER_READ("user:read"),
     USER_WRITE("user:write"),
-    USER_DELETE("user:delete");
+    USER_DELETE("user:delete"),
+    USER_UPDATE("user:update");
 
     private final String permission;
 

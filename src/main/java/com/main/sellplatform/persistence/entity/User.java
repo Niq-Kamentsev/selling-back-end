@@ -5,7 +5,7 @@ import javax.validation.constraints.*;
 
 public class User {
     private Long id;
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 100)
     @Email
     private String email;
@@ -16,7 +16,7 @@ public class User {
                     "A special character must occur at least once." +
                     "No whitespace allowed in the entire string.")
     private String password;
-    @NotEmpty
+    @NotNull
     @Size(min = 3, max = 20, message = "First name has incorrect length")
     private String firstName;
     @NotEmpty

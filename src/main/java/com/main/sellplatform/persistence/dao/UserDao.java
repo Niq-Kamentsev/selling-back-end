@@ -37,10 +37,10 @@ public class UserDao {
         return userList;
     }
 
-    public User getUser(Integer id){
+    public User getUser(Long id){
         final User user = new User();
         try(PreparedStatement preparedStatement = connection.prepareStatement("select * from test_user where id = (?)")) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 user.setId(resultSet.getLong("id"));
@@ -72,9 +72,9 @@ public class UserDao {
         }
     }
 
-    public void deleteUser(Integer id){
+    public void deleteUser(Long id){
         try(PreparedStatement preparedStatement = connection.prepareStatement("delete test_user where id = (?)")) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -101,6 +101,8 @@ public class UserDao {
         }
         return user;
     }
+
+
 
 
     public User getUserByActivatedCode(String code){
@@ -134,6 +136,20 @@ public class UserDao {
         }
     }
 
+    public void updatePasswordUser(User user){
+        try(PreparedStatement preparedStatement = connection.prepareStatement("update  test_user set password = ? where email = (?)")) {
+            preparedStatement.setNString(1, user.getPassword());
+            preparedStatement.setNString(2, user.getEmail());
+            preparedStatement.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+
+
+
+
     private boolean getBoolean(String b) {
         if (b.equals("Y"))
             return true;
@@ -150,5 +166,15 @@ public class UserDao {
             return Role.ADMIN;
         }
         return Role.USER;
+    }
+
+    public void updateEmailPassword(User user,String newEmail) {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("update  test_user set email = ? where id = (?)")) {
+            preparedStatement.setNString(1, newEmail);
+            preparedStatement.setLong(2, user.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }
