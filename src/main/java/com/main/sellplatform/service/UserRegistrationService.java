@@ -1,5 +1,6 @@
 package com.main.sellplatform.service;
 
+import com.main.sellplatform.exception.userexception.UserNotFoundByEmailException;
 import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class UserRegistrationService {
     public boolean registrationUser(User user){
         Assert.notNull(user, "user is empty");
         if (UserByEmailIsEmpty(user.getEmail()))
-            return false;
+            throw new UserNotFoundByEmailException("user not found", user.getEmail());
         String password = user.getPassword();
         user.setPassword(passwordEncoder.encode(password));
         user.setActivationCode(UUID.randomUUID().toString());
@@ -50,7 +51,6 @@ public class UserRegistrationService {
         return true;
 
     }
-
 
     private boolean UserByEmailIsEmpty(String email){
         User userByEmail = userDao.getUserByEmail(email);

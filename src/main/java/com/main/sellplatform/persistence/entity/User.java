@@ -1,28 +1,15 @@
 package com.main.sellplatform.persistence.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.sellplatform.persistence.entity.enums.Role;
 
 import javax.validation.constraints.*;
 
 public class User {
     private Long id;
-    @NotNull
-    @Size(min = 1, max = 100)
-    @Email
     private String email;
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
-            message = "Password is incorrect, a digit must occur at least once." +
-                    "A lower case letter must occur at least once." +
-                    "An upper case letter must occur at least once." +
-                    "A special character must occur at least once." +
-                    "No whitespace allowed in the entire string.")
     private String password;
-    @NotNull
-    @Size(min = 3, max = 20, message = "First name has incorrect length")
     private String firstName;
-    @NotEmpty
-    @Size(min = 3, max = 20, message = "Last name has incorrect length")
     private String lastName;
-    @Size(min = 10, max = 20, message = "Phone number has incorrect length")
     private String phoneNumber;
     private Role role;
     private String activationCode;

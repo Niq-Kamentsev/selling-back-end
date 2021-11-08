@@ -1,7 +1,7 @@
 package com.main.sellplatform.controller.rest;
 
-import com.main.sellplatform.controller.dto.UserUpdateEmailDTO;
-import com.main.sellplatform.controller.dto.UserUpdatePasswordDTO;
+import com.main.sellplatform.controller.dto.userdto.UserUpdateEmailDTO;
+import com.main.sellplatform.controller.dto.userdto.UserUpdatePasswordDTO;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.service.UserUpdateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:4040")
 @RestController
 @RequestMapping("api/update")
 public class UserUpdateRestController {

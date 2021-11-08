@@ -1,4 +1,4 @@
-package com.main.sellplatform.controller.rest;
+package com.main.sellplatform.controller.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;

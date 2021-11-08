@@ -1,4 +1,4 @@
-package com.main.sellplatform.controller.dto;
+package com.main.sellplatform.controller.dto.userdto;
 
 import javax.validation.constraints.Email;
 

@@ -58,7 +58,7 @@ public class UserDao {
     }
 
     public void saveUser(User user){
-        try(PreparedStatement preparedStatement = connection.prepareStatement("insert into test_user(id,email,first_name,last_name,password,activation_code,role,is_active)  values (3,?,?,?,?,?,?,?)")) {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("insert into test_user(id,email,first_name,last_name,password,activation_code,role,is_active)  values (40,?,?,?,?,?,?,?)")) {
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.setString(2, user.getFirstName());
             preparedStatement.setString(3, user.getLastName());
