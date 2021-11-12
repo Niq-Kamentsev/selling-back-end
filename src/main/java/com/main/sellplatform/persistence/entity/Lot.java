@@ -34,7 +34,6 @@ public class Lot {
     private LotStatus status;
     private String location;
     private String deliveryAddress;
-
     @NotNull
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime creationDate;

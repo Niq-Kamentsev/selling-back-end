@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +15,8 @@ public class LotDao {
     private final Connection connection;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private LotModerationDao lotModerationDao;
 
     @Autowired
     public LotDao(Connection connection) {
@@ -25,14 +26,15 @@ public class LotDao {
     public Lot getLot(Long id) {
         Lot lot = new Lot();
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "select * from test_lot where id = ? and status = 'PUBLISHED'"
+                "select * from test_lot where id = ?"
         )) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 lot.setId(resultSet.getLong("id"));
                 lot.setTitle(resultSet.getString("title"));
-                lot.setStatus(getStatus(resultSet.getString("status")));
+                lot.setTitle(resultSet.getString("description"));
+                lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
                 lot.setOwner(userDao.getUser(resultSet.getLong("user_id")));
             }
         } catch (SQLException throwables) {
@@ -52,7 +54,8 @@ public class LotDao {
                 Lot lot = new Lot();
                 lot.setId(resultSet.getLong("id"));
                 lot.setTitle(resultSet.getString("title"));
-                lot.setStatus(getStatus(resultSet.getString("status")));
+                lot.setTitle(resultSet.getString("description"));
+                lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
                 lot.setOwner(userDao.getUser(userId));
                 lotList.add(lot);
             }
@@ -62,15 +65,43 @@ public class LotDao {
         return lotList;
     }
 
-    public List<Lot> getAllLots() {
+    public List<Lot> getMyLots(String username) {
+        List<Lot> lotList = new ArrayList<>();
+        User user = userDao.getUserByEmail(username);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "select * from test_lot where user_id = ?"
+        )) {
+            preparedStatement.setLong(1, user.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Lot lot = new Lot();
+                lot.setId(resultSet.getLong("id"));
+                lot.setTitle(resultSet.getString("title"));
+                lot.setTitle(resultSet.getString("description"));
+                lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
+                lot.setOwner(user);
+                lotList.add(lot);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return lotList;
+    }
+
+    public List<Lot> getPublishedLots() {
+        return getLotsByStatus("PUBLISHED");
+    }
+
+    public List<Lot> getLotsByStatus(String status) {
         List<Lot> lotList = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("select * from test_lot where status = 'PUBLISHED'");
+            ResultSet resultSet = statement.executeQuery("select * from test_lot where status = '" + status + "'");
             while (resultSet.next()) {
                 Lot lot = new Lot();
                 lot.setId(resultSet.getLong("id"));
                 lot.setTitle(resultSet.getString("title"));
-                lot.setStatus(getStatus(resultSet.getString("status")));
+                lot.setTitle(resultSet.getString("description"));
+                lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
                 lot.setOwner(userDao.getUser(resultSet.getLong("user_id")));
                 lotList.add(lot);
             }
@@ -87,7 +118,8 @@ public class LotDao {
             User user = userDao.getUserByEmail(username);
             preparedStatement.setString(1, lot.getTitle());
             preparedStatement.setLong(2, user.getId());
-            addModeratingLot(lot);
+            preparedStatement.executeUpdate();
+            lotModerationDao.addModeratingLot();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -96,21 +128,13 @@ public class LotDao {
 
     public Boolean updateLot(Lot lot) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "update test_lot set title = ?, status = ?, user_id = ? where id = ?"
+                "update test_lot set title = ?, description = ?, status = ?, user_id = ? where id = ?"
         )) {
             preparedStatement.setString(1, lot.getTitle());
-            preparedStatement.setString(2, lot.getStatus().name());
-            preparedStatement.setLong(3, lot.getOwner().getId());
-            preparedStatement.setLong(4, lot.getId());
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return true;
-    }
-
-    public Boolean deleteLot(Long id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("delete from test_lot where id = ?")) {
-            preparedStatement.setLong(1, id);
+            preparedStatement.setString(2, lot.getDescription());
+            preparedStatement.setString(3, lot.getStatus().name());
+            preparedStatement.setLong(4, lot.getOwner().getId());
+            preparedStatement.setLong(5, lot.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -118,26 +142,33 @@ public class LotDao {
         return true;
     }
 
-    public Boolean addModeratingLot(Lot lot) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "insert into moder_lot (lot_id) values (?)"
-        )) {
+    public Boolean deleteLot(Lot lot) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("delete from test_lot where id = ?")) {
             preparedStatement.setLong(1, lot.getId());
+            preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return true;
     }
 
-    public List<Lot> getAllModeratingLots() {
+    public List<Lot> findPublishedLots(String keyword) {
+        return getLotsByKeyword(keyword, "PUBLISHED");
+    }
+
+    public List<Lot> getLotsByKeyword(String keyword, String status) {
         List<Lot> lotList = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("select * from test_lot where status = 'WAITING'");
+            ResultSet resultSet = statement.executeQuery(
+                    "select * from test_lot where status = '" + status + "' and" +
+                            "(title like '%" + keyword + "%' or description like '%" + keyword + "%')"
+            );
             while (resultSet.next()){
                 Lot lot = new Lot();
                 lot.setId(resultSet.getLong("id"));
                 lot.setTitle(resultSet.getString("title"));
-                lot.setStatus(getStatus(resultSet.getString("status")));
+                lot.setTitle(resultSet.getString("description"));
+                lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
                 lot.setOwner(userDao.getUser(resultSet.getLong("user_id")));
                 lotList.add(lot);
             }
@@ -147,54 +178,16 @@ public class LotDao {
         return lotList;
     }
 
-    public Boolean publishLot(Lot lot, String moderator) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "update moder_lot set moderator_id = ?, publish_date = ? where lot_id = ?"
-        )) {
-            User user = userDao.getUserByEmail(moderator);
-            preparedStatement.setLong(1, user.getId());
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-            preparedStatement.setLong(3, lot.getId());
-            changeLotStatus(lot, "'PUBLISHED'");
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return true;
-    }
-
-    public Boolean rejectLot(Lot lot, String moderator) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "update moder_lot set moderator_id = ?, publish_date = ?, cause = ? where lot_id = ?"
-        )) {
-            User user = userDao.getUserByEmail(moderator);
-            preparedStatement.setLong(1, user.getId());
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-            preparedStatement.setString(3, "");
-            preparedStatement.setLong(4, lot.getId());
-            changeLotStatus(lot, "'REJECTED'");
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return true;
-    }
-
-    private void changeLotStatus(Lot lot, String status) {
+    public Boolean changeLotStatus(Lot lot, String status) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "update test_lot set status = ? where id = ?"
         )) {
             preparedStatement.setString(1, status);
             preparedStatement.setLong(2, lot.getId());
+            preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-    }
-
-    private LotStatus getStatus(String status) {
-        if (status.equals("PUBLISHED")) {
-            return LotStatus.PUBLISHED;
-        } else if (status.equals("WAITING")) {
-            return LotStatus.WAITING;
-        }
-        return LotStatus.REJECTED;
+        return true;
     }
 }

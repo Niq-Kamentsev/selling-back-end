@@ -1,6 +1,7 @@
 package com.main.sellplatform.service;
 
 import com.main.sellplatform.persistence.dao.LotDao;
+import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.Lot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,12 @@ import java.util.Objects;
 
 @Service
 public class LotService {
+    private final UserDao userDao;
     private final LotDao lotDao;
 
     @Autowired
-    public LotService(LotDao lotDao) {
+    public LotService(UserDao userDao, LotDao lotDao) {
+        this.userDao = userDao;
         this.lotDao = lotDao;
     }
 
@@ -21,8 +24,12 @@ public class LotService {
         return lotDao.getUserLots(userId);
     }
 
+    public List<Lot> getMyLots(String username) {
+        return lotDao.getMyLots(username);
+    }
+
     public List<Lot> getAllLots() {
-        return lotDao.getAllLots();
+        return lotDao.getPublishedLots();
     }
 
     public Lot getLot(Long id){
@@ -35,23 +42,17 @@ public class LotService {
         return lotDao.addLot(lot, username);
     }
 
-    public Boolean updateLot(Lot lot) {
+    public Boolean updateLot(Lot lot, String username) {
+        if (!Objects.equals(lot.getOwner().getId(), userDao.getUserByEmail(username).getId())) return null;
         return lotDao.updateLot(lot);
     }
 
-    public Boolean deleteLot(Long id) {
-        return lotDao.deleteLot(id);
+    public Boolean deleteLot(Lot lot, String username) {
+        if (!Objects.equals(lot.getOwner().getId(), userDao.getUserByEmail(username).getId())) return null;
+        return lotDao.deleteLot(lot);
     }
 
-    public List<Lot> getAllModeratingLots() {
-        return lotDao.getAllModeratingLots();
-    }
-
-    public Boolean publishLot(Lot lot, String moderator) {
-        return lotDao.publishLot(lot, moderator);
-    }
-
-    public Boolean rejectLot(Lot lot, String moderator) {
-        return lotDao.rejectLot(lot, moderator);
+    public List<Lot> findLots(String keyword) {
+        return lotDao.findPublishedLots(keyword);
     }
 }

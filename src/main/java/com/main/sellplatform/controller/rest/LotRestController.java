@@ -24,54 +24,46 @@ public class LotRestController {
     }
 
     @PreAuthorize("hasAnyAuthority('user:read')")
-    @GetMapping("/{id}")
-    public List<Lot> getUserLots(@PathVariable Long id) {
-        User user = userService.getUser(id);
+    @GetMapping("/user/{username}")
+    public List<Lot> getUserLots(@PathVariable String username) {
+        User user = userService.getUserByEmail(username);
         if (user != null) {
-            return lotService.getUserLots(id);
+            return lotService.getUserLots(user.getId());
         }
         return null;
     }
 
     @PreAuthorize("hasAnyAuthority('user:read')")
+    @GetMapping("/myLots")
+    public List<Lot> getMyLots() {
+        return lotService.getMyLots(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
     @GetMapping
     public List<Lot> getAllLots() {
         return lotService.getAllLots();
     }
 
-    @PreAuthorize("hasAnyAuthority('user:read')")
-    @PostMapping( "/addLot")
+    @PreAuthorize("hasAnyAuthority('user:write')")
+    @PostMapping("/addLot")
     public Boolean addLot(@RequestBody Lot lot) {
         return lotService.addLot(lot, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
-    @PreAuthorize("hasAnyAuthority('user:read')")
-    @PutMapping("/update")
+    @PreAuthorize("hasAnyAuthority('user:write')")
+    @PutMapping("/myLots/update")
     public Boolean updateLot(@RequestBody Lot lot) {
-        return lotService.updateLot(lot);
+        return lotService.updateLot(lot, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('user:delete')")
-    @DeleteMapping( "/delete/{id}")
-    public Boolean deleteLot(@PathVariable Long id) {
-        return lotService.deleteLot(id);
+    @DeleteMapping( "/myLots/delete")
+    public Boolean deleteLot(@RequestBody Lot lot) {
+        return lotService.deleteLot(lot, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
-    @PreAuthorize("hasAnyAuthority('user:read')")
-    @GetMapping("/moderation")
-    public List<Lot> getAllModeratingLots() {
-        return lotService.getAllModeratingLots();
-    }
-
-    @PreAuthorize("hasAnyAuthority('user:read')")
-    @PostMapping(value = "/moderation", params = "publish")
-    public Boolean publishLot(@RequestBody Lot lot) {
-        return lotService.publishLot(lot, SecurityContextHolder.getContext().getAuthentication().getName());
-    }
-
-    @PreAuthorize("hasAnyAuthority('user:read')")
-    @PostMapping(value = "/moderation", params = "reject")
-    public Boolean rejectLot(@RequestBody Lot lot) {
-        return lotService.rejectLot(lot, SecurityContextHolder.getContext().getAuthentication().getName());
+    @GetMapping("/search/{keyword}")
+    public List<Lot> findLots(@PathVariable String keyword) {
+        return lotService.findLots(keyword);
     }
 }

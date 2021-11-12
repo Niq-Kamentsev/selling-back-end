@@ -1,8 +1,6 @@
 package com.main.sellplatform.persistence.entity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.main.sellplatform.persistence.entity.enums.Role;
 
-import javax.validation.constraints.*;
+import com.main.sellplatform.persistence.entity.enums.Role;
 
 public class User {
     private Long id;
@@ -13,6 +11,7 @@ public class User {
     private String phoneNumber;
     private Role role;
     private String activationCode;
+    private boolean isActive;
 
     public String getActivationCode() {
         return activationCode;
@@ -21,8 +20,6 @@ public class User {
     public void setActivationCode(String activationCode) {
         this.activationCode = activationCode;
     }
-
-    private boolean isActive;
 
     public Long getId() {
         return id;
