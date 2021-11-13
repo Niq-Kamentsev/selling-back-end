@@ -24,18 +24,20 @@ public class LotDao {
     }
 
     public Lot getLot(Long id) {
-        Lot lot = new Lot();
+        Lot lot = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "select * from test_lot where id = ?"
         )) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
+                lot = new Lot();
                 lot.setId(resultSet.getLong("id"));
                 lot.setTitle(resultSet.getString("title"));
-                lot.setTitle(resultSet.getString("description"));
+                lot.setDescription(resultSet.getString("description"));
                 lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
                 lot.setOwner(userDao.getUser(resultSet.getLong("user_id")));
+                lot.setEndDate(resultSet.getTimestamp("end_date").toLocalDateTime());
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -54,9 +56,10 @@ public class LotDao {
                 Lot lot = new Lot();
                 lot.setId(resultSet.getLong("id"));
                 lot.setTitle(resultSet.getString("title"));
-                lot.setTitle(resultSet.getString("description"));
+                lot.setDescription(resultSet.getString("description"));
                 lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
                 lot.setOwner(userDao.getUser(userId));
+                lot.setEndDate(resultSet.getTimestamp("end_date").toLocalDateTime());
                 lotList.add(lot);
             }
         } catch (SQLException throwables) {
@@ -77,9 +80,10 @@ public class LotDao {
                 Lot lot = new Lot();
                 lot.setId(resultSet.getLong("id"));
                 lot.setTitle(resultSet.getString("title"));
-                lot.setTitle(resultSet.getString("description"));
+                lot.setDescription(resultSet.getString("description"));
                 lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
                 lot.setOwner(user);
+                lot.setEndDate(resultSet.getTimestamp("end_date").toLocalDateTime());
                 lotList.add(lot);
             }
         } catch (SQLException throwables) {
@@ -100,9 +104,10 @@ public class LotDao {
                 Lot lot = new Lot();
                 lot.setId(resultSet.getLong("id"));
                 lot.setTitle(resultSet.getString("title"));
-                lot.setTitle(resultSet.getString("description"));
+                lot.setDescription(resultSet.getString("description"));
                 lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
                 lot.setOwner(userDao.getUser(resultSet.getLong("user_id")));
+                lot.setEndDate(resultSet.getTimestamp("end_date").toLocalDateTime());
                 lotList.add(lot);
             }
         } catch (SQLException throwables) {
@@ -142,9 +147,9 @@ public class LotDao {
         return true;
     }
 
-    public Boolean deleteLot(Lot lot) {
+    public Boolean deleteLot(Long id) {
         try (PreparedStatement preparedStatement = connection.prepareStatement("delete from test_lot where id = ?")) {
-            preparedStatement.setLong(1, lot.getId());
+            preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -167,9 +172,10 @@ public class LotDao {
                 Lot lot = new Lot();
                 lot.setId(resultSet.getLong("id"));
                 lot.setTitle(resultSet.getString("title"));
-                lot.setTitle(resultSet.getString("description"));
+                lot.setDescription(resultSet.getString("description"));
                 lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
                 lot.setOwner(userDao.getUser(resultSet.getLong("user_id")));
+                lot.setEndDate(resultSet.getTimestamp("end_date").toLocalDateTime());
                 lotList.add(lot);
             }
         } catch (SQLException throwables) {
@@ -178,12 +184,12 @@ public class LotDao {
         return lotList;
     }
 
-    public Boolean changeLotStatus(Lot lot, String status) {
+    public Boolean changeLotStatus(Long id, String status) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "update test_lot set status = ? where id = ?"
         )) {
             preparedStatement.setString(1, status);
-            preparedStatement.setLong(2, lot.getId());
+            preparedStatement.setLong(2, id);
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();

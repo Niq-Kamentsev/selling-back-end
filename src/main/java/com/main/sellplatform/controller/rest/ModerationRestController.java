@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/lots")
+@RequestMapping("api/lots/moderation")
 public class ModerationRestController {
     private final ModerationService moderationService;
 
@@ -21,21 +21,21 @@ public class ModerationRestController {
     }
 
     @PreAuthorize("hasAnyAuthority('moder:read')")
-    @GetMapping("/moderation")
+    @GetMapping
     public List<Lot> getAllModeratingLots() {
         return moderationService.getAllModeratingLots();
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PostMapping(value = "/moderation", params = "publish")
-    public Boolean publishLot(@RequestBody Lot lot) {
-        return moderationService.publishLot(lot, SecurityContextHolder.getContext().getAuthentication().getName());
+    @PostMapping("/publish/{lotId}")
+    public Boolean publishLot(@PathVariable Long lotId) {
+        return moderationService.publishLot(lotId, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PostMapping(value = "/moderation", params = "reject")
-    public Boolean rejectLot(@RequestBody Lot lot) {
-        return moderationService.rejectLot(lot, SecurityContextHolder.getContext().getAuthentication().getName());
+    @PostMapping("/reject/{lotId}")
+    public Boolean rejectLot(@RequestBody String cause, @PathVariable Long lotId) {
+        return moderationService.rejectLot(lotId, SecurityContextHolder.getContext().getAuthentication().getName(), cause);
     }
 
     @PreAuthorize("hasAnyAuthority('moder:read')")
@@ -45,15 +45,15 @@ public class ModerationRestController {
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PutMapping(value = "/banned", params = "ban")
-    public Boolean banLot(@RequestBody Lot lot) {
-        return moderationService.banLot(lot);
+    @PutMapping("/banned/unban/{lotId}")
+    public Boolean unbanLot(@PathVariable Long lotId) {
+        return moderationService.unbanLot(lotId);
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PutMapping(value = "/banned", params = "unban")
-    public Boolean unbanLot(@RequestBody Lot lot) {
-        return moderationService.unbanLot(lot);
+    @PutMapping("/ban/{lotId}")
+    public Boolean banLot(@PathVariable Long lotId) {
+        return moderationService.banLot(lotId);
     }
 
     @PreAuthorize("hasAnyAuthority('moder:read')")
@@ -63,56 +63,56 @@ public class ModerationRestController {
     }
 
     @PreAuthorize("hasAnyAuthority('moder:read')")
-    @GetMapping(value = "/moderation/history")
+    @GetMapping(value = "/history")
     public List<ModeratingLot> getMyModerationHistory() {
         return moderationService.getModeratorHistory(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PutMapping("/moderation/history/update")
-    public Boolean updateMyModeratedLot(@RequestBody ModeratingLot lot) {
-        return moderationService.updateModeratedLot(lot, SecurityContextHolder.getContext().getAuthentication().getName());
+    @PutMapping("/history/update/{moderLotId}")
+    public Boolean updateMyModeratedLot(@PathVariable Long moderLotId) {
+        return moderationService.updateModeratedLot(moderLotId, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PutMapping( "/moderation/history/cancel")
-    public Boolean cancelMyModerationDecision(@RequestBody ModeratingLot lot) {
-        return moderationService.cancelModerationDecision(lot, SecurityContextHolder.getContext().getAuthentication().getName());
+    @PutMapping( "/history/cancel/{moderLotId}")
+    public Boolean cancelMyModerationDecision(@PathVariable Long moderLotId) {
+        return moderationService.cancelModerationDecision(moderLotId, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('admin:read')")
-    @GetMapping(value = "/moderation/history/all")
+    @GetMapping(value = "/history/all")
     public List<ModeratingLot> getAllModerationHistory() {
         return moderationService.getAllModerationHistory();
     }
 
     @PreAuthorize("hasAnyAuthority('admin:write')")
-    @PutMapping("/moderation/history/all/update")
-    public Boolean updateModeratedLot(@RequestBody ModeratingLot lot) {
-        return moderationService.updateModeratedLot(lot, SecurityContextHolder.getContext().getAuthentication().getName());
+    @PutMapping("/history/all/update/{moderLotId}")
+    public Boolean updateModeratedLot(@PathVariable Long moderLotId) {
+        return moderationService.updateModeratedLot(moderLotId, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('admin:write')")
-    @PutMapping( "/moderation/history/all/cancel")
-    public Boolean cancelModerationDecision(@RequestBody ModeratingLot lot) {
-        return moderationService.cancelModerationDecision(lot, SecurityContextHolder.getContext().getAuthentication().getName());
+    @PutMapping( "/history/all/cancel/{moderLotId}")
+    public Boolean cancelModerationDecision(@PathVariable Long moderLotId) {
+        return moderationService.cancelModerationDecision(moderLotId, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('admin:read')")
-    @GetMapping(value = "/moderation/history/{username}")
+    @GetMapping(value = "/history/{username}")
     public List<ModeratingLot> getModeratorHistory(@PathVariable String username) {
         return moderationService.getModeratorHistory(username);
     }
 
     @PreAuthorize("hasAnyAuthority('admin:write')")
-    @PutMapping("/moderation/history/{username}/update")
-    public Boolean updateModeratedLotByModerator(@RequestBody ModeratingLot lot, @PathVariable String username) {
-        return moderationService.updateModeratedLot(lot, username);
+    @PutMapping("/history/{username}/update/{moderLotId}")
+    public Boolean updateModeratedLotByModerator(@PathVariable Long moderLotId, @PathVariable String username) {
+        return moderationService.updateModeratedLot(moderLotId, username);
     }
 
     @PreAuthorize("hasAnyAuthority('admin:write')")
-    @PutMapping( "/moderation/history/{username}/cancel")
-    public Boolean cancelModeratorDecision(@RequestBody ModeratingLot lot, @PathVariable String username) {
-        return moderationService.cancelModerationDecision(lot, username);
+    @PutMapping( "/history/{username}/cancel/{moderLotId}")
+    public Boolean cancelModeratorDecision(@PathVariable Long moderLotId, @PathVariable String username) {
+        return moderationService.cancelModerationDecision(moderLotId, username);
     }
 }

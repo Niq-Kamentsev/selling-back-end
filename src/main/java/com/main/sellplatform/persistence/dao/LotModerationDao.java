@@ -25,27 +25,32 @@ public class LotModerationDao {
         this.connection = connection;
     }
 
+    public ModeratingLot getModeratingLot(Long moderLotId) {
+        ModeratingLot lot = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "select * from moder_lot where id = ?"
+        )) {
+            preparedStatement.setLong(1, moderLotId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                lot = new ModeratingLot();
+                lot.setId(resultSet.getLong("id"));
+                lot.setModerator(userDao.getUser(resultSet.getLong("moderator_id")));
+                lot.setLot(lotDao.getLot(resultSet.getLong("lot_id")));
+                lot.setDateTime(resultSet.getTimestamp("publish_date").toLocalDateTime());
+                lot.setCause(resultSet.getString("cause"));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return lot;
+    }
+
     public List<Lot> getAllModeratingLots() {
         return lotDao.getLotsByStatus("WAITING");
     }
 
     public Boolean publishLot(Lot lot, String username) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "update moder_lot set moderator_id = ?, publish_date = ? where lot_id = ?"
-        )) {
-            User user = userDao.getUserByEmail(username);
-            preparedStatement.setLong(1, user.getId());
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-            preparedStatement.setLong(3, lot.getId());
-            preparedStatement.executeUpdate();
-            lotDao.changeLotStatus(lot, "PUBLISHED");
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return true;
-    }
-
-    public Boolean rejectLot(Lot lot, String username) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "update moder_lot set moderator_id = ?, publish_date = ?, cause = ? where lot_id = ?"
         )) {
@@ -55,7 +60,24 @@ public class LotModerationDao {
             preparedStatement.setString(3, "");
             preparedStatement.setLong(4, lot.getId());
             preparedStatement.executeUpdate();
-            lotDao.changeLotStatus(lot, "BANNED");
+            lotDao.changeLotStatus(lot.getId(), "PUBLISHED");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return true;
+    }
+
+    public Boolean rejectLot(Lot lot, String username, String cause) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "update moder_lot set moderator_id = ?, publish_date = ?, cause = ? where lot_id = ?"
+        )) {
+            User user = userDao.getUserByEmail(username);
+            preparedStatement.setLong(1, user.getId());
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+            preparedStatement.setString(3, cause);
+            preparedStatement.setLong(4, lot.getId());
+            preparedStatement.executeUpdate();
+            lotDao.changeLotStatus(lot.getId(), "BANNED");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -77,12 +99,12 @@ public class LotModerationDao {
         return lotDao.getLotsByStatus("BANNED");
     }
 
-    public Boolean banLot(Lot lot) {
-        return lotDao.changeLotStatus(lot, "BANNED");
+    public Boolean banLot(Long id) {
+        return lotDao.changeLotStatus(id, "BANNED");
     }
 
-    public Boolean unbanLot(Lot lot) {
-        return lotDao.changeLotStatus(lot, "PUBLISHED");
+    public Boolean unbanLot(Long id) {
+        return lotDao.changeLotStatus(id, "PUBLISHED");
     }
 
     public List<Lot> findBannedLots(String keyword) {
@@ -112,10 +134,11 @@ public class LotModerationDao {
         return moderLots;
     }
 
-    public Boolean updateModeratedLot(ModeratingLot moderatingLot, String username) {
-        Lot lot = lotDao.getLot(moderatingLot.getId());
+    public Boolean updateModeratedLot(Long moderLotId, String username) {
+        Lot lot = getModeratingLot(moderLotId).getLot();
         if (lot.getStatus().equals(LotStatus.PUBLISHED)) {
-            rejectLot(lot, username);
+            rejectLot(lot, username, ("Lot has been rejected by the decision of the "
+                    + getModeratingLot(moderLotId).getModerator().getRole().name()));
             return true;
         } else if (lot.getStatus().equals(LotStatus.BANNED)) {
             publishLot(lot, username);
@@ -124,16 +147,17 @@ public class LotModerationDao {
         return null;
     }
 
-    public Boolean cancelModerationDecision(ModeratingLot lot) {
+    public Boolean cancelModerationDecision(Long moderLotId) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "update moder_lot set moderator_id = ?, publish_date = ?, cause = ? where lot_id = ?"
         )) {
+            Lot lot = getModeratingLot(moderLotId).getLot();
             preparedStatement.setNull(1, Types.INTEGER);
             preparedStatement.setNull(2, Types.TIMESTAMP);
             preparedStatement.setNull(3, Types.VARCHAR);
             preparedStatement.setLong(4, lot.getId());
             preparedStatement.executeUpdate();
-            lotDao.changeLotStatus(lotDao.getLot(lot.getId()), "WAITING");
+            lotDao.changeLotStatus(lot.getId(), "WAITING");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

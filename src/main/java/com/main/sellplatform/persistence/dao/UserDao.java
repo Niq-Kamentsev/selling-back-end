@@ -82,11 +82,12 @@ public class UserDao {
     }
 
     public User getUserByEmail(String email){
-        User user = new User();
+        User user = null;
         try(PreparedStatement preparedStatement = connection.prepareStatement("select * from test_user where email = (?)")) {
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
+                user = new User();
                 user.setId(resultSet.getLong("id"));
                 user.setEmail(resultSet.getNString("email"));
                 user.setFirstName(resultSet.getString("first_name"));
@@ -101,9 +102,6 @@ public class UserDao {
         }
         return user;
     }
-
-
-
 
     public User getUserByActivatedCode(String code){
         User user = new User();
