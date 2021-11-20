@@ -24,7 +24,7 @@ import java.util.Map;
 
 
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("api/v1/auth")
 public class AuthenticationRestController {
@@ -76,6 +76,8 @@ public class AuthenticationRestController {
 
     @PostMapping("/refreshToken")
     public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest refreshRequest){
+        System.out.println("Here");
+        System.out.println(refreshRequest.getRefreshToken());
         String refreshToken = refreshRequest.getRefreshToken();
         RefreshToken byToken = refreshTokenService.findByToken(refreshToken);
         if(refreshTokenService.verifyExpiration(byToken)){

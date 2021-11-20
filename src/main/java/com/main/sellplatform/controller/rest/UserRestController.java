@@ -1,5 +1,7 @@
 package com.main.sellplatform.controller.rest;
 
+import com.main.sellplatform.persistence.dao.MessageDao;
+import com.main.sellplatform.persistence.dao.Waybill;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +16,17 @@ import java.util.List;
 @RequestMapping("api")
 public class UserRestController {
     private final UserService userService;
+    private final MessageDao messageDao;
 
     @Autowired
-    public UserRestController(final UserService userService) {
+    public UserRestController(final UserService userService, final MessageDao messageDao) {
         this.userService = userService;
+        this.messageDao = messageDao;
     }
 
     @PreAuthorize("hasAnyAuthority('admin:read')")
     @GetMapping(value = "/getUsers", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public List<User> getUsersJdbc(){
+    public List<User> getUsersJdbc() {
         return userService.getUsers();
     }
 
@@ -35,13 +39,19 @@ public class UserRestController {
 
     @PreAuthorize("hasAnyAuthority('admin:read')")
     @GetMapping(value = "/getUser{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public User getUser(@PathVariable Long id){
+    public User getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
     @PreAuthorize("hasAnyAuthority('admin:delete')")
-    @DeleteMapping(value = "/delete{id}", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public void deleteUser(@PathVariable Long id){
+    @DeleteMapping(value = "/delete{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+    }
+
+
+    @GetMapping("/getWB")
+    public Object[] getAllWB() {
+        return messageDao.getAllMessages();
     }
 }

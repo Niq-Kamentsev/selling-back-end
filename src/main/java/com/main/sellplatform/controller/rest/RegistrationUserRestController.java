@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.Objects;
 
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("api/v1/registration")
 public class RegistrationUserRestController {
