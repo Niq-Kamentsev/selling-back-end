@@ -27,13 +27,13 @@ public class ModerationRestController {
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PostMapping("/publish/{lotId}")
+    @GetMapping("/publish/{lotId}")
     public Boolean publishLot(@PathVariable Long lotId) {
         return moderationService.publishLot(lotId, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PostMapping("/reject/{lotId}")
+    @GetMapping("/reject/{lotId}")
     public Boolean rejectLot(@RequestBody String cause, @PathVariable Long lotId) {
         return moderationService.rejectLot(lotId, SecurityContextHolder.getContext().getAuthentication().getName(), cause);
     }
@@ -45,13 +45,13 @@ public class ModerationRestController {
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PutMapping("/banned/unban/{lotId}")
+    @GetMapping("/banned/unban/{lotId}")
     public Boolean unbanLot(@PathVariable Long lotId) {
         return moderationService.unbanLot(lotId);
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PutMapping("/ban/{lotId}")
+    @GetMapping("/ban/{lotId}")
     public Boolean banLot(@PathVariable Long lotId) {
         return moderationService.banLot(lotId);
     }
@@ -69,31 +69,31 @@ public class ModerationRestController {
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PutMapping("/history/update/{moderLotId}")
+    @GetMapping("/history/update/{moderLotId}")
     public Boolean updateMyModeratedLot(@PathVariable Long moderLotId) {
         return moderationService.updateModeratedLot(moderLotId, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('moder:write')")
-    @PutMapping( "/history/cancel/{moderLotId}")
+    @GetMapping( "/history/cancel/{moderLotId}")
     public Boolean cancelMyModerationDecision(@PathVariable Long moderLotId) {
         return moderationService.cancelModerationDecision(moderLotId, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('admin:read')")
     @GetMapping(value = "/history/all")
-    public List<ModeratingLot> getAllModerationHistory() {
-        return moderationService.getAllModerationHistory();
+    public List<ModeratingLot> getAllModeratorsHistory() {
+        return moderationService.getAllModeratorsHistory();
     }
 
     @PreAuthorize("hasAnyAuthority('admin:write')")
-    @PutMapping("/history/all/update/{moderLotId}")
+    @GetMapping("/history/all/update/{moderLotId}")
     public Boolean updateModeratedLot(@PathVariable Long moderLotId) {
         return moderationService.updateModeratedLot(moderLotId, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @PreAuthorize("hasAnyAuthority('admin:write')")
-    @PutMapping( "/history/all/cancel/{moderLotId}")
+    @GetMapping( "/history/all/cancel/{moderLotId}")
     public Boolean cancelModerationDecision(@PathVariable Long moderLotId) {
         return moderationService.cancelModerationDecision(moderLotId, SecurityContextHolder.getContext().getAuthentication().getName());
     }
@@ -105,14 +105,14 @@ public class ModerationRestController {
     }
 
     @PreAuthorize("hasAnyAuthority('admin:write')")
-    @PutMapping("/history/{username}/update/{moderLotId}")
+    @GetMapping("/history/{username}/update/{moderLotId}")
     public Boolean updateModeratedLotByModerator(@PathVariable Long moderLotId, @PathVariable String username) {
         return moderationService.updateModeratedLot(moderLotId, username);
     }
 
     @PreAuthorize("hasAnyAuthority('admin:write')")
-    @PutMapping( "/history/{username}/cancel/{moderLotId}")
-    public Boolean cancelModeratorDecision(@PathVariable Long moderLotId, @PathVariable String username) {
+    @GetMapping( "/history/{username}/cancel/{moderLotId}")
+    public Boolean cancelModerationDecisionByModerator(@PathVariable Long moderLotId, @PathVariable String username) {
         return moderationService.cancelModerationDecision(moderLotId, username);
     }
 }

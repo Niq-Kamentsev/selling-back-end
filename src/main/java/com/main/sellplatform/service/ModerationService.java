@@ -7,7 +7,6 @@ import com.main.sellplatform.persistence.entity.Lot;
 import com.main.sellplatform.persistence.entity.ModeratingLot;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.persistence.entity.enums.LotStatus;
-import com.main.sellplatform.persistence.entity.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +35,7 @@ public class ModerationService {
         Lot lot = lotDao.getLot(lotId);
         if (lot == null || lot.getEndDate() == null) return false;
         if (lot.getEndDate().isBefore(LocalDateTime.now())) {
-            rejectLot(lotId, username, "The lot has expired");
+            lotModerationDao.rejectLot(lot, username, "The lot has expired");
             return false;
         } else if (!lot.getStatus().equals(LotStatus.PUBLISHED) ) {
             lotModerationDao.publishLot(lot, username);
@@ -91,14 +90,14 @@ public class ModerationService {
         return lotModerationDao.cancelModerationDecision(moderLotId);
     }
 
-    public List<ModeratingLot> getAllModerationHistory() {
-        return lotModerationDao.getAllModerationHistory();
+    public List<ModeratingLot> getAllModeratorsHistory() {
+        return lotModerationDao.getAllModeratorsHistory();
     }
 
     private Boolean checkAccess(Long moderLotId, String username) {
         User user = userDao.getUserByEmail(username);
         if (user == null || lotModerationDao.getModeratingLot(moderLotId) == null
-        || (!Objects.equals(lotModerationDao.getModeratingLot(moderLotId).getModerator().getId(), user.getId()))) {
+                || (!Objects.equals(lotModerationDao.getModeratingLot(moderLotId).getModerator().getId(), user.getId()))) {
             return false;
         }
         return true;

@@ -164,7 +164,7 @@ public class LotModerationDao {
         return true;
     }
 
-    public List<ModeratingLot> getAllModerationHistory() {
+    public List<ModeratingLot> getAllModeratorsHistory() {
         List<ModeratingLot> moderLots = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("select * from moder_lot order by publish_date");

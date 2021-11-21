@@ -1,5 +1,6 @@
 package com.main.sellplatform.persistence.dao;
 
+import com.main.sellplatform.persistence.entity.Category;
 import com.main.sellplatform.persistence.entity.Lot;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.persistence.entity.enums.LotStatus;
@@ -45,35 +46,33 @@ public class LotDao {
         return lot;
     }
 
-    public List<Lot> getUserLots(Long userId) {
-        List<Lot> lotList = new ArrayList<>();
+    public Category getCategory(String categoryName) {
+        Category category = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "select * from test_lot where user_id = ? and status = 'PUBLISHED'"
+                "select * from test_category where name = ?"
         )) {
-            preparedStatement.setLong(1, userId);
+            preparedStatement.setString(1, categoryName);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                Lot lot = new Lot();
-                lot.setId(resultSet.getLong("id"));
-                lot.setTitle(resultSet.getString("title"));
-                lot.setDescription(resultSet.getString("description"));
-                lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
-                lot.setOwner(userDao.getUser(userId));
-                lot.setEndDate(resultSet.getTimestamp("end_date").toLocalDateTime());
-                lotList.add(lot);
+                category = new Category();
+                category.setId(resultSet.getLong("id"));
+                category.setName(resultSet.getString("name"));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return lotList;
+        return category;
     }
 
-    public List<Lot> getMyLots(String username) {
+    public List<Lot> getUserLots(User user, boolean isMyLots) {
         List<Lot> lotList = new ArrayList<>();
-        User user = userDao.getUserByEmail(username);
-        try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "select * from test_lot where user_id = ?"
-        )) {
+        try {
+            PreparedStatement preparedStatement;
+            if (!isMyLots) {
+                preparedStatement = connection.prepareStatement("select * from test_lot where user_id = ? and status = 'PUBLISHED'");
+            } else {
+                preparedStatement = connection.prepareStatement("select * from test_lot where user_id = ?");
+            }
             preparedStatement.setLong(1, user.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -86,6 +85,7 @@ public class LotDao {
                 lot.setEndDate(resultSet.getTimestamp("end_date").toLocalDateTime());
                 lotList.add(lot);
             }
+            preparedStatement.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -168,6 +168,34 @@ public class LotDao {
                     "select * from test_lot where status = '" + status + "' and" +
                             "(title like '%" + keyword + "%' or description like '%" + keyword + "%')"
             );
+            while (resultSet.next()) {
+                Lot lot = new Lot();
+                lot.setId(resultSet.getLong("id"));
+                lot.setTitle(resultSet.getString("title"));
+                lot.setDescription(resultSet.getString("description"));
+                lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
+                lot.setOwner(userDao.getUser(resultSet.getLong("user_id")));
+                lot.setEndDate(resultSet.getTimestamp("end_date").toLocalDateTime());
+                lotList.add(lot);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return lotList;
+    }
+
+    public List<Lot> getLotsFromCategory(Category category, String keyword) {
+        List<Lot> lotList = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement;
+            if (keyword == null) {
+                preparedStatement = connection.prepareStatement("select * from test_lot where category_id = ? and status = 'PUBLISHED'");
+            } else {
+                preparedStatement = connection.prepareStatement("select * from test_lot where category_id = ? " +
+                        "and status = 'PUBLISHED' and (title like '%\" + keyword + \"%' or description like '%\" + keyword + \"%')");
+            }
+            preparedStatement.setLong(1, category.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 Lot lot = new Lot();
                 lot.setId(resultSet.getLong("id"));
@@ -178,6 +206,7 @@ public class LotDao {
                 lot.setEndDate(resultSet.getTimestamp("end_date").toLocalDateTime());
                 lotList.add(lot);
             }
+            preparedStatement.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

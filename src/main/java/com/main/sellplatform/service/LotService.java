@@ -2,6 +2,7 @@ package com.main.sellplatform.service;
 
 import com.main.sellplatform.persistence.dao.LotDao;
 import com.main.sellplatform.persistence.dao.UserDao;
+import com.main.sellplatform.persistence.entity.Category;
 import com.main.sellplatform.persistence.entity.Lot;
 import com.main.sellplatform.persistence.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,10 @@ public class LotService {
         this.lotDao = lotDao;
     }
 
-    public List<Lot> getUserLots(String username) {
+    public List<Lot> getUserLots(String username, boolean isMyLots) {
         User user = userDao.getUserByEmail(username);
         if (user == null) return null;
-        return lotDao.getUserLots(user.getId());
-    }
-
-    public List<Lot> getMyLots(String username) {
-        User user = userDao.getUserByEmail(username);
-        if (user == null) return null;
-        return lotDao.getMyLots(username);
+        return lotDao.getUserLots(user, isMyLots);
     }
 
     public List<Lot> getAllLots() {
@@ -39,12 +34,14 @@ public class LotService {
     }
 
     public Boolean addLot(Lot lot, String username) {
-        if (!validateLot(lot, username)) return false;
+        if (!validateLot(lot)) return false;
         return lotDao.addLot(lot, username);
     }
 
     public Boolean updateLot(Lot lot, String username) {
-        if (!validateLot(lot, username)) return false;
+        if (!Objects.equals(lot.getOwner().getId(), userDao.getUserByEmail(username).getId()) || !validateLot(lot)) {
+            return false;
+        }
         return lotDao.updateLot(lot);
     }
 
@@ -59,9 +56,14 @@ public class LotService {
         return lotDao.findPublishedLots(keyword);
     }
 
-    private Boolean validateLot(Lot lot, String username) {
-        return Objects.equals(lot.getOwner().getId(), userDao.getUserByEmail(username).getId())
-                && lot.getStartDate() != null
+    public List<Lot> getLotsFromCategory(String categoryName, String keyword) {
+        Category category = lotDao.getCategory(categoryName);
+        if (category == null) return null;
+        return lotDao.getLotsFromCategory(category, keyword);
+    }
+
+    private Boolean validateLot(Lot lot) {
+        return lot.getStartDate() != null
                 && !lot.getStartDate().isBefore(LocalDateTime.now())
                 && !lot.getStartDate().isAfter(lot.getEndDate())
                 && !lot.getTerm().isAfter(lot.getEndDate())

@@ -22,13 +22,13 @@ public class LotRestController {
     @PreAuthorize("hasAnyAuthority('user:read')")
     @GetMapping("/user/{username}")
     public List<Lot> getUserLots(@PathVariable String username) {
-        return lotService.getUserLots(username);
+        return lotService.getUserLots(username, false);
     }
 
     @PreAuthorize("hasAnyAuthority('user:read')")
     @GetMapping("/myLots")
     public List<Lot> getMyLots() {
-        return lotService.getMyLots(SecurityContextHolder.getContext().getAuthentication().getName());
+        return lotService.getUserLots(SecurityContextHolder.getContext().getAuthentication().getName(), true);
     }
 
     @GetMapping
@@ -57,5 +57,17 @@ public class LotRestController {
     @GetMapping("/search/{keyword}")
     public List<Lot> findLots(@PathVariable String keyword) {
         return lotService.findLots(keyword);
+    }
+
+    @PreAuthorize("hasAnyAuthority('user:read')")
+    @GetMapping("/category/{category}")
+    public List<Lot> getLotsFromCategory(@PathVariable String category) {
+        return lotService.getLotsFromCategory(category, null);
+    }
+
+    @PreAuthorize("hasAnyAuthority('user:read')")
+    @GetMapping("/category/{category}/search{keyword}")
+    public List<Lot> findLotsInCategory(@PathVariable String category, @PathVariable String keyword) {
+        return lotService.getLotsFromCategory(category, keyword);
     }
 }
