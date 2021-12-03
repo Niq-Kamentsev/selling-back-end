@@ -1,12 +1,14 @@
 package com.main.sellplatform.security;
 
-import com.main.sellplatform.persistence.entity.User;
+import com.main.sellplatform.entitymanager.testobj.User;
+import com.main.sellplatform.persistence.entity.enums.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class SecurityUser implements UserDetails {
@@ -59,7 +61,7 @@ public class SecurityUser implements UserDetails {
 
     public static UserDetails fromUser(User user){
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getPassword(),true,true,true, user.isActive(), user.getRole().getAuthorities()
+                user.getEmail(), user.getPassword(),true,true,true, true, Role.USER.getAuthorities()
         );
     }
 }

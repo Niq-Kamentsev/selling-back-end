@@ -14,8 +14,8 @@ public class EntityManager {
         this.entityPresenter = entityPresenter;
     }
 
-    public Object getObjectById(Class<? extends GeneralObject> clazz, Integer id) {
-        Object[] objects = entityPresenter.get(clazz, "OBJ_" + clazz.getAnnotation(Objtype.class).value() + "ID = " + id);
+    public Object getObjectById(Class<? extends GeneralObject> clazz, Long id, String where) {
+        Object[] objects = entityPresenter.get(clazz, "WHERE "+where+" AND OBJ_" + clazz.getAnnotation(Objtype.class).value() + "ID = " + id);
         if (objects == null || objects.length == 0) return null;
         Object object = objects[0];
         if (object == null) return null;
@@ -25,6 +25,15 @@ public class EntityManager {
 
     public Object[] getAllObjects(Class<? extends GeneralObject> clazz) {
         Object[] objects = entityPresenter.get(clazz, null);
+        if (objects == null) return null;
+        for (int i = 0; i < objects.length; ++i) {
+            objects[i] = clazz.cast(objects[i]);
+        }
+
+        return objects;
+    }
+    public Object[] getAllObjects(Class<? extends GeneralObject> clazz, String where) {
+        Object[] objects = entityPresenter.get(clazz, "WHERE "+where);
         if (objects == null) return null;
         for (int i = 0; i < objects.length; ++i) {
             objects[i] = clazz.cast(objects[i]);

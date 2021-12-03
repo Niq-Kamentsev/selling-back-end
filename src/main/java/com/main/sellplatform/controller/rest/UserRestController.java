@@ -1,5 +1,6 @@
 package com.main.sellplatform.controller.rest;
 
+import com.main.sellplatform.entitymanager.testdao.LotDao2;
 import com.main.sellplatform.persistence.dao.MessageDao;
 import com.main.sellplatform.persistence.dao.Waybill;
 import com.main.sellplatform.persistence.entity.User;
@@ -11,17 +12,19 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("api")
 public class UserRestController {
     private final UserService userService;
     private final MessageDao messageDao;
+    private final LotDao2 lotDao2;
 
     @Autowired
-    public UserRestController(final UserService userService, final MessageDao messageDao) {
+    public UserRestController(final UserService userService, final MessageDao messageDao, final LotDao2 lotDao2) {
         this.userService = userService;
         this.messageDao = messageDao;
+        this.lotDao2 = lotDao2;
     }
 
     @PreAuthorize("hasAnyAuthority('admin:read')")
@@ -52,6 +55,6 @@ public class UserRestController {
 
     @GetMapping("/getWB")
     public Object[] getAllWB() {
-        return messageDao.getAllMessages();
+        return lotDao2.getAllLots(null);
     }
 }

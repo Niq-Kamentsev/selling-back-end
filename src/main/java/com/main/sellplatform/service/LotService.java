@@ -1,5 +1,7 @@
 package com.main.sellplatform.service;
 
+import com.main.sellplatform.entitymanager.testdao.LotDao2;
+import com.main.sellplatform.entitymanager.testdao.UserDao2;
 import com.main.sellplatform.persistence.dao.LotDao;
 import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.Lot;
@@ -8,30 +10,58 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class LotService {
     private final UserDao userDao;
+    private final UserDao2 userDao2;
     private final LotDao lotDao;
+    private final LotDao2 lotDao2;
 
     @Autowired
-    public LotService(UserDao userDao, LotDao lotDao) {
+    public LotService(UserDao userDao, UserDao2 userDao2, LotDao lotDao, LotDao2 lotDao2) {
         this.userDao = userDao;
+        this.userDao2 = userDao2;
         this.lotDao = lotDao;
+        this.lotDao2 = lotDao2;
     }
 
-    public List<Lot> getUserLots(String username) {
-        User user = userDao.getUserByEmail(username);
-        if (user == null) return null;
-        return lotDao.getUserLots(user.getId());
+    private String getLotSortCol(String col) {
+        if(col==null)return null;
+        switch (col) {
+            case "Id":
+                return "OBJ_3ATTR_10";
+            case "Name":
+                return "OBJ_3ATTR_12";
+            case "Status":
+                return "OBJ_3ATTR_17";
+            case "Category":
+                return "OBJ_3ATTR_18";
+            case "StartDate":
+                return "OBJ_3ATTR_21";
+            case "EndDate":
+                return "OBJ_3ATTR_22";
+            case "StartPrice":
+                return "OBJ_3ATTR_14";
+            case "EndPrice":
+                return "OBJ_3ATTR_15";
+        }
+        return null;
     }
 
-    public List<Lot> getMyLots(String username) {
-        User user = userDao.getUserByEmail(username);
+    public List<com.main.sellplatform.entitymanager.testobj.Lot> getUserLots(String username, String sortCol) {
+        com.main.sellplatform.entitymanager.testobj.User user = userDao2.getUserByEmail(username);
         if (user == null) return null;
-        return lotDao.getMyLots(username);
+        return Arrays.asList(lotDao2.getUsersLots(user.getId(), getLotSortCol(sortCol)));
+    }
+
+    public List<com.main.sellplatform.entitymanager.testobj.Lot> getMyLots(String username, String sortCol) {
+        com.main.sellplatform.entitymanager.testobj.User user = userDao2.getUserByEmail(username);
+        if (user == null) return null;
+        return Arrays.asList(lotDao2.getUsersLots(user.getId(), getLotSortCol(sortCol)));
     }
 
     public List<Lot> getAllLots() {
@@ -66,5 +96,19 @@ public class LotService {
                 && !lot.getStartDate().isAfter(lot.getEndDate())
                 && !lot.getTerm().isAfter(lot.getEndDate())
                 && !lot.getTerm().isBefore(lot.getStartDate());
+    }
+
+    public List<com.main.sellplatform.entitymanager.testobj.Lot> getBuyableLots() {
+        List<com.main.sellplatform.entitymanager.testobj.Lot> res = Arrays.asList(lotDao2.getAllLots("OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING'"));
+        for(com.main.sellplatform.entitymanager.testobj.Lot lot:res){
+            lot.setUser(null);
+        }
+        return res;
+    }
+
+    public com.main.sellplatform.entitymanager.testobj.Lot getBuyableLot(Long id) {
+        com.main.sellplatform.entitymanager.testobj.Lot res = lotDao2.getLotById(id, "(OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING')");
+        if(res!=null) res.setUser(null);
+        return res;
     }
 }
