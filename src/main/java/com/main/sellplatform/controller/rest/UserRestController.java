@@ -55,6 +55,6 @@ public class UserRestController {
 
     @GetMapping("/getWB")
     public Object[] getAllWB() {
-        return lotDao2.getAllLots(null);
+        return lotDao2.test();
     }
 }
