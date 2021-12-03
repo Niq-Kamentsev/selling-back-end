@@ -65,6 +65,10 @@ public class EntityPresenter {
         return null;
     }
 
+    public ResultSet executeQuery(String query){
+        return connector.executeGet(query);
+    }
+
     public void insert(Object o) {
         /*connector.connect();
         String sql = TableAdder.getSqlInsert(o);

@@ -13,7 +13,7 @@ public class Message extends GeneralObject {
     User receiver;
     @Attribute(attrTypeId = 30)
     Long id;
-    @Attribute(attrTypeId = 31)
+    @Attribute(attrTypeId = 31, type = Attribute.ValueType.DATE_VALUE)
     String date;
     @Attribute(attrTypeId = 32)
     String msg;

@@ -29,22 +29,6 @@ public class UserDto {
     @Size(min = 10, max = 20, message = "Phone number has incorrect length")
     private String phoneNumber;
 
-    public UserDto(String fistName, String lastName, String email, String password, String phoneNumber) {
-        this.firstName = fistName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getFistName() {
-        return firstName;
-    }
-
-    public void setFistName(String fistName) {
-        this.firstName = fistName;
-    }
-
     public String getLastName() {
         return lastName;
     }
@@ -88,4 +72,11 @@ public class UserDto {
 
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 }

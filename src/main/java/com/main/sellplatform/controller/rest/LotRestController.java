@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("api/lots")
 public class LotRestController {
@@ -21,14 +22,20 @@ public class LotRestController {
 
     @PreAuthorize("hasAnyAuthority('user:read')")
     @GetMapping("/user/{username}")
-    public List<Lot> getUserLots(@PathVariable String username) {
-        return lotService.getUserLots(username);
+    public List<com.main.sellplatform.entitymanager.testobj.Lot> getUserLots(@PathVariable String username) {
+        return lotService.getUserLots(username,null);
     }
 
     @PreAuthorize("hasAnyAuthority('user:read')")
     @GetMapping("/myLots")
-    public List<Lot> getMyLots() {
-        return lotService.getMyLots(SecurityContextHolder.getContext().getAuthentication().getName());
+    public List<com.main.sellplatform.entitymanager.testobj.Lot> getMyLots() {
+        return lotService.getMyLots(SecurityContextHolder.getContext().getAuthentication().getName(),null);
+    }
+
+    @PreAuthorize("hasAnyAuthority('user:read')")
+    @GetMapping("/myLots/{sortCol}")
+    public List<com.main.sellplatform.entitymanager.testobj.Lot> getMySortLots(@PathVariable String sortCol) {
+        return lotService.getMyLots(SecurityContextHolder.getContext().getAuthentication().getName(),sortCol);
     }
 
     @GetMapping
@@ -57,5 +64,14 @@ public class LotRestController {
     @GetMapping("/search/{keyword}")
     public List<Lot> findLots(@PathVariable String keyword) {
         return lotService.findLots(keyword);
+    }
+
+    @GetMapping("/buyableLots")
+    public List<com.main.sellplatform.entitymanager.testobj.Lot> getBuyableLots(){
+        return lotService.getBuyableLots();
+    }
+    @GetMapping("/buyableLot/{id}")
+    public com.main.sellplatform.entitymanager.testobj.Lot getBuyableLot(@PathVariable Long id){
+        return lotService.getBuyableLot(id);
     }
 }

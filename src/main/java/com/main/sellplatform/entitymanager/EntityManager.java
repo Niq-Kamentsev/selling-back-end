@@ -1,13 +1,15 @@
 package com.main.sellplatform.entitymanager;
 
 
-import java.util.List;
-
+import com.main.sellplatform.entitymanager.annotation.Objtype;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.main.sellplatform.entitymanager.annotation.Objtype;
-import com.main.sellplatform.entitymanager.annotation.Reference;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Component("entityManager")
 public class EntityManager {
@@ -31,8 +33,8 @@ public class EntityManager {
 		return objects;
     }
 
-    public Object getObjectById(Class<? extends GeneralObject> clazz, Integer id) {
-        Object[] objects = entityPresenter.get(clazz, "OBJ_" + clazz.getAnnotation(Objtype.class).value() + "ID = " + id);
+    public Object getObjectById(Class<? extends GeneralObject> clazz, Long id, String where) {
+        Object[] objects = entityPresenter.get(clazz, "WHERE "+(where==null?"":where+" AND ")+"OBJ_" + clazz.getAnnotation(Objtype.class).value() + "ID = " + id);
         if (objects == null || objects.length == 0) return null;
         Object object = objects[0];
         if (object == null) return null;
@@ -40,8 +42,31 @@ public class EntityManager {
         return clazz.cast(object);
     }
 
+    public Object[] getObjectsByIdSeq(Class<? extends GeneralObject> clazz, String seq) throws SQLException {
+        ResultSet rs = entityPresenter.executeQuery(seq);
+
+        List<Object> objects = new ArrayList<>();
+
+        while(rs.next()){
+            Object obj = getObjectById(clazz,rs.getLong("Id"),null);
+            if(obj!=null){
+                objects.add(obj);
+            }
+        }
+        return objects.toArray();
+    }
+
     public Object[] getAllObjects(Class<? extends GeneralObject> clazz) {
         Object[] objects = entityPresenter.get(clazz, null);
+        if (objects == null) return null;
+        for (int i = 0; i < objects.length; ++i) {
+            objects[i] = clazz.cast(objects[i]);
+        }
+
+        return objects;
+    }
+    public Object[] getAllObjects(Class<? extends GeneralObject> clazz, String where) {
+        Object[] objects = entityPresenter.get(clazz, "WHERE "+where);
         if (objects == null) return null;
         for (int i = 0; i < objects.length; ++i) {
             objects[i] = clazz.cast(objects[i]);

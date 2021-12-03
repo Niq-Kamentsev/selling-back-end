@@ -86,7 +86,7 @@ public class TableGetter {
         if (wher != null) {
             String whSql = "SELECT * FROM (" + sql + ")";
             sql = new StringBuilder(whSql);
-            sql.append("\n\tWHERE ").append(wher);
+            sql.append("\n\t").append(wher);
         }
 
         return sql.toString();
@@ -165,6 +165,7 @@ public class TableGetter {
     }
 
     public static Object[] getObjects(ResultSet rs, Class<?> clazz) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        if(rs==null)return null;
         ArrayList<Object> objects = new ArrayList<>();
         List<Field> extensions = new ArrayList<>();
         List<Field> associations = new ArrayList<>();
@@ -305,7 +306,7 @@ public class TableGetter {
     public static void runSetter(String field, Object value, Object o) {
         PropertyAccessor myAccessor = PropertyAccessorFactory.forDirectFieldAccess(o);
         if (Objects.requireNonNull(myAccessor.getPropertyType(field)).isAssignableFrom(Float.class)
-                || Objects.requireNonNull(myAccessor.getPropertyType(field)).isAssignableFrom(Double.class)) {
+                || Objects.requireNonNull(myAccessor.getPropertyType(field)).isAssignableFrom(Double.class) && value!=null) {
             value = Double.parseDouble(value.toString().replace(",", "."));
         }
         myAccessor.setPropertyValue(field, value);
