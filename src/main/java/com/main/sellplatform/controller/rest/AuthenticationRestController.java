@@ -3,8 +3,9 @@ package com.main.sellplatform.controller.rest;
 
 import com.main.sellplatform.controller.dto.AuthenticationRequestDTO;
 import com.main.sellplatform.controller.dto.TokenRefreshRequest;
+import com.main.sellplatform.entitymanager.testobj.User;
 import com.main.sellplatform.persistence.entity.RefreshToken;
-import com.main.sellplatform.persistence.entity.User;
+import com.main.sellplatform.persistence.entity.enums.Role;
 import com.main.sellplatform.security.JwtTokenProvider;
 
 import com.main.sellplatform.service.RefreshTokenService;
@@ -46,11 +47,12 @@ public class AuthenticationRestController {
         try {
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()) );
-            User user = userService.getUserByEmail(request.getEmail());
+            com.main.sellplatform.entitymanager.testobj.User user = userService.getUserByEmail(request.getEmail());
 
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
-            String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name());
+            //String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name());
+            String token = jwtTokenProvider.createToken(request.getEmail(), Role.USER.name());
             Map<Object,Object> response = new HashMap<>();
             response.put("email", request.getEmail());
             response.put("token", token);
@@ -82,7 +84,8 @@ public class AuthenticationRestController {
         RefreshToken byToken = refreshTokenService.findByToken(refreshToken);
         if(refreshTokenService.verifyExpiration(byToken)){
             User user = byToken.getUser();
-            String token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().name());
+            //String token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().name());
+            String token = jwtTokenProvider.createToken(user.getEmail(), Role.USER.name());
             Map<Object,Object> response = new HashMap<>();
             response.put("email", user.getEmail());
             response.put("token", token);

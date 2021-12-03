@@ -31,7 +31,7 @@ public class RefreshTokenDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 refreshToken.setId(resultSet.getLong("id"));
-                refreshToken.setUser(userDao.getUser(resultSet.getLong("user_id")));
+                //refreshToken.setUser(userDao.getUser(resultSet.getLong("user_id")));
                 refreshToken.setToken(resultSet.getNString("token"));
                 refreshToken.setExpiryDate(resultSet.getObject("expiry_date", LocalDate.class));
             }
@@ -50,7 +50,7 @@ public class RefreshTokenDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 refreshToken.setId(resultSet.getLong("id"));
-                refreshToken.setUser(userDao.getUser(resultSet.getLong("user_id")));
+                //refreshToken.setUser(userDao.getUser(resultSet.getLong("user_id")));
                 refreshToken.setToken(resultSet.getNString("token"));
                 refreshToken.setExpiryDate(resultSet.getObject("expiry_date", LocalDate.class));
             }
