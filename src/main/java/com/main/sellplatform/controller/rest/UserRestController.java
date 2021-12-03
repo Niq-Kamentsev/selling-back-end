@@ -2,7 +2,6 @@ package com.main.sellplatform.controller.rest;
 
 import com.main.sellplatform.entitymanager.testdao.LotDao2;
 import com.main.sellplatform.persistence.dao.MessageDao;
-import com.main.sellplatform.persistence.dao.Waybill;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

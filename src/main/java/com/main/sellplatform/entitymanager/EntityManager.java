@@ -2,6 +2,8 @@ package com.main.sellplatform.entitymanager;
 
 
 import com.main.sellplatform.entitymanager.annotation.Objtype;
+import com.main.sellplatform.entitymanager.annotation.Reference;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
