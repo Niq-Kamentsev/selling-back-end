@@ -12,9 +12,40 @@ public class Message extends GeneralObject {
     @Reference(attributeId = 29)
     User receiver;
     @Attribute(attrTypeId = 30)
-    Integer id;
+    Long id;
     @Attribute(attrTypeId = 31)
     String date;
     @Attribute(attrTypeId = 32)
     String msg;
+	public User getSender() {
+		return sender;
+	}
+	public void setSender(User sender) {
+		this.sender = sender;
+	}
+	public User getReceiver() {
+		return receiver;
+	}
+	public void setReceiver(User receiver) {
+		this.receiver = receiver;
+	}
+	public Long getId() {
+		return this.id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
+	public String getMsg() {
+		return msg;
+	}
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+    
 }

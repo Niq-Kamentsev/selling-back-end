@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 public class Message {
     private Long id;
     @NotNull
-    private User sender;
+    private Long sender;
     @NotNull
-    private User receiver;
+    private Long receiver;
     @NotNull
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime dateTime;
@@ -28,20 +28,20 @@ public class Message {
         this.id = id;
     }
 
-    public User getSender() {
+    public Long getSender() {
         return sender;
     }
 
-    public void setSender(User sender) {
+    public void setSender(Long sender) {
         this.sender = sender;
     }
 
-    public User getReceiver() {
+    public Long getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(User receiver) {
-        this.receiver = receiver;
+    public void setReceiver(Long receiver) {
+		this.receiver = receiver;
     }
 
     public LocalDateTime getDateTime() {
