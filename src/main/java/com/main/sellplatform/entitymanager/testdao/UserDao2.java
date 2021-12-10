@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class UserDao2 {
@@ -17,13 +19,17 @@ public class UserDao2 {
     }
 
     public User getUserByEmail(String email) {
-        Object[] o = entityManager.getAllObjects(User.class, "OBJ_1ATTR_1 = '" + email + "'");
+        List<Object> statements = new ArrayList<>();
+        statements.add(email);
+        Object[] o = entityManager.getAllObjects(User.class, "OBJ_1ATTR_1 = ?",statements);
         if (o == null) return null;
         return (User) o[0];
     }
 
     public User getUser(Long id) {
-        Object[] o = entityManager.getAllObjects(User.class, "OBJ_1ID = '" + id + "'");
+        List<Object> statements = new ArrayList<>();
+        statements.add(id);
+        Object[] o = entityManager.getAllObjects(User.class, "OBJ_1ID = ?",statements);
         if (o == null) return null;
         return (User) o[0];
     }

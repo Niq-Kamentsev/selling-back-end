@@ -3,10 +3,8 @@ package com.main.sellplatform.entitymanager.analyzer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.List;
 
 @Component
 public class DbConnector {
@@ -51,14 +49,35 @@ public class DbConnector {
         return null;
     }
 
-    public void executeQuery(String sql) {
+    public ResultSet executeGet(String sql, List<Object> statements) {
         try {
-            Statement stat = con.createStatement();
-            String[] sqls = sql.split(";");
-            for (String sq : sqls) {
-                stat.executeUpdate(sq);
-            }
+            ResultSet rs;
+            PreparedStatement st = con.prepareStatement(sql);
+            if(statements!=null)
+                for (int i = 0; i < statements.size(); ++i) {
+                    st.setObject(i + 1, statements.get(i));
+                }
+            rs = st.executeQuery();
+            return rs;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
 
+    public void executeQuery(String sql, List<Object> statements) {
+        try {
+//            Statement stat = con.createStatement();
+//            String[] sqls = sql.split(";");
+//            for (String sq : sqls) {
+//                stat.executeUpdate(sq);
+//            }
+            PreparedStatement st = con.prepareStatement(sql);
+            if(statements!=null)
+                for (int i = 0; i < statements.size(); ++i) {
+                    st.setObject(i + 1, statements.get(i));
+                }
+            st.executeQuery();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -69,7 +88,7 @@ public class DbConnector {
             String sql = "Select * from waybill";
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery(sql);
-            while(rs.next()){
+            while (rs.next()) {
 
             }
             System.out.println(sql);

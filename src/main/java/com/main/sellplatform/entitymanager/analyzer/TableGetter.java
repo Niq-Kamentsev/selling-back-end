@@ -76,8 +76,10 @@ public class TableGetter {
                 from.append(" LEFT JOIN ").append(froms[i]);//.append("_REF").append(field.getAnnotation(Reference.class).attributeId()).append("");
             }
 
-            where.append(" AND OBJ_").append(curOT).append("_REF").append(curRT).append(".object_type_id = ").append(curOT)
-                    .append(" AND OBJ_").append(curOT).append("_REF").append(curRT).append("_REF.attr_id = ").append(curRT);
+            where.append(" AND (OBJ_").append(curOT).append("_REF").append(curRT).append(".object_type_id = ").append(curOT)
+                    .append(" OR OBJ_").append(curOT).append("_REF").append(curRT).append(".object_type_id IS NULL").append(")")
+                    .append(" AND (OBJ_").append(curOT).append("_REF").append(curRT).append("_REF.attr_id = ").append(curRT)
+                    .append(" OR OBJ_").append(curOT).append("_REF").append(curRT).append("_REF.attr_id IS NULL").append(")");
         }
 
 
