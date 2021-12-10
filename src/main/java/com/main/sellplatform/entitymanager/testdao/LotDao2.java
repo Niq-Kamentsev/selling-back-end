@@ -22,6 +22,7 @@ public class LotDao2 {
 
     public Lot[] getAllLots(String where, List<Object> statements) {
         Object[] objects = entityManager.getAllObjects(Lot.class, where, statements);
+        if(objects==null)return null;
         Lot[] lots = new Lot[objects.length];
         for (int i = 0; i < objects.length; ++i) {
             lots[i] = (Lot) objects[i];

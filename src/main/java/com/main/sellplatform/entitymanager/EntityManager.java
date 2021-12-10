@@ -56,7 +56,7 @@ public class EntityManager {
     }
 
     public Object[] getAllObjects(Class<? extends GeneralObject> clazz, String where, List<Object> statements) {
-        Object[] objects = entityPresenter.get(clazz, "WHERE " + where, statements);
+        Object[] objects = entityPresenter.get(clazz, (where == null ? "" : "WHERE "+where), statements);
         if (objects == null) return null;
         for (int i = 0; i < objects.length; ++i) {
             objects[i] = clazz.cast(objects[i]);
