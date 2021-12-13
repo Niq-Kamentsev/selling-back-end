@@ -99,7 +99,9 @@ public class LotService {
     }
 
     public List<com.main.sellplatform.entitymanager.testobj.Lot> getBuyableLots() {
-        List<com.main.sellplatform.entitymanager.testobj.Lot> res = Arrays.asList(lotDao2.getAllLots("OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING'"));
+        List<com.main.sellplatform.entitymanager.testobj.Lot> res = Arrays.asList(
+                lotDao2.getAllLots("OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING'",null)
+        );
         for(com.main.sellplatform.entitymanager.testobj.Lot lot:res){
             lot.setUser(null);
         }

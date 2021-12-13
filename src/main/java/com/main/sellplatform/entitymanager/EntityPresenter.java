@@ -1,21 +1,16 @@
 package com.main.sellplatform.entitymanager;
 
 
-import com.main.sellplatform.entitymanager.analyzer.DbConnector;
-import com.main.sellplatform.entitymanager.analyzer.TableGetter;
-import com.main.sellplatform.entitymanager.annotation.Objtype;
-import com.main.sellplatform.entitymanager.annotation.Reference;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import com.main.sellplatform.entitymanager.analyzer.DbConnector;
+import com.main.sellplatform.entitymanager.analyzer.TableGetter;
 
 @Component
 public class EntityPresenter {
@@ -25,12 +20,12 @@ public class EntityPresenter {
     public EntityPresenter(DbConnector connector) {
         this.connector = connector;
     }
-   
-    public Object[] get(Class<?> clazz, String where) {
+
+    public Object[] get(Class<?> clazz, String where, List<Object> statements) {
 
         String sql = TableGetter.getSqlGet(clazz,where,null);
         System.out.println(sql);
-        ResultSet rs = connector.executeGet(sql);
+        ResultSet rs = connector.executeGet(sql,statements);
         try {
             Object[] objects = TableGetter.getObjects(rs,clazz);
             rs.close();
@@ -50,8 +45,8 @@ public class EntityPresenter {
         return null;
     }
 
-    public ResultSet executeQuery(String query){
-        return connector.executeGet(query);
+    public ResultSet executeQuery(String query, List<Object> statements){
+        return connector.executeGet(query, statements);
     }
 
     public void insert(Object o) {

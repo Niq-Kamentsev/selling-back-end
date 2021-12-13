@@ -39,7 +39,7 @@ public class MessageDao {
 					+ "SELECT OBJECT_ID FROM objreference\n WHERE ATTR_ID = 29 AND reference = " + userId
 					+ ") AND ATTR_ID = 28) OR (object_id IN (\n" + "SELECT OBJECT_ID FROM objreference\n"
 					+ "WHERE ATTR_ID = 28 AND reference = " + userId + ") AND ATTR_ID = 29)";
-			objects = entityManager.getObjectsByIdSeq(User.class, sql);
+			objects = entityManager.getObjectsByIdSeq(User.class, sql, null); // null
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -54,11 +54,12 @@ public class MessageDao {
 
 	public List<Message> getMessages(Long currentUserId, Long targetUser) {
 		String sql = "(OBJ_1ID_REF29  = " + currentUserId + " AND OBJ_1ID_REF28 = " + targetUser
-				+ ") OR (OBJ_1ID_REF29  = " + targetUser + " AND OBJ_1ID_REF28 = " + currentUserId + ") ORDER BY OBJ_5ATTR_31 ASC";
-		Object[] messages = entityManager.getAllObjects(Message.class, sql);
+				+ ") OR (OBJ_1ID_REF29  = " + targetUser + " AND OBJ_1ID_REF28 = " + currentUserId
+				+ ") ORDER BY OBJ_5ATTR_31 ASC";
+		Object[] messages = entityManager.getAllObjects(Message.class, sql, null); // null
 		List<Message> result = new ArrayList<>();
-		for(Object message : messages) {
-			result.add((Message)message);
+		for (Object message : messages) {
+			result.add((Message) message);
 		}
 		return result;
 	}
