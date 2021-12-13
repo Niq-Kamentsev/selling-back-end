@@ -25,23 +25,7 @@ public class EntityPresenter {
     public EntityPresenter(DbConnector connector) {
         this.connector = connector;
     }
-    
-	public List<Long> getDistinctReferences(Class<?> clazz, String where, Reference refId, Objtype objRefType) {
-		String sql = "SELECT DISTINCT OBJ_" + objRefType.value() + "ID" + "_REF" + refId.attributeId() + " FROM ("
-				+ TableGetter.getSqlGet(clazz, where, null) + ")";
-		ResultSet rs = connector.executeGet(sql);
-		List<Long> result = new ArrayList<>();
-		try {
-			String cName = rs.getMetaData().getColumnLabel(1);
-			while(rs.next()) {
-				result.add(rs.getLong(cName));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
+   
     public Object[] get(Class<?> clazz, String where) {
 
         String sql = TableGetter.getSqlGet(clazz,where,null);
@@ -49,6 +33,7 @@ public class EntityPresenter {
         ResultSet rs = connector.executeGet(sql);
         try {
             Object[] objects = TableGetter.getObjects(rs,clazz);
+            rs.close();
             return objects;
         } catch (SQLException throwables) {
             throwables.printStackTrace();

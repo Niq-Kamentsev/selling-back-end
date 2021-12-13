@@ -6,6 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Message {
     private Long id;
@@ -15,7 +16,7 @@ public class Message {
     private Long receiver;
     @NotNull
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime dateTime;
+    private Date dateTime;
     @NotEmpty
     @Size(max = 2048, message = "Incorrect message length")
     private String message;
@@ -44,11 +45,11 @@ public class Message {
 		this.receiver = receiver;
     }
 
-    public LocalDateTime getDateTime() {
+    public Date getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
+    public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }
 

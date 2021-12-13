@@ -1,16 +1,14 @@
 package com.main.sellplatform.persistence.dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.main.sellplatform.entitymanager.EntityManager;
-import com.main.sellplatform.entitymanager.annotation.Objtype;
-import com.main.sellplatform.entitymanager.annotation.Reference;
 import com.main.sellplatform.entitymanager.testobj.Message;
 import com.main.sellplatform.entitymanager.testobj.User;
 import com.main.sellplatform.persistence.entity.MessageChannel;
@@ -34,35 +32,34 @@ public class MessageDao {
 	}
 
 	public List<MessageChannel> getChannels(Long userId) {
-		Set<Long> resultSet = new HashSet<>();
 		List<MessageChannel> result = new ArrayList<>();
+		Object[] objects = null;
 		try {
-			String where = "OBJ_" + User.class.getAnnotation(Objtype.class).value() + "ID" + "_REF"
-					+ Message.class.getDeclaredField("sender").getAnnotation(Reference.class).attributeId() + " = "
-					+ userId;
-			resultSet.addAll(entityManager.getDistinctReferences(Message.class, where,
-					Message.class.getDeclaredField("receiver").getAnnotation(Reference.class),
-					User.class.getAnnotation(Objtype.class)));
-			where = "OBJ_" + User.class.getAnnotation(Objtype.class).value() + "ID" + "_REF"
-					+ Message.class.getDeclaredField("receiver").getAnnotation(Reference.class).attributeId() + " = "
-					+ userId;
-			resultSet.addAll(entityManager.getDistinctReferences(Message.class, where,
-					Message.class.getDeclaredField("sender").getAnnotation(Reference.class),
-					User.class.getAnnotation(Objtype.class)));
-		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			String sql = "SELECT DISTINCT reference as id FROM objreference WHERE (object_id IN (\n"
+					+ "SELECT OBJECT_ID FROM objreference\n WHERE ATTR_ID = 29 AND reference = " + userId
+					+ ") AND ATTR_ID = 28) OR (object_id IN (\n" + "SELECT OBJECT_ID FROM objreference\n"
+					+ "WHERE ATTR_ID = 28 AND reference = " + userId + ") AND ATTR_ID = 29)";
+			objects = entityManager.getObjectsByIdSeq(User.class, sql);
 		} catch (SecurityException e) {
 			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		for (Long targetId : resultSet) {
-			result.add(new MessageChannel(targetId));
+		for (Object targetObject : objects) {
+			User user = (User) targetObject;
+			result.add(new MessageChannel(user.getId()));
 		}
 		return result;
 	}
 
 	public List<Message> getMessages(Long currentUserId, Long targetUser) {
+		String sql = "(OBJ_1ID_REF29  = " + currentUserId + " AND OBJ_1ID_REF28 = " + targetUser
+				+ ") OR (OBJ_1ID_REF29  = " + targetUser + " AND OBJ_1ID_REF28 = " + currentUserId + ") ORDER BY OBJ_5ATTR_31 ASC";
+		Object[] messages = entityManager.getAllObjects(Message.class, sql);
 		List<Message> result = new ArrayList<>();
-		String where = "OBJ_" ;
-		return null;
+		for(Object message : messages) {
+			result.add((Message)message);
+		}
+		return result;
 	}
 }

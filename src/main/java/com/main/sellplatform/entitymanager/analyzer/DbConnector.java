@@ -44,6 +44,7 @@ public class DbConnector {
             ResultSet rs;
             Statement stat = con.createStatement();
             rs = stat.executeQuery(sql);
+            stat.closeOnCompletion();
             return rs;
         } catch (SQLException throwables) {
             throwables.printStackTrace();

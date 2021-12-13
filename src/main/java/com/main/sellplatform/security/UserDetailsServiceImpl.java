@@ -3,7 +3,6 @@ package com.main.sellplatform.security;
 import com.main.sellplatform.entitymanager.testdao.UserDao2;
 import com.main.sellplatform.entitymanager.testobj.User;
 import com.main.sellplatform.persistence.dao.UserDao;
-import com.main.sellplatform.persistence.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

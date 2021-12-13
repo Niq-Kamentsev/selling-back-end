@@ -1,17 +1,15 @@
 package com.main.sellplatform.entitymanager;
 
 
-import com.main.sellplatform.entitymanager.annotation.Objtype;
-import com.main.sellplatform.entitymanager.annotation.Reference;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.main.sellplatform.entitymanager.annotation.Objtype;
 
 @Component("entityManager")
 public class EntityManager {
@@ -20,19 +18,6 @@ public class EntityManager {
     @Autowired
     public EntityManager(EntityPresenter entityPresenter) {
         this.entityPresenter = entityPresenter;
-    }
-    
-    public List<Long> getDistinctReferences(Class<? extends GeneralObject> clazz, String where, Reference refId, Objtype objRefType) {
-    	return entityPresenter.getDistinctReferences(clazz, where, refId, objRefType);
-    }
-    
-    public Object[] getObjects(Class<? extends GeneralObject> clazz, String where) {
-    	Object[] objects = entityPresenter.get(clazz, where);
-        if (objects == null) return null;
-        for (int i = 0; i < objects.length; ++i) {
-            objects[i] = clazz.cast(objects[i]);
-        }
-		return objects;
     }
 
     public Object getObjectById(Class<? extends GeneralObject> clazz, Long id, String where) {

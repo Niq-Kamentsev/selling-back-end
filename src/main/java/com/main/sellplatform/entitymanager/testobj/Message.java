@@ -1,5 +1,7 @@
 package com.main.sellplatform.entitymanager.testobj;
 
+import java.util.Date;
+
 import com.main.sellplatform.entitymanager.GeneralObject;
 import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;
@@ -14,7 +16,7 @@ public class Message extends GeneralObject {
     @Attribute(attrTypeId = 30)
     Long id;
     @Attribute(attrTypeId = 31, type = Attribute.ValueType.DATE_VALUE)
-    String date;
+    Date date;
     @Attribute(attrTypeId = 32)
     String msg;
 	public User getSender() {
@@ -35,10 +37,10 @@ public class Message extends GeneralObject {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	public String getMsg() {
