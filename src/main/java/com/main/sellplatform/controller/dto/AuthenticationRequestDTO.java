@@ -15,9 +15,6 @@ public class AuthenticationRequestDTO {
                     "No whitespace allowed in the entire string.")
     private String password;
 
-    public AuthenticationRequestDTO() {
-    }
-
     public String getEmail() {
         return email;
     }

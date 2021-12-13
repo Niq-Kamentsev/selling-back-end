@@ -1,11 +1,13 @@
 package com.main.sellplatform.persistence.entity;
 
 
+import com.main.sellplatform.entitymanager.testobj.User;
+
 import java.time.LocalDate;
 
 public class RefreshToken {
     private Long id;
-    private User user;
+    private com.main.sellplatform.entitymanager.testobj.User user;
     private String token;
     private LocalDate expiryDate;
 
@@ -17,7 +19,7 @@ public class RefreshToken {
         this.id = id;
     }
 
-    public User getUser() {
+    public com.main.sellplatform.entitymanager.testobj.User getUser() {
         return user;
     }
 

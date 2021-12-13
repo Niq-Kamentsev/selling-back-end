@@ -54,6 +54,9 @@ public class UserRegistrationService {
 
     private boolean UserByEmailIsEmpty(String email){
         User userByEmail = userDao.getUserByEmail(email);
+        if(userByEmail==null){
+            return false;
+        }
         return !Objects.isNull(userByEmail.getId());
     }
 
