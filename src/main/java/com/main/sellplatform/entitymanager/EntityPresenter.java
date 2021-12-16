@@ -24,7 +24,7 @@ public class EntityPresenter {
     public Object[] get(Class<?> clazz, String where, List<Object> statements) {
 
         String sql = TableGetter.getSqlGet(clazz,where,null);
-        System.out.println(sql);
+        //System.out.println(sql);
         ResultSet rs = connector.executeGet(sql,statements);
         try {
             Object[] objects = TableGetter.getObjects(rs,clazz);

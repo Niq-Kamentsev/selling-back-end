@@ -7,7 +7,6 @@ import com.main.sellplatform.entitymanager.testobj.User;
 import com.main.sellplatform.persistence.entity.RefreshToken;
 import com.main.sellplatform.persistence.entity.enums.Role;
 import com.main.sellplatform.security.JwtTokenProvider;
-
 import com.main.sellplatform.service.RefreshTokenService;
 import com.main.sellplatform.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -17,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;

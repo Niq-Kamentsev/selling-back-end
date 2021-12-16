@@ -7,7 +7,6 @@ import com.main.sellplatform.persistence.entity.Lot;
 import com.main.sellplatform.persistence.entity.ModeratingLot;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.persistence.entity.enums.LotStatus;
-import com.main.sellplatform.persistence.entity.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

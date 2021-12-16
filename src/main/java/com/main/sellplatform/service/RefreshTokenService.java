@@ -1,7 +1,6 @@
 package com.main.sellplatform.service;
 
 import com.main.sellplatform.entitymanager.testdao.UserDao2;
-import com.main.sellplatform.exception.userexception.EmailException;
 import com.main.sellplatform.exception.userexception.TokenRefreshException;
 import com.main.sellplatform.persistence.dao.RefreshTokenDao;
 import com.main.sellplatform.persistence.dao.UserDao;
@@ -9,10 +8,7 @@ import com.main.sellplatform.persistence.entity.RefreshToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

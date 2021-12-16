@@ -1,6 +1,7 @@
 package com.main.sellplatform.entitymanager;
 
 
+import javax.validation.constraints.NotNull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class EntityManager {
         this.entityPresenter = entityPresenter;
     }
 
-    public Object getObjectById(Class<? extends GeneralObject> clazz, Long id, String where, List<Object> statements) {
+    public Object getObjectById(Class<? extends GeneralObject> clazz, @NotNull Long id, String where, List<Object> statements) {
         Object[] objects = entityPresenter.get(clazz,
                 "WHERE " + (where == null ? "" : where + " AND ") + "OBJ_" + clazz.getAnnotation(Objtype.class).value() + "ID = " + id,
                 statements);
@@ -56,7 +57,7 @@ public class EntityManager {
     }
 
     public Object[] getAllObjects(Class<? extends GeneralObject> clazz, String where, List<Object> statements) {
-        Object[] objects = entityPresenter.get(clazz, (where == null ? "" : "WHERE "+where), statements);
+        Object[] objects = entityPresenter.get(clazz, (where == null ? "" : "WHERE " + where), statements);
         if (objects == null) return null;
         for (int i = 0; i < objects.length; ++i) {
             objects[i] = clazz.cast(objects[i]);
