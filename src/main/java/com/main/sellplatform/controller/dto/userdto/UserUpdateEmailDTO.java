@@ -4,12 +4,9 @@ import javax.validation.constraints.Email;
 
 public class UserUpdateEmailDTO {
 
-    @Email
+    @Email(message = "Invalid email address")
     private String newEmail;
 
-    public UserUpdateEmailDTO(String newEmail) {
-        this.newEmail = newEmail;
-    }
 
 
 

@@ -3,6 +3,7 @@ package com.main.sellplatform.controller.rest;
 
 import com.main.sellplatform.controller.dto.AuthenticationRequestDTO;
 import com.main.sellplatform.controller.dto.TokenRefreshRequest;
+import com.main.sellplatform.exception.userexception.UserNotFoundByEmailException;
 import com.main.sellplatform.persistence.entity.RefreshToken;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.security.JwtTokenProvider;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +27,7 @@ import java.util.Map;
 
 
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("api/v1/auth")
 public class AuthenticationRestController {
@@ -33,40 +36,43 @@ public class AuthenticationRestController {
     private final UserService userService;
     private JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationRestController(AuthenticationManager authenticationManager, UserService userDao, JwtTokenProvider jwtTokenProvider, RefreshTokenService refreshTokenService) {
+    public AuthenticationRestController(AuthenticationManager authenticationManager, UserService userDao, JwtTokenProvider jwtTokenProvider, RefreshTokenService refreshTokenService, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.userService = userDao;
         this.jwtTokenProvider = jwtTokenProvider;
         this.refreshTokenService = refreshTokenService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDTO request){
-        try {
-
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()) );
             User user = userService.getUserByEmail(request.getEmail());
+            if(user == null){
+                throw new UserNotFoundByEmailException("Invalid email or password",request.getEmail());
+            }
 
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+            if(passwordEncoder.matches(request.getPassword(),user.getPassword())){
+                RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
-            String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name());
-            Map<Object,Object> response = new HashMap<>();
-            response.put("email", request.getEmail());
-            response.put("token", token);
+                String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name());
+                Map<Object,Object> response = new HashMap<>();
+                response.put("email", request.getEmail());
+                response.put("token", token);
+                response.put("firstName",user.getFirstName());
+                response.put("lastName",user.getLastName());
+                response.put("phoneNumber",user.getPhoneNumber());
 
-            response.put("refreshToken", refreshToken.getToken());
-
-            return ResponseEntity.ok(response);
-        }catch (AuthenticationException e){
-            return new ResponseEntity<>("invalid email or password", HttpStatus.BAD_REQUEST);
-        }
-
+                response.put("refreshToken", refreshToken.getToken());
+                return ResponseEntity.ok(response);
+            }
+        return new ResponseEntity<>("Invalid email or password", HttpStatus.BAD_REQUEST);
     }
 
 
 
-
+    @CrossOrigin(origins = "http://localhost:4200/profile")
     @PostMapping(value = "/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response){
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();

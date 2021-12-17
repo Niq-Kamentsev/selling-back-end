@@ -29,24 +29,26 @@ public class UserRegistrationService {
 
     public boolean registrationUser(User user){
         Assert.notNull(user, "user is empty");
-        if (UserByEmailIsEmpty(user.getEmail()))
-            throw new UserNotFoundByEmailException("user not found", user.getEmail());
-        String password = user.getPassword();
-        user.setPassword(passwordEncoder.encode(password));
-        user.setActivationCode(UUID.randomUUID().toString());
-        userDao.saveUser(user);
-        String message = String.format("Hello , %s! \n" +
-                "Welcome to our project .Please visit next link: http://localhost:8080/api/v1/registration/activation%s",user.getFirstName(), user.getActivationCode());
-        mailSender.send(user.getEmail(), "Activated code ",message );
-        return true;
+        User userByEmail = userDao.getUserByEmail(user.getEmail());
+        if(userByEmail == null){
+            String password = user.getPassword();
+            user.setPassword(passwordEncoder.encode(password));
+            user.setActivationCode(UUID.randomUUID().toString());
+            userDao.saveUser(user);
+            String message = String.format("Hello , %s! \n" +
+                    "Welcome to our project .Please visit next link: http://localhost:8080/api/v1/registration/activation%s",user.getFirstName(), user.getActivationCode());
+            mailSender.send(user.getEmail(), "Activated code ",message );
+            return true;
+        }
+        return false;
     }
 
     public boolean activeUser(String code){
         User user = userDao.getUserByActivatedCode(code);
-        if(user.getId() == null)
+        if(user == null)
             return false;
         user.setActivationCode("activated");
-        user.setActive(true);
+        //user.setActive(true);
         userDao.updateActiveUser(user);
         return true;
 

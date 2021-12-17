@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.Objects;
 
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("api/v1/registration")
 public class RegistrationUserRestController {
@@ -33,12 +33,12 @@ public class RegistrationUserRestController {
         else return new ResponseEntity<>("such user already exists ", HttpStatus.CONFLICT);
     }
 
-    @PostMapping(value = "/activation{code}")
-    public ResponseEntity<?> activateAccount(@PathVariable String code){
+    @GetMapping(value = "/activation{code}")
+    public ResponseEntity<?> activateAccount(@PathVariable("code") String code){
         if(Objects.isNull(code))
             return new ResponseEntity<>("code is empty", HttpStatus.NO_CONTENT);
         if(userRegistrationService.activeUser(code))
-            return ResponseEntity.ok("success");
+            return ResponseEntity.ok("Your account will be activated now");
         else return new ResponseEntity<>("Error", HttpStatus.CONFLICT);
     }
 

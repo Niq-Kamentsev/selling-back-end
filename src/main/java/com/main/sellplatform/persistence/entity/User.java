@@ -12,6 +12,7 @@ public class User {
     private Role role;
     private String activationCode;
     private boolean isActive;
+    private String newEmail;
 
     public String getActivationCode() {
         return activationCode;
@@ -97,5 +98,12 @@ public class User {
                 ", role=" + role +
                 ", active=" + isActive +
                 '}';
+    }
+
+    public void setNewEmail(String newEmail) {
+        this.newEmail = newEmail;
+    }
+    public String getNewEmail(){
+        return  newEmail;
     }
 }

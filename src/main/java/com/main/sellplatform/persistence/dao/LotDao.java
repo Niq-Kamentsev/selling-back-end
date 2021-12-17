@@ -26,18 +26,18 @@ public class LotDao {
     public Lot getLot(Long id) {
         Lot lot = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "select * from test_lot where id = ?"
+                "select * from lot where id = ?"
         )) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 lot = new Lot();
-                lot.setId(resultSet.getLong("id"));
-                lot.setTitle(resultSet.getString("title"));
+                lot.setId(resultSet.getLong("lot_id"));
+                lot.setTitle(resultSet.getString("lot_name"));
                 lot.setDescription(resultSet.getString("description"));
                 lot.setStatus(LotStatus.valueOf(resultSet.getString("status")));
-                lot.setOwner(userDao.getUser(resultSet.getLong("user_id")));
-                lot.setEndDate(resultSet.getTimestamp("end_date").toLocalDateTime());
+                lot.setOwner(userDao.getUser(resultSet.getLong("lot_owner")));
+                lot.setEndDate(resultSet.getTimestamp("sale_date").toLocalDateTime());
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

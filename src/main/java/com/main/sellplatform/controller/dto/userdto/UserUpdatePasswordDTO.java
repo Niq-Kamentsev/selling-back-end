@@ -12,14 +12,8 @@ public class UserUpdatePasswordDTO {
                     "A special character must occur at least once." +
                     "No whitespace allowed in the entire string.")
     private String newPassword;
-    @NotNull
+    @NotNull(message = "New password can not be empty")
     private String oldPassword;
-
-    public UserUpdatePasswordDTO( String newPassword, String oldPassword) {
-
-        this.newPassword = newPassword;
-        this.oldPassword = oldPassword;
-    }
 
 
     public String getNewPassword() {

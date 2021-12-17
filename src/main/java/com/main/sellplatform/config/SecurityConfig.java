@@ -25,7 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf().disable().cors().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
@@ -35,6 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/registration/**").permitAll()
                 .antMatchers("/api/lots").permitAll()
                 .antMatchers("/api/lots/search/**").permitAll()
+                .antMatchers("/api/update/updateEmail").permitAll()
+                .antMatchers("/api/update/updateEmail/activation{code}").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

@@ -10,27 +10,26 @@ import javax.validation.constraints.Size;
 
 public class UserDto {
 
-    @NotNull
+    @NotNull(message = "First name can not be empty")
     @Size(min = 3, max = 20, message = "First name has incorrect length")
     private String firstName;
-    @NotNull
+    @NotNull(message = "Last name can not be empty")
     @Size(min = 3, max = 20, message = "Last name has incorrect length")
     private String lastName;
-    @NotNull
-    @Email
+    @NotNull(message = "Email can not be empty")
+    @Email(message = "Invalid email address")
     private String email;
+    @Email(message = "Invalid email address")
+    private String new_email;
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
-            message = "Password is incorrect, a digit must occur at least once." +
-                    "A lower case letter must occur at least once." +
-                    "An upper case letter must occur at least once." +
-                    "A special character must occur at least once." +
-                    "No whitespace allowed in the entire string.")
+            message = "Password must be at least 8 characters long, must contain at least one digit, one lower and upper case letter, one special character and no whitespaces allowed.")
     private String password;
-    @Size(min = 10, max = 20, message = "Phone number has incorrect length")
+    @Pattern(regexp = "^\\+\\d{10,12}$", message = "Invalid phone number")
     private String phoneNumber;
 
-    public UserDto(String fistName, String lastName, String email, String password, String phoneNumber) {
-        this.firstName = fistName;
+
+    public UserDto(String firstName, String lastName, String email, String password, String phoneNumber) {
+        this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
@@ -88,4 +87,11 @@ public class UserDto {
 
     }
 
+    public String getNew_email() {
+        return new_email;
+    }
+
+    public void setNew_email(String new_email) {
+        this.new_email = new_email;
+    }
 }
