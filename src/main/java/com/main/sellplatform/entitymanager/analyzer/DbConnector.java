@@ -43,6 +43,7 @@ public class DbConnector {
             Statement stat = con.createStatement();
             rs = stat.executeQuery(sql);
             stat.closeOnCompletion();
+            rs.close();
             return rs;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -59,6 +60,7 @@ public class DbConnector {
                     st.setObject(i + 1, statements.get(i));
                 }
             rs = st.executeQuery();
+            st.closeOnCompletion();
             return rs;
         } catch (SQLException throwables) {
             throwables.printStackTrace();

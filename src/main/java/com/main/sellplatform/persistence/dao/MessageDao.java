@@ -2,14 +2,13 @@ package com.main.sellplatform.persistence.dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.main.sellplatform.entitymanager.analyzer.Queries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.main.sellplatform.entitymanager.EntityManager;
+import com.main.sellplatform.entitymanager.analyzer.Queries;
 import com.main.sellplatform.entitymanager.testobj.Message;
 import com.main.sellplatform.entitymanager.testobj.User;
 import com.main.sellplatform.persistence.entity.MessageChannel;
@@ -41,7 +40,7 @@ public class MessageDao {
         statements.add(userId);
         statements.add(userId);
         try {
-            objects = entityManager.getObjectsByIdSeq(User.class, queries.selectMessageChannel(), statements); // null
+            objects = entityManager.getObjectsByIdSeq(User.class, queries.selectMessageChannel(), statements);
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -60,7 +59,7 @@ public class MessageDao {
         statements.add(targetUser);
         statements.add(targetUser);
         statements.add(currentUserId);
-        Object[] messages = entityManager.getAllObjects(Message.class, queries.whereMessageMessages(), null); // null
+        Object[] messages = entityManager.getAllObjects(Message.class, queries.whereMessageMessages(), statements);
         List<Message> result = new ArrayList<>();
         for (Object message : messages) {
             result.add((Message) message);

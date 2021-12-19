@@ -43,6 +43,7 @@ public class EntityManager {
                 objects.add(obj);
             }
         }
+        rs.close();
         return objects.toArray();
     }
 
