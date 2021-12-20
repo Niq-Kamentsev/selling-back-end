@@ -3,6 +3,7 @@ package com.main.sellplatform.entitymanager.testobj;
 import com.main.sellplatform.entitymanager.GeneralObject;
 import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;
+import com.main.sellplatform.entitymanager.annotation.Reference;
 
 @Objtype(1)
 public class User extends GeneralObject {
@@ -26,4 +27,14 @@ public class User extends GeneralObject {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return "User{" + "id= " + super.getId() +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
+
 }

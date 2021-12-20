@@ -3,16 +3,18 @@ package com.main.sellplatform.entitymanager.testobj;
 import com.main.sellplatform.entitymanager.GeneralObject;
 import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;
+import com.main.sellplatform.entitymanager.annotation.Parent;
 import com.main.sellplatform.entitymanager.annotation.Reference;
 
 import java.util.Date;
 
 @Objtype(3)
 public class Lot extends GeneralObject {
-    @Reference(attributeId = 29)
+
+    @Reference(attributeId = 29 , fetch = Reference.FetchType.EAGER)
     User user;
     @Attribute(attrTypeId = 12)
-    String name;
+    String nameLot;
     @Attribute(attrTypeId = 14, number = true)
     Double startPrice;
     @Attribute(attrTypeId = 15, number = true)
@@ -46,14 +48,12 @@ public class Lot extends GeneralObject {
         this.user = user;
     }
 
-    @Override
-    public String getName() {
-        return name;
+    public String getNameLot() {
+        return nameLot;
     }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
+    public void setNameLot(String nameLot) {
+        this.nameLot = nameLot;
     }
 
     public Double getStartPrice() {
@@ -134,5 +134,25 @@ public class Lot extends GeneralObject {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Lot{" +
+                "id = "  + super.getId() +
+                "user=" + user +
+                ", name='" + nameLot + '\'' +
+                ", startPrice=" + startPrice +
+                ", minPrice=" + minPrice +
+                ", salePrice=" + salePrice +
+                ", status='" + status + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", creationDate=" + creationDate +
+                ", imgPath='" + imgPath + '\'' +
+                ", category='" + category + '\'' +
+                ", location='" + location + '\'' +
+                '}';
     }
 }

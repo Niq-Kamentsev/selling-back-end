@@ -1,11 +1,23 @@
 package com.main.sellplatform.entitymanager;
 
 
-import javax.validation.constraints.NotNull;
+import com.main.sellplatform.entitymanager.analyzer.TableSetter;
+import com.main.sellplatform.entitymanager.annotation.Objtype;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,10 +27,13 @@ import com.main.sellplatform.entitymanager.annotation.Objtype;
 @Component("entityManager")
 public class EntityManager {
     EntityPresenter entityPresenter;
+    TableSetter tableSetter;
 
     @Autowired
-    public EntityManager(EntityPresenter entityPresenter) {
+    public EntityManager(EntityPresenter entityPresenter, TableSetter tableSetter) {
         this.entityPresenter = entityPresenter;
+        this.tableSetter = tableSetter;
+
     }
 
     public Object getObjectById(Class<? extends GeneralObject> clazz, @NotNull Long id, String where, List<Object> statements) {
@@ -66,5 +81,16 @@ public class EntityManager {
 
         return objects;
     }
+
+    @Transactional
+    public <T extends GeneralObject> T merge(T entity) throws NoSuchFieldException, IllegalAccessException {
+
+        return tableSetter.getSqlInsertQuery(entity);
+
+
+    }
+
+
+
 
 }

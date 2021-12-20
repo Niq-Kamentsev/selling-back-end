@@ -1,60 +1,115 @@
 package com.main.sellplatform.entitymanager;
 
-
-import java.lang.reflect.InvocationTargetException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.main.sellplatform.entitymanager.analyzer.DbConnector;
 import com.main.sellplatform.entitymanager.analyzer.TableGetter;
+import com.main.sellplatform.entitymanager.analyzer.TableSetter;
+import com.main.sellplatform.entitymanager.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.*;
+import java.util.*;
+import java.util.Date;
 
 @Component
 public class EntityPresenter {
-    DbConnector connector;
+	DbConnector connector;
+	JdbcTemplate jdbcTemplate;
+	Class<?> clazz;
 
-    @Autowired
-    public EntityPresenter(DbConnector connector) {
-        this.connector = connector;
-    }
+	@Autowired
+	public EntityPresenter(DbConnector connector, JdbcTemplate jdbcTemplate) {
+		this.connector = connector;
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
-    public Object[] get(Class<?> clazz, String where, List<Object> statements) {
+	public Object[] get(Class<?> clazz, String where, List<Object> statements) {
 
-        String sql = TableGetter.getSqlGet(clazz,where,null);
-        //System.out.println(sql);
-        ResultSet rs = connector.executeGet(sql,statements);
-        try {
-            Object[] objects = TableGetter.getObjects(rs,clazz);
-            rs.close();
-            return objects;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
+		String sql = TableGetter.getSqlGet(clazz, where, null);
 
-        return null;
-    }
+		Object[] objects = executeGet4(clazz, sql, statements);
+		return objects;
 
-    public ResultSet executeQuery(String query, List<Object> statements){
-        return connector.executeGet(query, statements);
-    }
+	}
 
-    public void insert(Object o) {
-        /*connector.connect();
-        String sql = TableAdder.getSqlInsert(o);
-        System.out.println(sql);
-        //connector.executeQuery(sql);
-        connector.disconnect();
-        */
-    }
+	public ResultSet executeQuery(String query, List<Object> statements) {
+		return connector.executeGet(query, statements);
+	}
+
+	public void insert(Object o) {
+		/*
+		 * connector.connect(); String sql = TableAdder.getSqlInsert(o);
+		 * System.out.println(sql); //connector.executeQuery(sql);
+		 * connector.disconnect();
+		 */
+	}
+
+	public ResultSet executeGet2(String sql) {
+		List<ResultSet> query = jdbcTemplate.query(sql, new RowMapper<ResultSet>() {
+			@Override
+			public ResultSet mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return rs;
+			}
+		});
+		return query.get(0);
+
+	}
+
+	public Object[] executeGet3(Class<?> clazz, String sql) {
+		return jdbcTemplate.query(sql, new ResultSetExtractor<Object[]>() {
+			@Override
+			public Object[] extractData(ResultSet rs) throws SQLException, DataAccessException {
+				try {
+					Object[] objects = TableGetter.getObjects(rs, clazz);
+					return objects;
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				}
+				return null;
+			}
+		});
+	};
+
+	public Object[] executeGet4(Class<?> clazz, String sql, List<Object> statements) {
+		return jdbcTemplate.query(con -> {
+			PreparedStatement st = con.prepareStatement(sql);
+			if (statements != null)
+				for (int i = 0; i < statements.size(); ++i) {
+					st.setObject(i + 1, statements.get(i));
+				}
+			return st;
+		}, rs -> {
+			try {
+				Object[] objects = TableGetter.getObjects(rs, clazz);
+				return objects;
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
+	}
+
 }
