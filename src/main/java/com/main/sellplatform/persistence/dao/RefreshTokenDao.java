@@ -1,5 +1,6 @@
 package com.main.sellplatform.persistence.dao;
 
+import com.main.sellplatform.entitymanager.EntityManager;
 import com.main.sellplatform.persistence.entity.RefreshToken;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.persistence.entity.enums.Role;
@@ -12,63 +13,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Collections;
 
 @Component
 public class RefreshTokenDao {
-    private final Connection connection;
-    private final UserDao userDao;
-
+    private final EntityManager entityManager;
     @Autowired
-    public RefreshTokenDao(Connection connection, UserDao userDao) {
-        this.connection = connection;
-        this.userDao = userDao;
+    public RefreshTokenDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     public RefreshToken getTokenById(Long id){
-        final RefreshToken refreshToken = new RefreshToken();
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from refresh_token where id = (?)")) {
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                refreshToken.setId(resultSet.getLong("id"));
-                //refreshToken.setUser(userDao.getUser(resultSet.getLong("user_id")));
-                refreshToken.setToken(resultSet.getNString("token"));
-                refreshToken.setExpiryDate(resultSet.getObject("expiry_date", LocalDate.class));
-            }
-            resultSet.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return refreshToken;
+        return entityManager.getObjectById(RefreshToken.class, id, null, null);
     }
 
 
     public RefreshToken getTokenByToken(String token){
-        final RefreshToken refreshToken = new RefreshToken();
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from refresh_token where token = (?)")) {
-            preparedStatement.setNString(1, token);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                refreshToken.setId(resultSet.getLong("id"));
-                //refreshToken.setUser(userDao.getUser(resultSet.getLong("user_id")));
-                refreshToken.setToken(resultSet.getNString("token"));
-                refreshToken.setExpiryDate(resultSet.getObject("expiry_date", LocalDate.class));
-            }
-            resultSet.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return refreshToken;
+        return entityManager.getObjectByWhere(RefreshToken.class, "(OBJ_12ATTR_62 = ?)", Collections.singletonList(token));
     }
 
-    public void saveToken(RefreshToken token){
-        try(PreparedStatement preparedStatement = connection.prepareStatement("insert into refresh_token(user_id, token,expiry_date)  values (?,?,?)")) {
-            preparedStatement.setLong(1, token.getUser().getId());
-            preparedStatement.setNString(2,token.getToken());
-            preparedStatement.setObject(3, token.getExpiryDate());
-            preparedStatement.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+    public RefreshToken saveToken(RefreshToken token){
+        return entityManager.merge(token);
     }
 }

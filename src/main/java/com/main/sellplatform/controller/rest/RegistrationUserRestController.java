@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class RegistrationUserRestController {
     public RegistrationUserRestController(UserRegistrationService userRegistrationService) {
         this.userRegistrationService = userRegistrationService;
     }
-
+    @Transactional
     @PostMapping(value = "/registrationUser")
     public ResponseEntity<?> registrationUser(@Valid @RequestBody UserDto user){
         if (userRegistrationService.registrationUser(user.getUser())){

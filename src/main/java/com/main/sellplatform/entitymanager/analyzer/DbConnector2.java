@@ -1,5 +1,6 @@
 package com.main.sellplatform.entitymanager.analyzer;
 
+import com.main.sellplatform.persistence.entity.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,23 +19,21 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Component
 public class DbConnector2 {
 
-
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertInto;
-
 
     @Autowired
     public DbConnector2(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.insertInto = new SimpleJdbcInsert(jdbcTemplate);
     }
 
     @Transactional
@@ -90,15 +89,26 @@ public class DbConnector2 {
     @Transactional
     public void updateObject(String sql , List<Object> values){
         System.out.println(sql);
-        Object[] objects = values.toArray();
+        Object[] objects = values.stream().map(value -> {
+            if (value instanceof Role) {
+                return ((Role) value).name();
+            }
+            return value;
+        }).toArray();
         jdbcTemplate.update(sql, objects);
 
     }
 
     @Transactional
     public void saveObjectsNotId(String sql, List<Object> values){
-        System.out.println(sql);
-        Object[] objects = values.toArray();
+        System.out.println(sql + "\n");
+        Object[] objects = values.stream().map(value -> {
+            if (value instanceof Role) {
+                return ((Role) value).name();
+            }
+            return value;
+        }).toArray();
+        Arrays.stream(objects).forEach(System.out::println);
         jdbcTemplate.update(sql, objects);
     }
     @Transactional

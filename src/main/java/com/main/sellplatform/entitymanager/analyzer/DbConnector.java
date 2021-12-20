@@ -8,26 +8,14 @@ import java.util.List;
 
 @Component
 public class DbConnector {
-    /*private final String db_name = "XE";
-    private final String url = "jdbc:oracle:thin:@localhost:1521/" + db_name;
-    private Connection con;
-    private final String user = "system", password = "p1234";*/
 
     private final Connection con;
-
     @Autowired
     public DbConnector(Connection con) {
         this.con = con;
     }
 
 
-    /*public void connect() {
-        try {
-            con = DriverManager.getConnection(url, user, password);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }*/
 
     public void disconnect() {
         try {

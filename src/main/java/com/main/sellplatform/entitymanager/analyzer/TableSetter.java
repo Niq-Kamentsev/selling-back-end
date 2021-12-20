@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 import java.sql.Types;
 import java.util.*;
 
-@Component
+@Component()
 public class TableSetter {
     private final DbConnector2 dbConnector;
     private final EntityPresenter entityPresenter;
@@ -32,14 +32,12 @@ public class TableSetter {
 
 
 
-    @Transactional
     public <T extends GeneralObject> T  getSqlInsertQuery(T clazz ) throws IllegalAccessException, NoSuchFieldException {
-        if (setObjTypeId.contains(clazz.getClass().getAnnotation(Objtype.class).value())){
-            return null;
-        }
+//        if (setObjTypeId.contains(clazz.getClass().getAnnotation(Objtype.class).value())){
+//            return null;
+//        }
         setObjTypeId.add(clazz.getClass().getAnnotation(Objtype.class).value());
         Object id = isUpdate(clazz);
-        
         List<Field> extensions = new ArrayList<>();
         List<Field> associations = new ArrayList<>();
         List<Field> attributes = new ArrayList<>();
@@ -84,7 +82,6 @@ public class TableSetter {
                             insertIntoObjects.delete(22,33);
                             break;
                         }
-                        Long idObjUpdate = getIdObjUpdate(field, o);
                         T sqlInsertQuery = getSqlInsertQuery((T) o);
                         insertIntoObjects.append("?,");
                         values.add(sqlInsertQuery.getId());
@@ -221,9 +218,9 @@ public class TableSetter {
 
 
     private <T extends GeneralObject> void getInsertIntoObjReference(Object object,List<Field> associations, Long objectId) throws IllegalAccessException, NoSuchFieldException {
-        List<Object> values = new ArrayList<>();
-        StringBuilder insertIntoObjReference = new StringBuilder();
         for (Field association:associations){
+            List<Object> values = new ArrayList<>();
+            StringBuilder insertIntoObjReference = new StringBuilder();
 
             association.setAccessible(true);
             T o = (T) association.get(object);
@@ -399,8 +396,8 @@ public class TableSetter {
 
 
 
-    public Object getObjectById(Class<? extends GeneralObject> clazz, Long id, String where) {
-        Object[] objects = entityPresenter.get(clazz, "WHERE "+(where==null?"":where+" AND ")+"OBJ_" + clazz.getAnnotation(Objtype.class).value() + "ID = " + id);
+    private Object getObjectById(Class<? extends GeneralObject> clazz, Long id, String where) {
+        Object[] objects = entityPresenter.get(clazz, "WHERE "+(where==null?"":where+" AND ")+"OBJ_" + clazz.getAnnotation(Objtype.class).value() + "ID = " + id,null);
         if (objects == null || objects.length == 0) return null;
         Object object = objects[0];
         if (object == null) return null;

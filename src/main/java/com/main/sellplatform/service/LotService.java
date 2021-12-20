@@ -1,7 +1,6 @@
 package com.main.sellplatform.service;
 
 import com.main.sellplatform.entitymanager.testdao.LotDao2;
-import com.main.sellplatform.entitymanager.testdao.UserDao2;
 import com.main.sellplatform.persistence.dao.LotDao;
 import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.Lot;
@@ -17,14 +16,13 @@ import java.util.Objects;
 @Service
 public class LotService {
     private final UserDao userDao;
-    private final UserDao2 userDao2;
+
     private final LotDao lotDao;
     private final LotDao2 lotDao2;
 
     @Autowired
-    public LotService(UserDao userDao, UserDao2 userDao2, LotDao lotDao, LotDao2 lotDao2) {
+    public LotService(UserDao userDao, LotDao lotDao, LotDao2 lotDao2) {
         this.userDao = userDao;
-        this.userDao2 = userDao2;
         this.lotDao = lotDao;
         this.lotDao2 = lotDao2;
     }
@@ -53,13 +51,13 @@ public class LotService {
     }
 
     public List<com.main.sellplatform.entitymanager.testobj.Lot> getUserLots(String username, String sortCol) {
-        com.main.sellplatform.entitymanager.testobj.User user = userDao2.getUserByEmail(username);
+        User user = userDao.getUserByEmail(username);
         if (user == null) return null;
         return Arrays.asList(lotDao2.getUsersLots(user.getId(), getLotSortCol(sortCol)));
     }
 
     public List<com.main.sellplatform.entitymanager.testobj.Lot> getMyLots(String username, String sortCol) {
-        com.main.sellplatform.entitymanager.testobj.User user = userDao2.getUserByEmail(username);
+        User user = userDao.getUserByEmail(username);
         if (user == null) return null;
         return Arrays.asList(lotDao2.getUsersLots(user.getId(), getLotSortCol(sortCol)));
     }

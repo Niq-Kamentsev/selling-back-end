@@ -43,5 +43,15 @@ public class Message extends GeneralObject {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-    
+
+	@Override
+	public String toString() {
+		return "Message{" +
+				"sender=" + sender +
+				", receiver=" + receiver +
+				", id=" + id +
+				", date=" + date +
+				", msg='" + msg + '\'' +
+				'}';
+	}
 }

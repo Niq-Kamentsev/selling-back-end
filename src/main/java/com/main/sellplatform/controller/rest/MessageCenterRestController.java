@@ -1,5 +1,6 @@
 package com.main.sellplatform.controller.rest;
 
+import com.main.sellplatform.persistence.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.main.sellplatform.controller.dto.messagedto.MessageDTO;
-import com.main.sellplatform.entitymanager.testobj.User;
+
 import com.main.sellplatform.service.EmitterService;
 import com.main.sellplatform.service.MessageService;
 import com.main.sellplatform.service.UserService;

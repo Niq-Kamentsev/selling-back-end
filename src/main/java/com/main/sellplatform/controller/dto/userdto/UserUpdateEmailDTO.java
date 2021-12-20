@@ -7,9 +7,6 @@ public class UserUpdateEmailDTO {
     @Email
     private String newEmail;
 
-    public UserUpdateEmailDTO(String newEmail) {
-        this.newEmail = newEmail;
-    }
 
 
 

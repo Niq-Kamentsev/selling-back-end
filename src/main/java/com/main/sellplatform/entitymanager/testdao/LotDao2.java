@@ -57,4 +57,5 @@ public class LotDao2 {
         }
         return null;
     }
+
 }
