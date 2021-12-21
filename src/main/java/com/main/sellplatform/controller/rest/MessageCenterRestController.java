@@ -1,5 +1,7 @@
 package com.main.sellplatform.controller.rest;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +29,7 @@ public class MessageCenterRestController {
 	private final MessageService messageService;
 	private final UserService userService;
 	private final EmitterService emitterService;
+	private static final long EMITTER_TIMEOUT = TimeUnit.MINUTES.toMillis(10);
 
 	@Autowired
 	public MessageCenterRestController(final MessageService messageService, final UserService userService,
@@ -49,12 +52,12 @@ public class MessageCenterRestController {
 		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 		return ResponseEntity.ok(messageService.getMessages(userByEmail.getId(), targetUser));
 	}
-	
+
 	@PreAuthorize("hasAnyAuthority('user:read')")
 	@GetMapping(value = "/subscription")
 	public SseEmitter subscribe() {
 		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-		SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+		SseEmitter emitter = new SseEmitter(EMITTER_TIMEOUT);
 		emitterService.addEmitter(emitter, userByEmail.getId());
 		System.out.println("user with id:" + userByEmail.getId() + " subscribed");
 		return emitter;
@@ -62,8 +65,10 @@ public class MessageCenterRestController {
 
 	@PreAuthorize("hasAnyAuthority('user:write')")
 	@PostMapping(value = "/sendMessage")
-	public ResponseEntity<?> sendMessage(@RequestParam Long targetUser, @RequestBody MessageDTO body) {
-		emitterService.pushNotification(targetUser, "test", "Test");
+	public ResponseEntity<?> sendMessage(@RequestBody MessageDTO body) {
+		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+		messageService.saveMessage(body, userByEmail.getId());
+		emitterService.pushNotification(body.getReceiver(), userByEmail.getId());
 		return ResponseEntity.ok().build();
 	}
 }

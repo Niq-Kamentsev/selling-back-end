@@ -14,16 +14,18 @@ public class EmitterService {
 	private Map<Long, SseEmitter> emitters = new HashMap<>();
 
 	public void addEmitter(SseEmitter emitter, Long userId) {
-		emitter.onCompletion(() -> emitters.remove(userId));
-		emitter.onTimeout(() -> emitters.remove(userId));
+		emitter.onTimeout(() -> {
+			emitters.remove(userId);
+			System.out.println("onTimeout: " + userId);
+		});
 		emitters.put(userId, emitter);
 	}
 
-	public void pushNotification(Long userId, String name, String message) {
-		SseEmitter emitter = emitters.get(userId);
+	public void pushNotification(Long targetUserId, Long senderUserId) {
+		SseEmitter emitter = emitters.get(targetUserId);
 		if (emitter != null) {
 			try {
-				emitter.send(userId, MediaType.APPLICATION_JSON);
+				emitter.send(senderUserId, MediaType.APPLICATION_JSON);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

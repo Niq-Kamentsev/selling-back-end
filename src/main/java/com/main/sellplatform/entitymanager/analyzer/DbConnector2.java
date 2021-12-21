@@ -37,7 +37,6 @@ public class DbConnector2 {
         this.insertInto = new SimpleJdbcInsert(jdbcTemplate);
     }
 
-    @Transactional
     public boolean getId(Long id){
         String sql = "select count (*) from OBJECTS where OBJECT_ID =  ?";
         Long object = jdbcTemplate.queryForObject(sql, Long.class, id);
@@ -45,7 +44,6 @@ public class DbConnector2 {
     }
 
 
-    @Transactional
     public Long saveObjects(String sql, List<Object> values, String columnId){
 
         System.out.println(sql);
@@ -87,7 +85,6 @@ public class DbConnector2 {
 
 
 
-    @Transactional
     public void updateObject(String sql , List<Object> values){
         System.out.println(sql);
         Object[] objects = values.toArray();
@@ -95,13 +92,13 @@ public class DbConnector2 {
 
     }
 
-    @Transactional
     public void saveObjectsNotId(String sql, List<Object> values){
-        System.out.println(sql);
+        System.out.println(sql + "\n");
+        values.forEach(System.out::println);
         Object[] objects = values.toArray();
         jdbcTemplate.update(sql, objects);
     }
-    @Transactional
+    
     public void deleteObjectFromObjReference(String sql, Object id){
         System.out.println(sql);
         jdbcTemplate.update(sql, id);

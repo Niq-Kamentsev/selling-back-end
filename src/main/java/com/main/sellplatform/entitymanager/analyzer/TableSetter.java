@@ -32,11 +32,10 @@ public class TableSetter {
 
 
 
-    @Transactional
     public <T extends GeneralObject> T  getSqlInsertQuery(T clazz ) throws IllegalAccessException, NoSuchFieldException {
-        if (setObjTypeId.contains(clazz.getClass().getAnnotation(Objtype.class).value())){
-            return null;
-        }
+//        if (setObjTypeId.contains(clazz.getClass().getAnnotation(Objtype.class).value())){
+//            return null;
+//        }
         setObjTypeId.add(clazz.getClass().getAnnotation(Objtype.class).value());
         Object id = isUpdate(clazz);
         
@@ -221,10 +220,9 @@ public class TableSetter {
 
 
     private <T extends GeneralObject> void getInsertIntoObjReference(Object object,List<Field> associations, Long objectId) throws IllegalAccessException, NoSuchFieldException {
-        List<Object> values = new ArrayList<>();
-        StringBuilder insertIntoObjReference = new StringBuilder();
         for (Field association:associations){
-
+        	List<Object> values = new ArrayList<>();
+            StringBuilder insertIntoObjReference = new StringBuilder();
             association.setAccessible(true);
             T o = (T) association.get(object);
             if(Objects.isNull(o)){

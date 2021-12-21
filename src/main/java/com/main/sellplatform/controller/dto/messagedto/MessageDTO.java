@@ -1,18 +1,14 @@
 package com.main.sellplatform.controller.dto.messagedto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class MessageDTO {
 
-	private Long sender;
+	@NotNull
 	private Long receiver;
+	@NotEmpty
 	private String message;
-
-	public Long getSender() {
-		return sender;
-	}
-
-	public void setSender(Long sender) {
-		this.sender = sender;
-	}
 
 	public Long getReceiver() {
 		return receiver;

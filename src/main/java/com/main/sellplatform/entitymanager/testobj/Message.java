@@ -14,7 +14,7 @@ public class Message extends GeneralObject {
     @Reference(attributeId = 29)
     User receiver;
     @Attribute(attrTypeId = 30)
-    Integer id;
+    Long id;
     @Attribute(attrTypeId = 31, type = Attribute.ValueType.DATE_VALUE)
     Date date;
     @Attribute(attrTypeId = 32)
