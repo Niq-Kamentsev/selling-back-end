@@ -29,7 +29,7 @@ public class UserRestController {
 
     @PreAuthorize("hasAnyAuthority('admin:read')")
     @GetMapping(value = "/getUsers", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public List<User> getUsersJdbc() {
+    public List<com.main.sellplatform.entitymanager.testobj.User> getUsersJdbc() {
         return userService.getUsers();
     }
 

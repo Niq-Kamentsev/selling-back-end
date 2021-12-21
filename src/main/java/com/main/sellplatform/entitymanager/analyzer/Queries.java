@@ -55,4 +55,24 @@ public class Queries {
         return get("message.where.messages");
     }
 
+    public String deleteReferences(){
+        return get("common.deleteReference");
+    }
+
+    public String deleteAttributes(){
+        return get("common.deleteAttribute");
+    }
+
+    public String deleteObjects(){
+        return get("common.deleteObject");
+    }
+
+    public String deleteChilds(){
+        return get("common.deleteParent");
+    }
+
+    public String getChilds(){
+        return get("common.getChilds");
+    }
+
 }

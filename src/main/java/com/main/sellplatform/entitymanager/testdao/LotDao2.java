@@ -3,6 +3,7 @@ package com.main.sellplatform.entitymanager.testdao;
 import com.main.sellplatform.entitymanager.EntityManager;
 import com.main.sellplatform.entitymanager.analyzer.Queries;
 import com.main.sellplatform.entitymanager.testobj.Lot;
+import com.main.sellplatform.entitymanager.testobj.Message;
 import com.main.sellplatform.entitymanager.testobj.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,13 +24,18 @@ public class LotDao2 {
     }
 
     public Lot[] getAllLots(String where, List<Object> statements) {
-        System.out.println(queries.whereMessageMessages());
+        //System.out.println(queries.whereMessageMessages());
         Object[] objects = entityManager.getAllObjects(Lot.class, where, statements);
         if (objects == null) return null;
         Lot[] lots = new Lot[objects.length];
         for (int i = 0; i < objects.length; ++i) {
             lots[i] = (Lot) objects[i];
         }
+
+        //Message message = new Message();
+        //message.setId(2L);
+        //entityManager.delete(message);
+
         return lots;
     }
 

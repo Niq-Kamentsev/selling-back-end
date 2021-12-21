@@ -20,8 +20,8 @@ public class UserService {
         this.userDao2 = userDao2;
     }
 
-    public List<User> getUsers() {
-        return userDao.getUsers();
+    public List<com.main.sellplatform.entitymanager.testobj.User> getUsers() {
+        return userDao2.getUsers();
     }
 
     public User getUser(Long id) {

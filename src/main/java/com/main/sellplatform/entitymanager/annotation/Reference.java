@@ -11,4 +11,11 @@ import java.lang.annotation.Target;
 public @interface Reference {
     @NotNull
     int attributeId();
+    FetchType fetch() default FetchType.LAZY;
+
+
+    public enum FetchType{
+        LAZY,
+        EAGER
+    }
 }

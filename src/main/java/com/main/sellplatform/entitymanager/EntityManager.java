@@ -66,4 +66,9 @@ public class EntityManager {
         return objects;
     }
 
+    public void delete(@NotNull Object o){
+        if(!(o instanceof GeneralObject))throw new IllegalArgumentException("Invalid object type");
+        entityPresenter.delete((GeneralObject) o);
+    }
+
 }
