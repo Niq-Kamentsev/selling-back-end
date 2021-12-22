@@ -28,7 +28,7 @@ public class LotService {
     }
 
     private String getLotSortCol(String col) {
-        if(col==null)return null;
+        if (col == null) return null;
         switch (col) {
             case "Id":
                 return "OBJ_3ATTR_10";
@@ -98,17 +98,21 @@ public class LotService {
 
     public List<com.main.sellplatform.entitymanager.testobj.Lot> getBuyableLots() {
         List<com.main.sellplatform.entitymanager.testobj.Lot> res = Arrays.asList(
-                lotDao2.getAllLots("OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING'",null)
+                lotDao2.getAllLots("OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING'", null)
         );
-        for(com.main.sellplatform.entitymanager.testobj.Lot lot:res){
+        for (com.main.sellplatform.entitymanager.testobj.Lot lot : res) {
             lot.setUser(null);
         }
         return res;
     }
 
+    public com.main.sellplatform.entitymanager.testobj.Lot getLot(Long id) {
+        return lotDao2.getLotById(id, null);
+    }
+
     public com.main.sellplatform.entitymanager.testobj.Lot getBuyableLot(Long id) {
         com.main.sellplatform.entitymanager.testobj.Lot res = lotDao2.getLotById(id, "(OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING')");
-        if(res!=null) res.setUser(null);
+        if (res != null) res.setUser(null);
         return res;
     }
 }

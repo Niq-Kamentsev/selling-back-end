@@ -13,6 +13,8 @@ public class Message extends GeneralObject {
     User sender;
     @Reference(attributeId = 29)
     User receiver;
+    @Reference(attributeId = 66)
+    Lot lot;
     @Attribute(attrTypeId = 30)
     Integer id;
     @Attribute(attrTypeId = 31, type = Attribute.ValueType.DATE_VALUE)

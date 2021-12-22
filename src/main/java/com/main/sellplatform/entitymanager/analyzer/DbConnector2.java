@@ -29,11 +29,19 @@ import java.util.stream.Collectors;
 @Component
 public class DbConnector2 {
 
+
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertInto;
+    private final Queries queries;
+    private final DbConnector dbConnector;
+
 
     @Autowired
-    public DbConnector2(DataSource dataSource) {
+    public DbConnector2(DataSource dataSource, Queries queries, DbConnector dbConnector) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.insertInto = new SimpleJdbcInsert(jdbcTemplate);
+        this.queries = queries;
+        this.dbConnector = dbConnector;
     }
 
     @Transactional
@@ -90,8 +98,8 @@ public class DbConnector2 {
     public void updateObject(String sql , List<Object> values){
         System.out.println(sql);
         Object[] objects = values.stream().map(value -> {
-            if (value instanceof Role) {
-                return ((Role) value).name();
+            if (value instanceof Enum) {
+                return ((Enum) value).name();
             }
             return value;
         }).toArray();
@@ -103,20 +111,40 @@ public class DbConnector2 {
     public void saveObjectsNotId(String sql, List<Object> values){
         System.out.println(sql + "\n");
         Object[] objects = values.stream().map(value -> {
-            if (value instanceof Role) {
-                return ((Role) value).name();
+            if (value instanceof Enum) {
+                return ((Enum) value).name();
             }
             return value;
         }).toArray();
         Arrays.stream(objects).forEach(System.out::println);
         jdbcTemplate.update(sql, objects);
     }
+
     @Transactional
     public void deleteObjectFromObjReference(String sql, Object id){
         System.out.println(sql);
         jdbcTemplate.update(sql, id);
     }
 
+    @Transactional
+    public void deleteObject(Long id) {
+        System.out.println("id = " + id);
+        jdbcTemplate.update(queries.deleteReferences(), id, id);
+        jdbcTemplate.update(queries.deleteAttributes(), id);
+        deleteParent(id);
+        jdbcTemplate.update(queries.deleteChilds(), id);
+        int res = jdbcTemplate.update(queries.deleteObjects(), id);
+        if (res < 1) {
+            throw new IllegalArgumentException("No such object in the DB");
+        }
+    }
 
+    @Transactional
+    private void deleteParent(Long parentId) {
+        List<Long> ids = dbConnector.getParentsIds(parentId);
+        for (Long id : ids) {
+            deleteObject(id);
+        }
+    }
 
 }
