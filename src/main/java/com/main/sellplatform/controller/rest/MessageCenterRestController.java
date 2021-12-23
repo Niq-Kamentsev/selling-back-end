@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.main.sellplatform.controller.dto.messagedto.MessageDTO;
-import com.main.sellplatform.entitymanager.testobj.User;
+import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.service.EmitterService;
 import com.main.sellplatform.service.MessageService;
 import com.main.sellplatform.service.UserService;

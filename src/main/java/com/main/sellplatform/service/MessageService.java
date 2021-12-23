@@ -8,18 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.main.sellplatform.controller.dto.messagedto.MessageDTO;
-import com.main.sellplatform.entitymanager.testdao.UserDao2;
 import com.main.sellplatform.persistence.dao.MessageDao;
+import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.Message;
 import com.main.sellplatform.persistence.entity.MessageChannel;
 
 @Service
 public class MessageService {
 	private final MessageDao messageDao;
-	private final UserDao2 userDao;
+	private final UserDao userDao;
 
 	@Autowired
-	public MessageService(MessageDao messageDao, UserDao2 userDao) {
+	public MessageService(MessageDao messageDao, UserDao userDao) {
 		this.messageDao = messageDao;
 		this.userDao = userDao;
 	}

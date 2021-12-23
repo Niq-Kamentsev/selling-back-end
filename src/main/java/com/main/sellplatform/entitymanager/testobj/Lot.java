@@ -21,7 +21,7 @@ public class Lot extends GeneralObject {
     Double minPrice;
     @Attribute(attrTypeId = 16, number = true)
     Double salePrice;
-    @Attribute(attrTypeId = 17)
+    @Attribute(attrTypeId = 17, type = Attribute.ValueType.LIST)
     String status;
     @Attribute(attrTypeId = 21, type = Attribute.ValueType.DATE_VALUE)
     Date startDate;
@@ -31,7 +31,7 @@ public class Lot extends GeneralObject {
     Date creationDate;
     @Attribute(attrTypeId = 25)
     String imgPath;
-    @Attribute(attrTypeId = 18)
+    @Attribute(attrTypeId = 18,type = Attribute.ValueType.LIST)
     String category;
     @Attribute(attrTypeId = 20)
     String location;

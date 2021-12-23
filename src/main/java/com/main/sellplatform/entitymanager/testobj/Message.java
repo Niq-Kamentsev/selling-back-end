@@ -4,6 +4,7 @@ import com.main.sellplatform.entitymanager.GeneralObject;
 import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;
 import com.main.sellplatform.entitymanager.annotation.Reference;
+import com.main.sellplatform.persistence.entity.User;
 
 import java.util.Date;
 
@@ -13,6 +14,8 @@ public class Message extends GeneralObject {
     User sender;
     @Reference(attributeId = 29)
     User receiver;
+    @Reference(attributeId = 66)
+    Lot lot;
     @Attribute(attrTypeId = 30)
     Long id;
     @Attribute(attrTypeId = 31, type = Attribute.ValueType.DATE_VALUE)
@@ -43,5 +46,15 @@ public class Message extends GeneralObject {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-    
+
+	@Override
+	public String toString() {
+		return "Message{" +
+				"sender=" + sender +
+				", receiver=" + receiver +
+				", id=" + id +
+				", date=" + date +
+				", msg='" + msg + '\'' +
+				'}';
+	}
 }

@@ -46,11 +46,11 @@ public class UserRestController {
         return userService.getUser(id);
     }
 
-    @PreAuthorize("hasAnyAuthority('admin:delete')")
-    @DeleteMapping(value = "/delete{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-    }
+//    @PreAuthorize("hasAnyAuthority('admin:delete')")
+//    @DeleteMapping(value = "/delete{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+//    public void deleteUser(@PathVariable Long id) {
+//        userService.deleteUser(id);
+//    }
 
 
     @GetMapping("/getWB")

@@ -1,16 +1,27 @@
 package com.main.sellplatform.persistence.entity;
 
+import com.main.sellplatform.entitymanager.GeneralObject;
+import com.main.sellplatform.entitymanager.annotation.Attribute;
+import com.main.sellplatform.entitymanager.annotation.Objtype;
 import com.main.sellplatform.persistence.entity.enums.Role;
+@Objtype(1)
+public class User extends GeneralObject {
 
-public class User {
-    private Long id;
+    @Attribute(attrTypeId = 1)
     private String email;
+    @Attribute(attrTypeId = 2)
     private String password;
+    @Attribute(attrTypeId = 4)
     private String firstName;
+    @Attribute(attrTypeId = 5)
     private String lastName;
+    @Attribute(attrTypeId = 3)
     private String phoneNumber;
+    @Attribute(attrTypeId = 7)
     private Role role;
+    @Attribute(attrTypeId = 65)
     private String activationCode;
+    @Attribute(attrTypeId = 64)
     private boolean isActive;
 
     public String getActivationCode() {
@@ -88,14 +99,14 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
+                "email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", role=" + role +
-                ", active=" + isActive +
+                ", activationCode='" + activationCode + '\'' +
+                ", isActive=" + isActive +
                 '}';
     }
 }

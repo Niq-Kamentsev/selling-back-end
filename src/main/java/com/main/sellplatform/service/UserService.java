@@ -1,6 +1,5 @@
 package com.main.sellplatform.service;
 
-import com.main.sellplatform.entitymanager.testdao.UserDao2;
 import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +11,11 @@ import java.util.Objects;
 @Service
 public class UserService {
     private final UserDao userDao;
-    private final UserDao2 userDao2;
 
     @Autowired
-    public UserService(UserDao userDao, UserDao2 userDao2) {
+    public UserService( UserDao userDao) {
+
         this.userDao = userDao;
-        this.userDao2 = userDao2;
     }
 
     public List<User> getUsers() {
@@ -34,11 +32,11 @@ public class UserService {
         userDao.saveUser(user);
     }
 
-    public void deleteUser(Long id) {
-        userDao.deleteUser(id);
-    }
+//    public void deleteUser(Long id) {
+//        userDao2.deleteUser(id);
+//    }
 
-    public com.main.sellplatform.entitymanager.testobj.User getUserByEmail(String email) {
-        return userDao2.getUserByEmail(email);
+    public User getUserByEmail(String email) {
+        return userDao.getUserByEmail(email);
     }
 }

@@ -3,8 +3,9 @@ package com.main.sellplatform.controller.rest;
 
 import com.main.sellplatform.controller.dto.AuthenticationRequestDTO;
 import com.main.sellplatform.controller.dto.TokenRefreshRequest;
-import com.main.sellplatform.entitymanager.testobj.User;
+
 import com.main.sellplatform.persistence.entity.RefreshToken;
+import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.persistence.entity.enums.Role;
 import com.main.sellplatform.security.JwtTokenProvider;
 import com.main.sellplatform.service.RefreshTokenService;
@@ -32,7 +33,7 @@ public class AuthenticationRestController {
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
     public AuthenticationRestController(AuthenticationManager authenticationManager, UserService userDao, JwtTokenProvider jwtTokenProvider, RefreshTokenService refreshTokenService) {
@@ -47,10 +48,8 @@ public class AuthenticationRestController {
         try {
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()) );
-            com.main.sellplatform.entitymanager.testobj.User user = userService.getUserByEmail(request.getEmail());
-
+            User user = userService.getUserByEmail(request.getEmail());
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
-
             //String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name());
             String token = jwtTokenProvider.createToken(request.getEmail(), Role.USER.name());
             Map<Object,Object> response = new HashMap<>();

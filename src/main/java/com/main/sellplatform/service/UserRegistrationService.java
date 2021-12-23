@@ -3,6 +3,7 @@ package com.main.sellplatform.service;
 import com.main.sellplatform.exception.userexception.UserNotFoundByEmailException;
 import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.User;
+import com.main.sellplatform.persistence.entity.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class UserRegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final MailSender mailSender;
 
+
     @Autowired
     public UserRegistrationService(UserDao userDao, PasswordEncoder passwordEncoder, MailSender mailSender) {
         this.userDao = userDao;
@@ -33,10 +35,13 @@ public class UserRegistrationService {
         String password = user.getPassword();
         user.setPassword(passwordEncoder.encode(password));
         user.setActivationCode(UUID.randomUUID().toString());
+        user.setRole(Role.ADMIN);
+        user.setActive(false);
         userDao.saveUser(user);
         String message = String.format("Hello , %s! \n" +
                 "Welcome to our project .Please visit next link: http://localhost:8080/api/v1/registration/activation%s",user.getFirstName(), user.getActivationCode());
         mailSender.send(user.getEmail(), "Activated code ",message );
+
         return true;
     }
 

@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 import java.sql.Types;
 import java.util.*;
 
-@Component
+@Component()
 public class TableSetter {
     private final DbConnector2 dbConnector;
     private final EntityPresenter entityPresenter;
@@ -32,6 +32,7 @@ public class TableSetter {
 
 
 
+    @Transactional
     public <T extends GeneralObject> T  getSqlInsertQuery(T clazz ) throws IllegalAccessException, NoSuchFieldException {
 //        if (setObjTypeId.contains(clazz.getClass().getAnnotation(Objtype.class).value())){
 //            return null;
@@ -220,9 +221,10 @@ public class TableSetter {
 
 
     private <T extends GeneralObject> void getInsertIntoObjReference(Object object,List<Field> associations, Long objectId) throws IllegalAccessException, NoSuchFieldException {
+        List<Object> values = new ArrayList<>();
+        StringBuilder insertIntoObjReference = new StringBuilder();
         for (Field association:associations){
-        	List<Object> values = new ArrayList<>();
-            StringBuilder insertIntoObjReference = new StringBuilder();
+
             association.setAccessible(true);
             T o = (T) association.get(object);
             if(Objects.isNull(o)){

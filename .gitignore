@@ -1,3 +1,4 @@
 /target/
 /.idea/libraries/
 /bin/
+/src/main/resources/application.properties

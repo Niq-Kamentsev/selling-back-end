@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 
 
 @Service
@@ -30,16 +31,19 @@ public class UserUpdateService {
         if (passwordEncoder.matches(newPassword, user.getPassword()))
             throw new UserPasswordException("The new password must be different from the old one");
         user.setPassword(passwordEncoder.encode(newPassword));
-        userDao.updatePasswordUser(user);
+        userDao.saveUser(user);
 
     }
 
     public void updateUserEmail(User user, String newEmail) throws EmailException{
+        System.out.println(user.getId());
         User userByEmail = userDao.getUserByEmail(newEmail);
-        if(userByEmail.getId() != null){
+        if(!Objects.isNull(userByEmail)){
             throw new EmailException("such email already exists", newEmail);
         }
-        userDao.updateEmailPassword(user, newEmail);
+        System.out.println(user);
+        user.setEmail(newEmail);
+        userDao.saveUser(user);
     }
 
     public User getUserByEmail (String email) throws UserNotFoundByEmailException{
