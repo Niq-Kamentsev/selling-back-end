@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-@Service
+@Component
 public class EmitterService {
 
 	private Map<Long, SseEmitter> emitters = new HashMap<>();
@@ -19,6 +19,10 @@ public class EmitterService {
 			System.out.println("onTimeout: " + userId);
 		});
 		emitters.put(userId, emitter);
+	}
+	
+	public void removeEmitter(Long userId) {
+		emitters.remove(userId);
 	}
 
 	public void pushNotification(Long targetUserId, Long senderUserId) {

@@ -46,7 +46,14 @@ public class Message extends GeneralObject {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+	
 
+	public Lot getLot() {
+		return lot;
+	}
+	public void setLot(Lot lot) {
+		this.lot = lot;
+	}
 	@Override
 	public String toString() {
 		return "Message{" +

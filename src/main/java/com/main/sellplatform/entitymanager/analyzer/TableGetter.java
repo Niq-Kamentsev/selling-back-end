@@ -64,14 +64,14 @@ public class TableGetter {
                 select.append(", ").append(sel).append("_REF").append(field.getAnnotation(Reference.class).attributeId()).append("\"");
             }
 
-            String[] froms = foreigns[2].split("LEFT JOIN");
-            from.append("\nLEFT JOIN OBJREFERENCE OBJ_").append(curOT)
-                    .append("_REF").append(curRT).append("_REF")
-                    .append(" ON OBJ_").append(objectType_id).append(".object_id = ").append("OBJ_").append(curOT)
-                    .append("_REF").append(curRT).append("_REF.object_id")
-                    .append("\nLEFT JOIN OBJECTS OBJ_").append(curOT).append("_REF").append(curRT)
-                    .append(" ON OBJ_").append(curOT).append("_REF").append(curRT).append("_REF.reference = ")
-                    .append("OBJ_").append(curOT).append("_REF").append(curRT).append(".object_id");
+			String[] froms = foreigns[2].split("LEFT JOIN");
+			from.append("\nLEFT JOIN OBJREFERENCE OBJ_").append(curOT).append("_REF").append(curRT).append("_REF")
+					.append(" ON OBJ_").append(objectType_id).append(ref_id == null ? "" : ("_REF" + ref_id))
+					.append(".object_id = ").append("OBJ_").append(curOT).append("_REF").append(curRT)
+					.append("_REF.object_id").append("\nLEFT JOIN OBJECTS OBJ_").append(curOT).append("_REF")
+					.append(curRT).append(" ON OBJ_").append(curOT).append("_REF").append(curRT)
+					.append("_REF.reference = ").append("OBJ_").append(curOT).append("_REF").append(curRT)
+					.append(".object_id");
             for (int i = 1; i < froms.length; ++i) {
                 from.append(" LEFT JOIN ").append(froms[i]);//.append("_REF").append(field.getAnnotation(Reference.class).attributeId()).append("");
             }

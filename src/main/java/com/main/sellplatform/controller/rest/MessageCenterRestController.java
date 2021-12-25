@@ -3,9 +3,11 @@ package com.main.sellplatform.controller.rest;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +31,7 @@ public class MessageCenterRestController {
 	private final MessageService messageService;
 	private final UserService userService;
 	private final EmitterService emitterService;
-	private static final long EMITTER_TIMEOUT = TimeUnit.MINUTES.toMillis(10);
+	private static final long EMITTER_TIMEOUT = TimeUnit.MINUTES.toMillis(2);
 
 	@Autowired
 	public MessageCenterRestController(final MessageService messageService, final UserService userService,
@@ -40,21 +42,21 @@ public class MessageCenterRestController {
 	}
 
 	@PreAuthorize("hasAnyAuthority('user:read')")
-	@GetMapping(value = "/getMessageChannenls")
+	@GetMapping(value = "/getMessageChannenls", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<?> getMessageChannels() {
 		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 		return ResponseEntity.ok(messageService.getChannels(userByEmail.getId()));
 	}
 
 	@PreAuthorize("hasAnyAuthority('user:read')")
-	@GetMapping(value = "/getMessages")
-	public ResponseEntity<?> getMessages(@RequestParam Long targetUser) {
+	@GetMapping(value = "/getMessages", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> getMessages(@RequestParam Long targetUser, @RequestParam Long bidId) {
 		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-		return ResponseEntity.ok(messageService.getMessages(userByEmail.getId(), targetUser));
+		return ResponseEntity.ok(messageService.getMessages(userByEmail.getId(), targetUser, bidId));
 	}
 
 	@PreAuthorize("hasAnyAuthority('user:read')")
-	@GetMapping(value = "/subscription")
+	@GetMapping(value = "/subscribe")
 	public SseEmitter subscribe() {
 		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 		SseEmitter emitter = new SseEmitter(EMITTER_TIMEOUT);
@@ -63,8 +65,17 @@ public class MessageCenterRestController {
 		return emitter;
 	}
 
+	@PreAuthorize("hasAnyAuthority('user:read')")
+	@GetMapping(value = "/unsubscribe")
+	public ResponseEntity<?> unsubscribe() {
+		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+		emitterService.removeEmitter(userByEmail.getId());
+		return ResponseEntity.ok().build();
+	}
+
+	@Transactional
 	@PreAuthorize("hasAnyAuthority('user:write')")
-	@PostMapping(value = "/sendMessage")
+	@PostMapping(value = "/sendMessage", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<?> sendMessage(@RequestBody MessageDTO body) {
 		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 		messageService.saveMessage(body, userByEmail.getId());

@@ -7,6 +7,8 @@ public class MessageDTO {
 
 	@NotNull
 	private Long receiver;
+	@NotNull
+	private Long bidId;
 	@NotEmpty
 	private String message;
 
@@ -24,6 +26,14 @@ public class MessageDTO {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public Long getBidId() {
+		return bidId;
+	}
+
+	public void setBidId(Long bidId) {
+		this.bidId = bidId;
 	}
 
 }

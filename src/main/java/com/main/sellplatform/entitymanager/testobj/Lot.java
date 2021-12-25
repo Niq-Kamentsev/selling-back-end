@@ -1,17 +1,17 @@
 package com.main.sellplatform.entitymanager.testobj;
 
+import java.util.Date;
+
 import com.main.sellplatform.entitymanager.GeneralObject;
 import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;
-import com.main.sellplatform.entitymanager.annotation.Parent;
 import com.main.sellplatform.entitymanager.annotation.Reference;
-
-import java.util.Date;
+import com.main.sellplatform.persistence.entity.User;
 
 @Objtype(3)
 public class Lot extends GeneralObject {
 
-    @Reference(attributeId = 29 , fetch = Reference.FetchType.EAGER)
+    @Reference(attributeId = 11 , fetch = Reference.FetchType.EAGER)
     User user;
     @Attribute(attrTypeId = 12)
     String nameLot;

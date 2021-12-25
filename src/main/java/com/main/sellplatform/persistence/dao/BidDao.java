@@ -7,14 +7,22 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BidDao {
-    private final EntityManager entityManager;
+	private final EntityManager entityManager;
 
-    @Autowired
-    BidDao(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+	@Autowired
+	BidDao(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
-    public boolean makeBid(Bid bid){
-        return entityManager.merge(bid)!=null;
-    }
+	public boolean makeBid(Bid bid) {
+		return entityManager.merge(bid) != null;
+	}
+
+	public Bid getBidById(Long id) {
+		return this.getBidById(id, null);
+	}
+
+	public Bid getBidById(Long id, String where) {
+		return (Bid) entityManager.getObjectById(Bid.class, id, where, null);
+	}
 }

@@ -29,18 +29,18 @@ public class Lot {
     private Integer endPrice;
     @Positive
     private Integer minPrice;
-    @NotNull
+    //@NotNull
     private Category category;
     private LotStatus status;
     private String location;
     private String deliveryAddress;
-    @NotNull
+    //@NotNull
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime creationDate;
-    @NotNull
+    //@NotNull
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startDate;
-    @NotNull
+   // @NotNull
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime endDate;
 
