@@ -5,6 +5,7 @@ public class MessageDTO {
 	private Long sender;
 	private Long receiver;
 	private String message;
+	private Long lot;
 
 	public Long getSender() {
 		return sender;
@@ -30,4 +31,11 @@ public class MessageDTO {
 		this.message = message;
 	}
 
+	public Long getLot() {
+		return lot;
+	}
+
+	public void setLot(Long lot) {
+		this.lot = lot;
+	}
 }

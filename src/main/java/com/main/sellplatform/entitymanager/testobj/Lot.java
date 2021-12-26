@@ -3,8 +3,8 @@ package com.main.sellplatform.entitymanager.testobj;
 import com.main.sellplatform.entitymanager.GeneralObject;
 import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;
-import com.main.sellplatform.entitymanager.annotation.Parent;
 import com.main.sellplatform.entitymanager.annotation.Reference;
+import com.main.sellplatform.persistence.entity.User;
 
 import java.util.Date;
 
@@ -21,7 +21,7 @@ public class Lot extends GeneralObject {
     Double minPrice;
     @Attribute(attrTypeId = 16, number = true)
     Double salePrice;
-    @Attribute(attrTypeId = 17, type = Attribute.ValueType.LIST)
+    @Attribute(attrTypeId = 17)
     String status;
     @Attribute(attrTypeId = 21, type = Attribute.ValueType.DATE_VALUE)
     Date startDate;
@@ -31,7 +31,7 @@ public class Lot extends GeneralObject {
     Date creationDate;
     @Attribute(attrTypeId = 25)
     String imgPath;
-    @Attribute(attrTypeId = 18,type = Attribute.ValueType.LIST)
+    @Attribute(attrTypeId = 18)
     String category;
     @Attribute(attrTypeId = 20)
     String location;
@@ -40,11 +40,11 @@ public class Lot extends GeneralObject {
     public Lot() {
     }
 
-    public User getUser() {
+    public com.main.sellplatform.persistence.entity.User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(com.main.sellplatform.persistence.entity.User user) {
         this.user = user;
     }
 

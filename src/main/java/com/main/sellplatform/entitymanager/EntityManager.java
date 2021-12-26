@@ -17,6 +17,7 @@ import com.main.sellplatform.entitymanager.annotation.Objtype;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 import javax.xml.crypto.Data;
 
 @Component("entityManager")
@@ -94,7 +95,10 @@ public class EntityManager {
 
         return objects;
     }
-
+    public void delete(@NotNull Object o){
+        if(!(o instanceof GeneralObject))throw new IllegalArgumentException("Invalid object type");
+        entityPresenter.delete((GeneralObject) o);
+    }
 
     public <T extends GeneralObject> T merge(T entity){
         try {

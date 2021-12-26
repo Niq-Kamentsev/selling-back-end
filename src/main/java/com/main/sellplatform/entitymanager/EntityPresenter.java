@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.main.sellplatform.entitymanager.analyzer.DbConnector2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -21,14 +22,16 @@ import javax.xml.crypto.Data;
 @Component
 public class    EntityPresenter {
     private final JdbcTemplate jdbcTemplate;
+    DbConnector2 connector2;
     @Autowired
-    public EntityPresenter( DataSource dataSource) {
+    public EntityPresenter( DataSource dataSource, DbConnector2 connector2) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.connector2 = connector2;
     }
 
     public Object[] get(Class<?> clazz, String where, List<Object> statements) {
 
-        String sql = TableGetter.getSqlGet(clazz,where,null);
+        String sql = TableGetter.getSqlGet(clazz,where,null,0);
         System.out.println(sql);
         return executeGet(clazz, sql, statements);
     }
@@ -59,5 +62,8 @@ public class    EntityPresenter {
         });
     }
 
-
+    public void delete(GeneralObject o) {
+        if (o.getId() == null || o.getId() < 0) throw new IllegalArgumentException("Invalid object id");
+        connector2.deleteObject(o.getId());
+    }
 }

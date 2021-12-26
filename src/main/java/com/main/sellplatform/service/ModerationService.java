@@ -1,13 +1,12 @@
 package com.main.sellplatform.service;
 
+import com.main.sellplatform.entitymanager.testobj.User;
 import com.main.sellplatform.persistence.dao.LotDao;
 import com.main.sellplatform.persistence.dao.LotModerationDao;
 import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.Lot;
 import com.main.sellplatform.persistence.entity.ModeratingLot;
-import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.persistence.entity.enums.LotStatus;
-import com.main.sellplatform.persistence.entity.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -96,7 +95,7 @@ public class ModerationService {
     }
 
     private Boolean checkAccess(Long moderLotId, String username) {
-        User user = userDao.getUserByEmail(username);
+        User user = userDao.getTestUserByEmail(username);
         if (user == null || lotModerationDao.getModeratingLot(moderLotId) == null
         || (!Objects.equals(lotModerationDao.getModeratingLot(moderLotId).getModerator().getId(), user.getId()))) {
             return false;

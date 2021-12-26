@@ -54,6 +54,9 @@ public class Queries {
     public String whereMessageMessages() {
         return get("message.where.messages");
     }
+    public String whereMessageLots() {
+        return get("message.where.messagesLots");
+    }
 
     public String deleteReferences(){
         return get("common.deleteReference");
@@ -75,4 +78,7 @@ public class Queries {
         return get("common.getChilds");
     }
 
+    public String whereByFinBid() {
+        return get("bid.where.finBid");
+    }
 }

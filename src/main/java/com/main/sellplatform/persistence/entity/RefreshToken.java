@@ -26,11 +26,11 @@ public class RefreshToken extends GeneralObject {
         this.id = id;
     }
 
-    public User getUser() {
+    public com.main.sellplatform.persistence.entity.User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(com.main.sellplatform.persistence.entity.User user) {
         this.user = user;
     }
 

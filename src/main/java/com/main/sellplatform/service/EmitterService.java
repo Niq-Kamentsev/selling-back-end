@@ -19,11 +19,11 @@ public class EmitterService {
 		emitters.put(userId, emitter);
 	}
 
-	public void pushNotification(Long userId, String name, String message) {
-		SseEmitter emitter = emitters.get(userId);
+	public void pushNotification(Long targetUserId, Long senderUserId) {
+		SseEmitter emitter = emitters.get(targetUserId);
 		if (emitter != null) {
 			try {
-				emitter.send(userId, MediaType.APPLICATION_JSON);
+				emitter.send(senderUserId, MediaType.APPLICATION_JSON);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

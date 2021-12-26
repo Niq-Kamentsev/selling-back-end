@@ -2,7 +2,6 @@ package com.main.sellplatform.persistence.dao;
 
 import com.main.sellplatform.persistence.entity.Lot;
 import com.main.sellplatform.persistence.entity.ModeratingLot;
-import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.persistence.entity.enums.LotStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,7 +53,7 @@ public class LotModerationDao {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "update moder_lot set moderator_id = ?, publish_date = ?, cause = ? where lot_id = ?"
         )) {
-            User user = userDao.getUserByEmail(username);
+            com.main.sellplatform.entitymanager.testobj.User user = userDao.getTestUserByEmail(username);
             preparedStatement.setLong(1, user.getId());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
             preparedStatement.setString(3, "");
@@ -71,7 +70,7 @@ public class LotModerationDao {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "update moder_lot set moderator_id = ?, publish_date = ?, cause = ? where lot_id = ?"
         )) {
-            User user = userDao.getUserByEmail(username);
+            com.main.sellplatform.entitymanager.testobj.User user = userDao.getTestUserByEmail(username);
             preparedStatement.setLong(1, user.getId());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
             preparedStatement.setString(3, cause);
@@ -113,7 +112,7 @@ public class LotModerationDao {
 
     public List<ModeratingLot> getModeratorHistory(String username) {
         List<ModeratingLot> moderLots = new ArrayList<>();
-        User user = userDao.getUserByEmail(username);
+        com.main.sellplatform.persistence.entity.User user = userDao.getUserByEmail(username);
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "select * from moder_lot where moderator_id = ? order by publish_date"
         )) {

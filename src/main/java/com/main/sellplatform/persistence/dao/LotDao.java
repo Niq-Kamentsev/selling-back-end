@@ -1,7 +1,6 @@
 package com.main.sellplatform.persistence.dao;
 
 import com.main.sellplatform.persistence.entity.Lot;
-import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.persistence.entity.enums.LotStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -70,7 +69,7 @@ public class LotDao {
 
     public List<Lot> getMyLots(String username) {
         List<Lot> lotList = new ArrayList<>();
-        User user = userDao.getUserByEmail(username);
+        com.main.sellplatform.persistence.entity.User user = userDao.getUserByEmail(username);
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "select * from test_lot where user_id = ?"
         )) {
@@ -120,7 +119,7 @@ public class LotDao {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "insert into test_lot (title, user_id) values (?, ?)"
         )) {
-            User user = userDao.getUserByEmail(username);
+            com.main.sellplatform.entitymanager.testobj.User user = userDao.getTestUserByEmail(username);
             preparedStatement.setString(1, lot.getTitle());
             preparedStatement.setLong(2, user.getId());
             preparedStatement.executeUpdate();

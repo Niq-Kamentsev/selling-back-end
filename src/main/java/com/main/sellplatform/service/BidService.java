@@ -24,4 +24,8 @@ public class BidService {
         bid.setLot(lot);
         return bidDao.makeBid(bid);
     }
+
+    public Bid getFinalBidByLot(Long lotId){
+        return bidDao.getFinBidByLot(lotId);
+    }
 }

@@ -3,12 +3,9 @@ package com.main.sellplatform.persistence.dao;
 import com.google.common.collect.Lists;
 import com.main.sellplatform.entitymanager.EntityManager;
 import com.main.sellplatform.persistence.entity.User;
-import com.main.sellplatform.persistence.entity.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +36,9 @@ public class UserDao {
 
     }
 
+    public com.main.sellplatform.entitymanager.testobj.User getTestUserByEmail(String email) {
+        return entityManager.getObjectByWhere(com.main.sellplatform.entitymanager.testobj.User.class, "(OBJ_1ATTR_1 = ?)", Collections.singletonList(email));
+    }
     public User getUserByEmail(String email) {
         return entityManager.getObjectByWhere(User.class, "(OBJ_1ATTR_1 = ?)", Collections.singletonList(email));
     }

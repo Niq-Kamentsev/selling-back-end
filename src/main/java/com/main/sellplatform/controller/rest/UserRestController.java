@@ -1,9 +1,10 @@
 package com.main.sellplatform.controller.rest;
 
 import com.main.sellplatform.entitymanager.testdao.LotDao2;
-import com.main.sellplatform.entitymanager.testobj.Lot;
+import com.main.sellplatform.entitymanager.testobj.Message;
 import com.main.sellplatform.persistence.dao.MessageDao;
 import com.main.sellplatform.persistence.entity.User;
+import com.main.sellplatform.service.BidService;
 import com.main.sellplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,12 +20,14 @@ public class UserRestController {
     private final UserService userService;
     private final MessageDao messageDao;
     private final LotDao2 lotDao2;
+    private final BidService bidService;
 
     @Autowired
-    public UserRestController(final UserService userService, final MessageDao messageDao, final LotDao2 lotDao2) {
+    public UserRestController(final UserService userService, final MessageDao messageDao, final LotDao2 lotDao2, BidService bidService) {
         this.userService = userService;
         this.messageDao = messageDao;
         this.lotDao2 = lotDao2;
+        this.bidService = bidService;
     }
 
     @PreAuthorize("hasAnyAuthority('admin:read')")
@@ -54,7 +57,7 @@ public class UserRestController {
 
 
     @GetMapping("/getWB")
-    public Lot[] getAllWB() {
-        return lotDao2.getAllLots(null,null);
+    public Message[] getAllWB() {
+        return messageDao.getAllMessages();
     }
 }

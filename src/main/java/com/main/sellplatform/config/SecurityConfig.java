@@ -41,6 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/getWB").permitAll()
                 .antMatchers("/api/bids/*").permitAll()
                 .antMatchers("/api/bids/makeBid/*").permitAll()
+                .antMatchers("/api/bids/delete/*").permitAll()
+                .antMatchers("/api/messageCenter/sendLotMessage").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

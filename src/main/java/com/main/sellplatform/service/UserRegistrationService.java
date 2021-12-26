@@ -58,7 +58,7 @@ public class UserRegistrationService {
     }
 
     private boolean UserByEmailIsEmpty(String email){
-        User userByEmail = userDao.getUserByEmail(email);
+        com.main.sellplatform.entitymanager.testobj.User userByEmail = userDao.getTestUserByEmail(email);
         if(userByEmail==null){
             return false;
         }

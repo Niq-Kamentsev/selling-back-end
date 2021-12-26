@@ -1,10 +1,10 @@
 package com.main.sellplatform.service;
 
 import com.main.sellplatform.entitymanager.testdao.LotDao2;
+import com.main.sellplatform.entitymanager.testobj.User;
 import com.main.sellplatform.persistence.dao.LotDao;
 import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.Lot;
-import com.main.sellplatform.persistence.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,13 +51,13 @@ public class LotService {
     }
 
     public List<com.main.sellplatform.entitymanager.testobj.Lot> getUserLots(String username, String sortCol) {
-        User user = userDao.getUserByEmail(username);
+        User user = userDao.getTestUserByEmail(username);
         if (user == null) return null;
         return Arrays.asList(lotDao2.getUsersLots(user.getId(), getLotSortCol(sortCol)));
     }
 
     public List<com.main.sellplatform.entitymanager.testobj.Lot> getMyLots(String username, String sortCol) {
-        User user = userDao.getUserByEmail(username);
+        com.main.sellplatform.entitymanager.testobj.User user = userDao.getTestUserByEmail(username);
         if (user == null) return null;
         return Arrays.asList(lotDao2.getUsersLots(user.getId(), getLotSortCol(sortCol)));
     }

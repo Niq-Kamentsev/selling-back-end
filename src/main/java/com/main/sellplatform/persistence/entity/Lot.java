@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 
 public class Lot {
     private Long id;
-    @NotNull
     private User owner;
     @NotEmpty
     @Size(min = 3, max = 50, message = "Incorrect title length")
@@ -52,11 +51,11 @@ public class Lot {
         this.id = id;
     }
 
-    public User getOwner() {
+    public com.main.sellplatform.persistence.entity.User getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(com.main.sellplatform.persistence.entity.User owner) {
         this.owner = owner;
     }
 
