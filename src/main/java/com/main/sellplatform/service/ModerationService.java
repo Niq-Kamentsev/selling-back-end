@@ -32,15 +32,15 @@ public class ModerationService {
     }
 
     public Boolean publishLot(Long lotId, String username) {
-        Lot lot = lotDao.getLot(lotId);
-        if (lot == null || lot.getEndDate() == null) return false;
-        if (lot.getEndDate().isBefore(LocalDateTime.now())) {
-            rejectLot(lotId, username, "The lot has expired");
-            return false;
-        } else if (!lot.getStatus().equals(LotStatus.PUBLISHED) ) {
-            lotModerationDao.publishLot(lot, username);
-            return true;
-        }
+//        Lot lot = lotDao.getLot(lotId);
+//        if (lot == null || lot.getEndDate() == null) return false;
+//        if (lot.getEndDate().isBefore(LocalDateTime.now())) {
+//            rejectLot(lotId, username, "The lot has expired");
+//            return false;
+//        } else if (!lot.getStatus().equals(LotStatus.PUBLISHED) ) {
+//            lotModerationDao.publishLot(lot, username);
+//            return true;
+//        }
         return false;
     }
 

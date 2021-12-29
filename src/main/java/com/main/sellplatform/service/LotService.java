@@ -88,6 +88,12 @@ public class LotService {
         return lotDao.deleteLot(id);
     }
 
+    public void createLot(Lot lot){
+        lotDao2.saveLot(lot);
+    }
+    public List<Lot> getPublishedLot(){
+        return lotDao2.getAllLots();
+    }
     public List<Lot> findLots(String keyword) {
         return lotDao.findPublishedLots(keyword);
     }

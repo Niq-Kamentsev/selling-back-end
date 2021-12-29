@@ -1,14 +1,18 @@
 package com.main.sellplatform.entitymanager.testdao;
 
+import com.google.common.collect.Lists;
 import com.main.sellplatform.entitymanager.EntityManager;
 import com.main.sellplatform.entitymanager.analyzer.Queries;
 import com.main.sellplatform.entitymanager.testobj.Lot;
 import com.main.sellplatform.entitymanager.testobj.User;
+import com.main.sellplatform.persistence.entity.Lot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -22,6 +26,12 @@ public class LotDao2 {
         this.queries = queries;
     }
 
+    public List<Lot> getAllLots() {
+        Object[] allObjects = entityManager.getAllObjects(Lot.class);
+        Lot[] lots = Arrays.stream(allObjects).toArray(Lot[]::new);
+        return Lists.newArrayList(lots);
+    }
+
     public Lot[] getAllLots(String where, List<Object> statements) {
         System.out.println(queries.whereMessageMessages());
         Object[] objects = entityManager.getAllObjects(Lot.class, where, statements);
@@ -32,6 +42,7 @@ public class LotDao2 {
         }
         return lots;
     }
+
 
     public Lot[] getUsersLots(Long userId, String sortCol) {
         List<Object> statements = new ArrayList<>();
@@ -48,17 +59,21 @@ public class LotDao2 {
         return lots;
     }
 
-    public Lot getLotById(Long lotId, String where) {
-        return (Lot) entityManager.getObjectById(Lot.class, lotId, where, null);
+    public Lot getLotById(Long lotId, String where){
+        return (Lot) entityManager.getObjectById(Lot.class,lotId,where,null);
     }
 
     public Object[] test() {
         try {
-            return entityManager.getObjectsByIdSeq(User.class, queries.selectAllUserId(), null);
+            return entityManager.getObjectsByIdSeq(User.class,"SELECT OBJECT_ID AS Id FROM objects WHERE OBJECT_TYPE_ID = 1",null);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return null;
+    }
+
+    public Lot saveLot(Lot lot){
+        return entityManager.merge(lot);
     }
 
 }
