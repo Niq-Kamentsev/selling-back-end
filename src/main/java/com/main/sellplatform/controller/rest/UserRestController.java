@@ -53,8 +53,5 @@ public class UserRestController {
 //    }
 
 
-    @GetMapping("/getWB")
-    public Lot[] getAllWB() {
-        return lotDao2.getAllLots(null,null);
-    }
+
 }

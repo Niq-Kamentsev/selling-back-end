@@ -17,13 +17,12 @@ import java.util.Objects;
 public class LotService {
     private final UserDao userDao;
 
-    private final LotDao lotDao;
+
     private final LotDao2 lotDao2;
 
     @Autowired
-    public LotService(UserDao userDao, LotDao lotDao, LotDao2 lotDao2) {
+    public LotService(UserDao userDao, LotDao2 lotDao2) {
         this.userDao = userDao;
-        this.lotDao = lotDao;
         this.lotDao2 = lotDao2;
     }
 
@@ -50,65 +49,75 @@ public class LotService {
         return null;
     }
 
-    public List<com.main.sellplatform.entitymanager.testobj.Lot> getUserLots(String username, String sortCol) {
-        User user = userDao.getUserByEmail(username);
-        if (user == null) return null;
-        return Arrays.asList(lotDao2.getUsersLots(user.getId(), getLotSortCol(sortCol)));
+
+    public void createLot(Lot lot){
+        lotDao2.saveLot(lot);
     }
 
-    public List<com.main.sellplatform.entitymanager.testobj.Lot> getMyLots(String username, String sortCol) {
-        User user = userDao.getUserByEmail(username);
-        if (user == null) return null;
-        return Arrays.asList(lotDao2.getUsersLots(user.getId(), getLotSortCol(sortCol)));
+
+    public List<Lot> getPublishedLot(){
+        return lotDao2.getAllLots();
     }
 
-    public List<Lot> getAllLots() {
-        return lotDao.getPublishedLots();
-    }
-
-    public Boolean addLot(Lot lot, String username) {
-        if (!validateLot(lot, username)) return false;
-        return lotDao.addLot(lot, username);
-    }
-
-    public Boolean updateLot(Lot lot, String username) {
-        if (!validateLot(lot, username)) return false;
-        return lotDao.updateLot(lot);
-    }
-
-    public Boolean deleteLot(Long id, String username) {
-        if (lotDao.getLot(id).getOwner() == null || !Objects.equals(lotDao.getLot(id).getOwner().getId(), userDao.getUserByEmail(username).getId())) {
-            return false;
-        }
-        return lotDao.deleteLot(id);
-    }
-
-    public List<Lot> findLots(String keyword) {
-        return lotDao.findPublishedLots(keyword);
-    }
-
-    private Boolean validateLot(Lot lot, String username) {
-        return Objects.equals(lot.getOwner().getId(), userDao.getUserByEmail(username).getId())
-                && lot.getStartDate() != null
-                && !lot.getStartDate().isBefore(LocalDateTime.now())
-                && !lot.getStartDate().isAfter(lot.getEndDate())
-                && !lot.getTerm().isAfter(lot.getEndDate())
-                && !lot.getTerm().isBefore(lot.getStartDate());
-    }
-
-    public List<com.main.sellplatform.entitymanager.testobj.Lot> getBuyableLots() {
-        List<com.main.sellplatform.entitymanager.testobj.Lot> res = Arrays.asList(
-                lotDao2.getAllLots("OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING'",null)
-        );
-        for(com.main.sellplatform.entitymanager.testobj.Lot lot:res){
-            lot.setUser(null);
-        }
-        return res;
-    }
-
-    public com.main.sellplatform.entitymanager.testobj.Lot getBuyableLot(Long id) {
-        com.main.sellplatform.entitymanager.testobj.Lot res = lotDao2.getLotById(id, "(OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING')");
-        if(res!=null) res.setUser(null);
-        return res;
-    }
+//    public List<com.main.sellplatform.entitymanager.testobj.Lot> getUserLots(String username, String sortCol) {
+//        User user = userDao.getUserByEmail(username);
+//        if (user == null) return null;
+//        return Arrays.asList(lotDao2.getUsersLots(user.getId(), getLotSortCol(sortCol)));
+//    }
+//
+//    public List<com.main.sellplatform.entitymanager.testobj.Lot> getMyLots(String username, String sortCol) {
+//        User user = userDao.getUserByEmail(username);
+//        if (user == null) return null;
+//        return Arrays.asList(lotDao2.getUsersLots(user.getId(), getLotSortCol(sortCol)));
+//    }
+//
+//    public List<Lot> getAllLots() {
+//        return lotDao.getPublishedLots();
+//    }
+//
+//    public Boolean addLot(Lot lot, String username) {
+//        if (!validateLot(lot, username)) return false;
+//        return lotDao.addLot(lot, username);
+//    }
+//
+//    public Boolean updateLot(Lot lot, String username) {
+//        if (!validateLot(lot, username)) return false;
+//        return lotDao.updateLot(lot);
+//    }
+//
+//    public Boolean deleteLot(Long id, String username) {
+//        if (lotDao.getLot(id).getOwner() == null || !Objects.equals(lotDao.getLot(id).getOwner().getId(), userDao.getUserByEmail(username).getId())) {
+//            return false;
+//        }
+//        return lotDao.deleteLot(id);
+//    }
+//
+//    public List<Lot> findLots(String keyword) {
+//        return lotDao.findPublishedLots(keyword);
+//    }
+//
+////    private Boolean validateLot(Lot lot, String username) {
+////        return Objects.equals(lot.getOwner().getId(), userDao.getUserByEmail(username).getId())
+////                && lot.getStartDate() != null
+////                && !lot.getStartDate().isBefore(LocalDateTime.now())
+////                && !lot.getStartDate().isAfter(lot.getEndDate())
+////                && !lot.getTerm().isAfter(lot.getEndDate())
+////                && !lot.getTerm().isBefore(lot.getStartDate());
+////    }
+//
+//    public List<com.main.sellplatform.entitymanager.testobj.Lot> getBuyableLots() {
+//        List<com.main.sellplatform.entitymanager.testobj.Lot> res = Arrays.asList(
+//                lotDao2.getAllLots("OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING'",null)
+//        );
+//        for(com.main.sellplatform.entitymanager.testobj.Lot lot:res){
+//            lot.setUser(null);
+//        }
+//        return res;
+//    }
+//
+//    public com.main.sellplatform.entitymanager.testobj.Lot getBuyableLot(Long id) {
+//        com.main.sellplatform.entitymanager.testobj.Lot res = lotDao2.getLotById(id, "(OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING')");
+//        if(res!=null) res.setUser(null);
+//        return res;
+//    }
 }

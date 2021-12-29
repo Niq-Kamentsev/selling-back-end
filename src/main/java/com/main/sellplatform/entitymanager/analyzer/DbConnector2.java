@@ -90,8 +90,8 @@ public class DbConnector2 {
     public void updateObject(String sql , List<Object> values){
         System.out.println(sql);
         Object[] objects = values.stream().map(value -> {
-            if (value instanceof Role) {
-                return ((Role) value).name();
+            if (value instanceof Enum) {
+                return ((Enum) value).name();
             }
             return value;
         }).toArray();
@@ -103,8 +103,8 @@ public class DbConnector2 {
     public void saveObjectsNotId(String sql, List<Object> values){
         System.out.println(sql + "\n");
         Object[] objects = values.stream().map(value -> {
-            if (value instanceof Role) {
-                return ((Role) value).name();
+            if (value instanceof Enum) {
+                return ((Enum) value).name();
             }
             return value;
         }).toArray();

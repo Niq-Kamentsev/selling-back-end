@@ -95,7 +95,7 @@ public class EntityManager {
         return objects;
     }
 
-
+    @Transactional
     public <T extends GeneralObject> T merge(T entity){
         try {
             return tableSetter.getSqlInsertQuery(entity);
