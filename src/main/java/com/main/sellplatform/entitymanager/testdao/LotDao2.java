@@ -3,8 +3,8 @@ package com.main.sellplatform.entitymanager.testdao;
 import com.google.common.collect.Lists;
 import com.main.sellplatform.entitymanager.EntityManager;
 import com.main.sellplatform.entitymanager.analyzer.Queries;
-import com.main.sellplatform.entitymanager.testobj.Lot;
-import com.main.sellplatform.entitymanager.testobj.User;
+
+
 import com.main.sellplatform.persistence.entity.Lot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -63,14 +63,7 @@ public class LotDao2 {
         return (Lot) entityManager.getObjectById(Lot.class,lotId,where,null);
     }
 
-    public Object[] test() {
-        try {
-            return entityManager.getObjectsByIdSeq(User.class,"SELECT OBJECT_ID AS Id FROM objects WHERE OBJECT_TYPE_ID = 1",null);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
-    }
+
 
     public Lot saveLot(Lot lot){
         return entityManager.merge(lot);

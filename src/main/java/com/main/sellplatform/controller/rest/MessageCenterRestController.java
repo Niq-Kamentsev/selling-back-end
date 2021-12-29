@@ -2,6 +2,7 @@ package com.main.sellplatform.controller.rest;
 
 import java.util.concurrent.TimeUnit;
 
+import com.main.sellplatform.entitymanager.testobj.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

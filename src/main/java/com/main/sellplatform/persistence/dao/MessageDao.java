@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.main.sellplatform.persistence.entity.Lot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ import com.main.sellplatform.entitymanager.EntityManager;
 import com.main.sellplatform.entitymanager.analyzer.Queries;
 import com.main.sellplatform.entitymanager.testdao.LotDao2;
 import com.main.sellplatform.entitymanager.testobj.Bid;
-import com.main.sellplatform.entitymanager.testobj.Lot;
+
 import com.main.sellplatform.entitymanager.testobj.Message;
 import com.main.sellplatform.persistence.entity.MessageChannel;
 
@@ -60,8 +61,8 @@ public class MessageDao {
 				channel.setUsername(bid.getUser().getFirstName());
 			}else {
 				Lot fullLot = lotDao.getLotById(bid.getLot().getId(), null);
-				channel.setTargetUserId(fullLot.getUser().getId());
-				channel.setUsername(fullLot.getUser().getFirstName());
+				channel.setTargetUserId(fullLot.getOwner().getId());
+				channel.setUsername(fullLot.getOwner().getFirstName());
 			}
 			result.add(channel);
 		}

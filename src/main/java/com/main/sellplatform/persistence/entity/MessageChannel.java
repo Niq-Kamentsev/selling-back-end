@@ -29,9 +29,6 @@ public class MessageChannel {
 		this.username = username;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
 
 	@Override
 	public String toString() {

@@ -1,8 +1,8 @@
 package com.main.sellplatform.service;
 
 import com.main.sellplatform.entitymanager.testobj.Bid;
-import com.main.sellplatform.entitymanager.testobj.Lot;
 import com.main.sellplatform.persistence.dao.BidDao;
+import com.main.sellplatform.persistence.entity.Lot;
 import com.main.sellplatform.persistence.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -4,6 +4,7 @@ import com.main.sellplatform.entitymanager.GeneralObject;
 import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;
 import com.main.sellplatform.entitymanager.annotation.Reference;
+import com.main.sellplatform.persistence.entity.Lot;
 import com.main.sellplatform.persistence.entity.User;
 
 import java.util.Date;
