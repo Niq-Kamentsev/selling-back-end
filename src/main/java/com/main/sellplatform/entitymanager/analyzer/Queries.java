@@ -39,6 +39,10 @@ public class Queries {
         return get("lot.where.ownerId");
     }
 
+    public String whereBuyableLot() {
+        return get("lot.where.buyable");
+    }
+
     public String orderBy() {
         return get("common.orderBy");
     }
@@ -54,27 +58,28 @@ public class Queries {
     public String whereMessageMessages() {
         return get("message.where.messages");
     }
+
     public String whereMessageLots() {
         return get("message.where.messagesLots");
     }
 
-    public String deleteReferences(){
+    public String deleteReferences() {
         return get("common.deleteReference");
     }
 
-    public String deleteAttributes(){
+    public String deleteAttributes() {
         return get("common.deleteAttribute");
     }
 
-    public String deleteObjects(){
+    public String deleteObjects() {
         return get("common.deleteObject");
     }
 
-    public String deleteChilds(){
+    public String deleteChilds() {
         return get("common.deleteParent");
     }
 
-    public String getChilds(){
+    public String getChilds() {
         return get("common.getChilds");
     }
 

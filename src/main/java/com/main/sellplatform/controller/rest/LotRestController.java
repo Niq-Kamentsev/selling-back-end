@@ -1,5 +1,6 @@
 package com.main.sellplatform.controller.rest;
 
+import com.main.sellplatform.controller.dto.lotdto.LotFilterDTO;
 import com.main.sellplatform.persistence.entity.Lot;
 import com.main.sellplatform.service.LotService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class LotRestController {
 
     @PreAuthorize("hasAnyAuthority('user:read')")
     @GetMapping("/myLots/{sortCol}")
-    public List<com.main.sellplatform.entitymanager.testobj.Lot> getMySortLots(@PathVariable String sortCol) {
+    public List<com.main.sellplatform.entitymanager.testobj.Lot> getMySortLots(@PathVariable LotFilterDTO.Column sortCol) {
         return lotService.getMyLots(SecurityContextHolder.getContext().getAuthentication().getName(),sortCol);
     }
 
@@ -67,8 +68,10 @@ public class LotRestController {
     }
 
     @GetMapping("/buyableLots")
-    public List<com.main.sellplatform.entitymanager.testobj.Lot> getBuyableLots(){
-        return lotService.getBuyableLots();
+    public List<com.main.sellplatform.entitymanager.testobj.Lot> getBuyableLots(
+            LotFilterDTO filter
+            ){
+        return lotService.getBuyableLots(filter);
     }
     @GetMapping("/buyableLot/{id}")
     public com.main.sellplatform.entitymanager.testobj.Lot getBuyableLot(@PathVariable Long id){

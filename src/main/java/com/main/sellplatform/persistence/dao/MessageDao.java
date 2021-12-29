@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.main.sellplatform.entitymanager.analyzer.Queries;
+import com.main.sellplatform.entitymanager.testdao.LotDao2;
+import com.main.sellplatform.entitymanager.testobj.Bid;
+import com.main.sellplatform.entitymanager.testobj.Lot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +21,13 @@ import com.main.sellplatform.persistence.entity.MessageChannel;
 public class MessageDao {
     private final EntityManager entityManager;
     private final Queries queries;
+    private final LotDao2 lotDao2;
 
     @Autowired
-    public MessageDao(EntityManager entityManager, Queries queries) {
+    public MessageDao(EntityManager entityManager, Queries queries, LotDao2 lotDao2) {
         this.entityManager = entityManager;
         this.queries = queries;
+        this.lotDao2 = lotDao2;
     }
 
     public Message[] getAllMessages() {
@@ -38,19 +43,25 @@ public class MessageDao {
         List<MessageChannel> result = new ArrayList<>();
         Object[] objects = null;
         try {
-            String sql = "SELECT DISTINCT reference as id FROM objreference WHERE (object_id IN (\n"
-                    + "SELECT OBJECT_ID FROM objreference\n WHERE ATTR_ID = 29 AND reference = " + userId
-                    + ") AND ATTR_ID = 28) OR (object_id IN (\n" + "SELECT OBJECT_ID FROM objreference\n"
-                    + "WHERE ATTR_ID = 28 AND reference = " + userId + ") AND ATTR_ID = 29)";
-            objects = entityManager.getObjectsByIdSeq(User.class, sql, null); // null
+            objects = entityManager.getObjectsByIdSeq(Bid.class, queries.selectMessageChannel(), null);
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         for (Object targetObject : objects) {
-            User user = (User) targetObject;
-            result.add(new MessageChannel(user.getId()));
+            Bid bid = (Bid) targetObject;
+            MessageChannel channel = new MessageChannel();
+            channel.setBidId(bid.getId());
+            if (bid.getUser().getId() != userId) {
+                channel.setTargetUserId(bid.getUser().getId());
+                channel.setUsername(bid.getUser().getFirstName());
+            } else {
+                Lot fullLot = lotDao2.getLotById(bid.getLot().getId(), null);
+                channel.setTargetUserId(fullLot.getUser().getId());
+                channel.setUsername(fullLot.getUser().getFirstName());
+            }
+            result.add(channel);
         }
         return result;
     }

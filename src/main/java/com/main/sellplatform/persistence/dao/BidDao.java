@@ -29,4 +29,11 @@ public class BidDao {
         statements.add(lot);
         return entityManager.getObjectByWhere(Bid.class, queries.whereByFinBid(), statements);
     }
+    public Bid getBidById(Long id) {
+        return this.getBidById(id, null);
+    }
+
+    public Bid getBidById(Long id, String where) {
+        return (Bid) entityManager.getObjectById(Bid.class, id, where, null);
+    }
 }
