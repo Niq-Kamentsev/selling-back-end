@@ -141,7 +141,7 @@ public class LotService {
 
         String search = filter.getSearch();
         if (search != null && !search.isEmpty()) {
-            filterWhere.append(" AND (INSTR(OBJ_3NAME, ?) > 0 OR INSTR(OBJ_3DESCR, ?) > 0)");
+            filterWhere.append(" AND (INSTR(OBJ_3ATTR_12, ?) > 0 OR INSTR(OBJ_3DESCR, ?) > 0)");
             statements.add(search);
             statements.add(search);
         }
