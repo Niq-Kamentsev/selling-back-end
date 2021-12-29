@@ -32,12 +32,14 @@ public class TableSetter {
 
 
 
+    @Transactional
     public <T extends GeneralObject> T  getSqlInsertQuery(T clazz ) throws IllegalAccessException, NoSuchFieldException {
 //        if (setObjTypeId.contains(clazz.getClass().getAnnotation(Objtype.class).value())){
 //            return null;
 //        }
         setObjTypeId.add(clazz.getClass().getAnnotation(Objtype.class).value());
         Object id = isUpdate(clazz);
+        
         List<Field> extensions = new ArrayList<>();
         List<Field> associations = new ArrayList<>();
         List<Field> attributes = new ArrayList<>();
@@ -82,6 +84,7 @@ public class TableSetter {
                             insertIntoObjects.delete(22,33);
                             break;
                         }
+                        Long idObjUpdate = getIdObjUpdate(field, o);
                         T sqlInsertQuery = getSqlInsertQuery((T) o);
                         insertIntoObjects.append("?,");
                         values.add(sqlInsertQuery.getId());
@@ -219,9 +222,8 @@ public class TableSetter {
 
     private <T extends GeneralObject> void getInsertIntoObjReference(Object object,List<Field> associations, Long objectId) throws IllegalAccessException, NoSuchFieldException {
         for (Field association:associations){
-            List<Object> values = new ArrayList<>();
+        	List<Object> values = new ArrayList<>();
             StringBuilder insertIntoObjReference = new StringBuilder();
-
             association.setAccessible(true);
             T o = (T) association.get(object);
             if(Objects.isNull(o)){
@@ -396,8 +398,10 @@ public class TableSetter {
 
 
 
-    private Object getObjectById(Class<? extends GeneralObject> clazz, Long id, String where) {
-        Object[] objects = entityPresenter.get(clazz, "WHERE "+(where==null?"":where+" AND ")+"OBJ_" + clazz.getAnnotation(Objtype.class).value() + "ID = " + id,null);
+    public Object getObjectById(Class<? extends GeneralObject> clazz, Long id, String where) {
+    	List<Object> statements = new ArrayList<>();
+    	statements.add(id);
+        Object[] objects = entityPresenter.get(clazz, "WHERE "+(where==null?"":where+" AND ")+"OBJ_" + clazz.getAnnotation(Objtype.class).value() + "ID = ?",statements);
         if (objects == null || objects.length == 0) return null;
         Object object = objects[0];
         if (object == null) return null;

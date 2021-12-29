@@ -1,7 +1,6 @@
 package com.main.sellplatform.persistence.entity;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;

@@ -1,19 +1,16 @@
 package com.main.sellplatform.controller.dto.messagedto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class MessageDTO {
 
-	private Long sender;
+	@NotNull
 	private Long receiver;
+	@NotNull
+	private Long bidId;
+	@NotEmpty
 	private String message;
-	private Long lot;
-
-	public Long getSender() {
-		return sender;
-	}
-
-	public void setSender(Long sender) {
-		this.sender = sender;
-	}
 
 	public Long getReceiver() {
 		return receiver;
@@ -31,11 +28,12 @@ public class MessageDTO {
 		this.message = message;
 	}
 
-	public Long getLot() {
-		return lot;
+	public Long getBidId() {
+		return bidId;
 	}
 
-	public void setLot(Long lot) {
-		this.lot = lot;
+	public void setBidId(Long bidId) {
+		this.bidId = bidId;
 	}
+
 }

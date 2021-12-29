@@ -1,5 +1,7 @@
 package com.main.sellplatform.entitymanager.testobj;
 
+import java.util.Date;
+
 import com.main.sellplatform.entitymanager.GeneralObject;
 import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;

@@ -10,6 +10,10 @@ import java.util.Objects;
 
 @Component
 public class DbConnector {
+    /*private final String db_name = "XE";
+    private final String url = "jdbc:oracle:thin:@localhost:1521/" + db_name;
+    private Connection con;
+    private final String user = "system", password = "p1234";*/
 
     private final Connection con;
     private final Queries queries;
@@ -104,6 +108,7 @@ public class DbConnector {
             throwables.printStackTrace();
         }
     }
+
 
 
     public boolean getId(Long id) {
@@ -230,11 +235,13 @@ public class DbConnector {
     }
 
 
-    public void deleteObjectFromObjReference(String sql, Object id) {
-        try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
-            if (id instanceof Long) {
-                preparedStatement.setLong(1, (Long) id);
-            } else if (id instanceof Integer) {
+
+    public void deleteObjectFromObjReference(String sql , Object id){
+        try(PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+            if (id instanceof Long){
+                preparedStatement.setLong(1,(Long) id);
+            }
+            else if(id instanceof Integer){
                 preparedStatement.setInt(1, (Integer) id);
             }
             int i = preparedStatement.executeUpdate();

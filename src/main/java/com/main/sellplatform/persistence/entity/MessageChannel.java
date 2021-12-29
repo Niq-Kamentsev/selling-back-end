@@ -1,15 +1,6 @@
 package com.main.sellplatform.persistence.entity;
 
 public class MessageChannel {
-
-	public MessageChannel() {
-
-	}
-
-	public MessageChannel(Long targetUser) {
-		this.targetUserId = targetUser;
-	}
-
 	private Long bidId;
 	private Long targetUserId;
 	private String username;
@@ -32,6 +23,10 @@ public class MessageChannel {
 
 	public String getUsername() {
 		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public void setUsername(String username) {
