@@ -7,6 +7,7 @@ import com.main.sellplatform.entitymanager.testobj.User;
 import com.main.sellplatform.persistence.dao.LotDao;
 import com.main.sellplatform.persistence.dao.UserDao;
 import com.main.sellplatform.persistence.entity.Lot;
+import com.main.sellplatform.persistence.entity.enums.LotStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +90,7 @@ public class LotService {
     }
 
     public void createLot(Lot lot) {
+        lot.setStatus(LotStatus.NO_BIDS);
         lotDao2.saveLot(lot);
     }
 

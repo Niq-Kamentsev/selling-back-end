@@ -5,6 +5,7 @@ import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;
 import com.main.sellplatform.entitymanager.annotation.Reference;
 import com.main.sellplatform.persistence.entity.enums.LotStatus;
+import com.main.sellplatform.service.LotService;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
@@ -37,7 +38,7 @@ public class Lot extends GeneralObject {
     private Double endPrice;
 
     @Attribute(attrTypeId = 17)
-    private String status;
+    private LotStatus status;
 
     @Attribute(attrTypeId = 18)
     private String category;
@@ -105,11 +106,11 @@ public class Lot extends GeneralObject {
         this.endPrice = endPrice;
     }
 
-    public String getStatus() {
+    public LotStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(LotStatus status) {
         this.status = status;
     }
 
