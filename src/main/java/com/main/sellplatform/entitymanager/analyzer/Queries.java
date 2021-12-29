@@ -54,6 +54,10 @@ public class Queries {
     public String whereMessageMessages() {
         return get("message.where.messages");
     }
+    
+    public String whereMessageNewMessages() {
+    	return get("message.where.newMessages");
+    }
 
     public String deleteReferences(){
         return get("common.deleteReference");

@@ -16,8 +16,6 @@ public class Message extends GeneralObject {
     User receiver;
     @Reference(attributeId = 66)
     Lot lot;
-    @Attribute(attrTypeId = 30)
-    Long id;
     @Attribute(attrTypeId = 31, type = Attribute.ValueType.DATE_VALUE)
     Date date;
     @Attribute(attrTypeId = 32)

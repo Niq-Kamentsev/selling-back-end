@@ -37,11 +37,11 @@ public class MessageService {
 		return messageDao.getChannels(userId);
 	}
 
-	public List<Message> getMessages(Long currentUserId, Long targetUser, Long bidId) {
+	public List<Message> getMessages(Long currentUserId, Long targetUser, Long bidId, Long lastMessageId) {
 		List<Message> result = new ArrayList<>();
 		Bid bid = bidDao.getBidById(bidId);
 		for (com.main.sellplatform.entitymanager.testobj.Message msg : messageDao.getMessages(currentUserId, targetUser,
-				bid.getLot().getId())) {
+				bid.getLot().getId(), lastMessageId)) {
 			Message message = new Message();
 			message.setId(msg.getId());
 			message.setSender(msg.getSender().getId());
