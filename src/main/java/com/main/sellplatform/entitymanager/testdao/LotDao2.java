@@ -32,13 +32,13 @@ public class LotDao2 {
         return Lists.newArrayList(lots);
     }
 
-    public Lot[] getAllLots(String where, List<Object> statements) {
+    public List<Lot> getAllLots(String where, List<Object> statements) {
         System.out.println(queries.whereMessageMessages());
         Object[] objects = entityManager.getAllObjects(Lot.class, where, statements);
         if (objects == null) return null;
-        Lot[] lots = new Lot[objects.length];
-        for (int i = 0; i < objects.length; ++i) {
-            lots[i] = (Lot) objects[i];
+        List<Lot> lots = new ArrayList<>();
+        for (Object object : objects) {
+            lots.add((Lot) object);
         }
         return lots;
     }
@@ -59,13 +59,12 @@ public class LotDao2 {
         return lots;
     }
 
-    public Lot getLotById(Long lotId, String where){
-        return (Lot) entityManager.getObjectById(Lot.class,lotId,where,null);
+    public Lot getLotById(Long lotId, String where) {
+        return (Lot) entityManager.getObjectById(Lot.class, lotId, where, null);
     }
 
 
-
-    public Lot saveLot(Lot lot){
+    public Lot saveLot(Lot lot) {
         return entityManager.merge(lot);
     }
 

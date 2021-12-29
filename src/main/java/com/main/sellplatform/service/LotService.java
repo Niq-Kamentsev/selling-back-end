@@ -88,12 +88,16 @@ public class LotService {
         return lotDao.deleteLot(id);
     }
 
-    public void createLot(Lot lot){
+    public void createLot(Lot lot) {
         lotDao2.saveLot(lot);
     }
-    public List<Lot> getPublishedLot(){
-        return lotDao2.getAllLots();
+
+    public List<Lot> getPublishedLot(LotFilterDTO filterDTO) {
+        List<Object> statements = new ArrayList<>();
+        String filterWhere = filterDTO == null ? "" : getFilters(filterDTO, statements);
+        return lotDao2.getAllLots(queries.whereBuyableLot() +(filterWhere.isEmpty() ? "" : filterWhere), statements);
     }
+
     public List<Lot> findLots(String keyword) {
         return lotDao.findPublishedLots(keyword);
     }
@@ -150,17 +154,17 @@ public class LotService {
         return filterWhere.toString();
     }
 
-    public List<Lot> getBuyableLots(LotFilterDTO filter) {
-        List<Object> statements = new ArrayList<>();
-        String filterWhere = filter == null ? "" : getFilters(filter, statements);
-        List<Lot> res = Arrays.asList(
-                lotDao2.getAllLots(queries.whereBuyableLot() + (filterWhere.isEmpty() ? "" : filterWhere), statements)
-        );
-        for (Lot lot : res) {
-            lot.setOwner(null);
-        }
-        return res;
-    }
+//    public List<Lot> getBuyableLots(LotFilterDTO filter) {
+//        List<Object> statements = new ArrayList<>();
+//        String filterWhere = filter == null ? "" : getFilters(filter, statements);
+//        List<Lot> res = Arrays.asList(
+//                lotDao2.getAllLots(queries.whereBuyableLot() + (filterWhere.isEmpty() ? "" : filterWhere), statements)
+//        );
+//        for (Lot lot : res) {
+//            lot.setOwner(null);
+//        }
+//        return res;
+//    }
 
     public Lot getLot(Long id) {
         return lotDao2.getLotById(id, null);
