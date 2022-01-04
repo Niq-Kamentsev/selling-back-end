@@ -58,6 +58,10 @@ public class Queries {
     public String whereMessageMessages() {
         return get("message.where.messages");
     }
+    
+    public String whereMessageNewMessages() {
+    	return get("message.where.newMessages");
+    }
 
     public String whereMessageLots() {
         return get("message.where.messagesLots");

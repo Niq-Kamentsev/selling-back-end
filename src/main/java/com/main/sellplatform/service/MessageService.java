@@ -42,11 +42,11 @@ public class MessageService {
 		return messageDao.getChannels(userId);
 	}
 
-	public List<Message> getMessages(Long currentUserId, Long targetUser, Long bidId) {
+	public List<Message> getMessages(Long currentUserId, Long targetUser, Long bidId, Long lastMessageId) {
 		List<Message> result = new ArrayList<>();
 		Bid bid = bidDao.getBidById(bidId);
 		for (com.main.sellplatform.entitymanager.testobj.Message msg : messageDao.getMessages(currentUserId, targetUser,
-				bid.getLot().getId())) {
+				bid.getLot().getId(), lastMessageId)) {
 			Message message = new Message();
 			message.setId(msg.getId());
 			message.setSender(msg.getSender().getId());
@@ -87,7 +87,7 @@ public class MessageService {
         Lot lot = lotDao.getLotById(bid.getLot().getId(), null);
         if (!userByEmail.equals(lot.getOwner())) return null;
         List<com.main.sellplatform.entitymanager.testobj.Message> exists = messageDao.getMessages(lot.getOwner().getId(),
-                bid.getUser().getId(), bid.getLot().getId());
+                bid.getUser().getId(), bid.getLot().getId(), null);
         if (!(exists == null || exists.size() == 0)) return result;
 
         result.setLot(lot);

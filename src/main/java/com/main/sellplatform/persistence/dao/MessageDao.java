@@ -56,10 +56,10 @@ public class MessageDao {
 			Bid bid = (Bid) targetObject;
 			MessageChannel channel = new MessageChannel();
 			channel.setBidId(bid.getId());
-			if(bid.getUser().getId() != userId) {
+			if (bid.getUser().getId() != userId) {
 				channel.setTargetUserId(bid.getUser().getId());
 				channel.setUsername(bid.getUser().getFirstName());
-			}else {
+			} else {
 				Lot fullLot = lotDao.getLotById(bid.getLot().getId(), null);
 				channel.setTargetUserId(fullLot.getOwner().getId());
 				channel.setUsername(fullLot.getOwner().getFirstName());
@@ -69,8 +69,15 @@ public class MessageDao {
 		return result;
 	}
 
-	public List<Message> getMessages(Long currentUserId, Long targetUser, Long targetLotId) {
+	public List<Message> getMessages(Long currentUserId, Long targetUser, Long targetLotId, Long lastMessageId) {
 		List<Object> statements = new ArrayList<>();
+		String sql = null;
+		if (lastMessageId != null) {
+			sql = queries.whereMessageNewMessages();
+			statements.add(lastMessageId);
+		} else {
+			sql = queries.whereMessageMessages();
+		}
 		statements.add(targetLotId);
 		statements.add(currentUserId);
 		statements.add(targetUser);
@@ -78,7 +85,7 @@ public class MessageDao {
 		statements.add(currentUserId);
 		statements.add(currentUserId);
 		statements.add(targetUser);
-		Object[] messages = entityManager.getAllObjects(Message.class, queries.whereMessageMessages(), statements);
+		Object[] messages = entityManager.getAllObjects(Message.class, sql, statements);
 		List<Message> result = new ArrayList<>();
 		for (Object message : messages) {
 			result.add((Message) message);
