@@ -30,7 +30,7 @@ public class BidRestController {
         return bidService.makeBid(bid, SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
-    //@PreAuthorize("hasAnyAuthority('user:write')")
+    @PreAuthorize("hasAnyAuthority('user:write')")
     @PostMapping("/makeBid/{email}")
     public Boolean makeBid(@RequestBody Bid bid, @PathVariable String email) throws JsonProcessingException {
         return bidService.makeBid(bid, email);

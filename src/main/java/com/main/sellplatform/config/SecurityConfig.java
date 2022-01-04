@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/api/lots/buyableLot/*").permitAll()
 //                .antMatchers("/api/lots/search/**").permitAll()
 //                .antMatchers("/api/file/**").permitAll()
+                .antMatchers("/api/lots/buyableLot/*").permitAll()
                 .antMatchers("/api/getWB").permitAll()
                 .antMatchers("/api/bids/*").permitAll()
                 .antMatchers("/api/bids/makeBid/*").permitAll()

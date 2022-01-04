@@ -11,7 +11,10 @@ import com.main.sellplatform.persistence.entity.enums.LotStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -173,8 +176,20 @@ public class LotService {
     }
 
     public Lot getBuyableLot(Long id) {
-        Lot res = lotDao2.getLotById(id, "(OBJ_3ATTR_17 = 'NO BIDS' OR OBJ_3ATTR_17 = 'BIDDING')");
+        Lot res = lotDao2.getLotById(id, "(OBJ_3ATTR_17 = 'NO_BIDS' OR OBJ_3ATTR_17 = 'BIDDING')");
         if (res != null) res.setOwner(null);
         return res;
     }
+
+    public Lot updateCustomer(Lot lot){
+        LocalDate endDate2 = lot.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Period diff = Period.between(endDate2, LocalDate.now());
+        if (endDate2.equals(LocalDate.now())){
+            LocalDate localDate = endDate2.plusDays(1);
+            lot.setEndDate(Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+
+        }
+        return lotDao2.saveLot(lot);
+    }
+
 }
