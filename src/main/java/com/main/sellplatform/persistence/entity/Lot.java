@@ -1,6 +1,11 @@
 package com.main.sellplatform.persistence.entity;
 
+import com.main.sellplatform.entitymanager.GeneralObject;
+import com.main.sellplatform.entitymanager.annotation.Attribute;
+import com.main.sellplatform.entitymanager.annotation.Objtype;
+import com.main.sellplatform.entitymanager.annotation.Reference;
 import com.main.sellplatform.persistence.entity.enums.LotStatus;
+import com.main.sellplatform.service.LotService;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
@@ -8,49 +13,56 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Date;
 
-public class Lot {
-    private Long id;
-    @NotNull
+@Objtype(3)
+public class Lot extends GeneralObject {
+
+
+    @Reference(attributeId = 11 , fetch = Reference.FetchType.EAGER)
     private User owner;
-    @NotEmpty
-    @Size(min = 3, max = 50, message = "Incorrect title length")
-    private String title;
-    @NotEmpty
-    @Size(min = 10, max = 2048, message = "Incorrect description length")
-    private String description;
-    private String imgPath;
-    @NotNull
-    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime term;
-    @Positive
-    private Integer startPrice;
-    @Positive
-    private Integer endPrice;
-    @Positive
-    private Integer minPrice;
-    //@NotNull
-    private Category category;
+
+    @Attribute(attrTypeId = 12)
+    private String name;
+
+
+    @Attribute(attrTypeId = 14,  number = true)
+    private Double startPrice;
+
+
+    @Attribute(attrTypeId = 15,  number = true)
+    private Double minPrice;
+
+
+    @Attribute(attrTypeId = 16,  number = true)
+    private Double endPrice;
+
+    @Attribute(attrTypeId = 17)
     private LotStatus status;
+
+    @Attribute(attrTypeId = 18)
+    private String category;
+
+    @Attribute(attrTypeId = 20)
     private String location;
+
+    @Attribute(attrTypeId = 21, type = Attribute.ValueType.DATE_VALUE)
+    private Date startDate;
+
+    @Attribute(attrTypeId = 22, type = Attribute.ValueType.DATE_VALUE)
+
+    private Date endDate;
+
+    @Attribute(attrTypeId = 23, type = Attribute.ValueType.DATE_VALUE)
+
+    private Date creationDate;
+
+    @Attribute(attrTypeId = 25)
+    private String imgPath;
+
+    @Attribute(attrTypeId = 26)
     private String deliveryAddress;
-    //@NotNull
-    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime creationDate;
-    //@NotNull
-    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime startDate;
-   // @NotNull
-    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime endDate;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public User getOwner() {
         return owner;
@@ -60,68 +72,38 @@ public class Lot {
         this.owner = owner;
     }
 
-    public String getTitle() {
-        return title;
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getImgPath() {
-        return imgPath;
-    }
-
-    public void setImgPath(String imgPath) {
-        this.imgPath = imgPath;
-    }
-
-    public LocalDateTime getTerm() {
-        return term;
-    }
-
-    public void setTerm(LocalDateTime term) {
-        this.term = term;
-    }
-
-    public Integer getStartPrice() {
+    public Double getStartPrice() {
         return startPrice;
     }
 
-    public void setStartPrice(Integer startPrice) {
+    public void setStartPrice(Double startPrice) {
         this.startPrice = startPrice;
     }
 
-    public Integer getEndPrice() {
-        return endPrice;
-    }
-
-    public void setEndPrice(Integer endPrice) {
-        this.endPrice = endPrice;
-    }
-
-    public Integer getMinPrice() {
+    public Double getMinPrice() {
         return minPrice;
     }
 
-    public void setMinPrice(Integer minPrice) {
+    public void setMinPrice(Double minPrice) {
         this.minPrice = minPrice;
     }
 
-    public Category getCategory() {
-        return category;
+    public Double getEndPrice() {
+        return endPrice;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setEndPrice(Double endPrice) {
+        this.endPrice = endPrice;
     }
 
     public LotStatus getStatus() {
@@ -132,12 +114,52 @@ public class Lot {
         this.status = status;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public String getLocation() {
         return location;
     }
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 
     public String getDeliveryAddress() {
@@ -148,27 +170,23 @@ public class Lot {
         this.deliveryAddress = deliveryAddress;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
+    @Override
+    public String toString() {
+        return "Lot{" +
+                "owner=" + owner +
+                ", name='" + name + '\'' +
+                ", startPrice=" + startPrice +
+                ", minPrice=" + minPrice +
+                ", endPrice=" + endPrice +
+                ", status='" + status + '\'' +
+                ", category='" + category + '\'' +
+                ", location='" + location + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", creationDate=" + creationDate +
+                ", imgPath='" + imgPath + '\'' +
+                ", deliveryAddress='" + deliveryAddress + '\'' +
+                ", id=" + id +
+                '}';
     }
 }

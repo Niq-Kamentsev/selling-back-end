@@ -1,14 +1,18 @@
 package com.main.sellplatform.entitymanager.testdao;
 
+import com.google.common.collect.Lists;
 import com.main.sellplatform.entitymanager.EntityManager;
 import com.main.sellplatform.entitymanager.analyzer.Queries;
-import com.main.sellplatform.entitymanager.testobj.Lot;
-import com.main.sellplatform.entitymanager.testobj.User;
+
+
+import com.main.sellplatform.persistence.entity.Lot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -22,16 +26,23 @@ public class LotDao2 {
         this.queries = queries;
     }
 
-    public Lot[] getAllLots(String where, List<Object> statements) {
+    public List<Lot> getAllLots() {
+        Object[] allObjects = entityManager.getAllObjects(Lot.class);
+        Lot[] lots = Arrays.stream(allObjects).toArray(Lot[]::new);
+        return Lists.newArrayList(lots);
+    }
+
+    public List<Lot> getAllLots(String where, List<Object> statements) {
         System.out.println(queries.whereMessageMessages());
         Object[] objects = entityManager.getAllObjects(Lot.class, where, statements);
         if (objects == null) return null;
-        Lot[] lots = new Lot[objects.length];
-        for (int i = 0; i < objects.length; ++i) {
-            lots[i] = (Lot) objects[i];
+        List<Lot> lots = new ArrayList<>();
+        for (Object object : objects) {
+            lots.add((Lot) object);
         }
         return lots;
     }
+
 
     public Lot[] getUsersLots(Long userId, String sortCol) {
         List<Object> statements = new ArrayList<>();
@@ -52,13 +63,9 @@ public class LotDao2 {
         return (Lot) entityManager.getObjectById(Lot.class, lotId, where, null);
     }
 
-    public Object[] test() {
-        try {
-            return entityManager.getObjectsByIdSeq(User.class, queries.selectAllUserId(), null);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
+
+    public Lot saveLot(Lot lot) {
+        return entityManager.merge(lot);
     }
 
 }

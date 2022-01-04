@@ -82,7 +82,7 @@ public class AuthenticationRestController {
         String refreshToken = refreshRequest.getRefreshToken();
         RefreshToken byToken = refreshTokenService.findByToken(refreshToken);
         if(refreshTokenService.verifyExpiration(byToken)){
-            User user = byToken.getUser();
+            com.main.sellplatform.persistence.entity.User user = byToken.getUser();
             //String token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().name());
             String token = jwtTokenProvider.createToken(user.getEmail(), Role.USER.name());
             Map<Object,Object> response = new HashMap<>();

@@ -29,4 +29,13 @@ public class MessageChannel {
 		this.username = username;
 	}
 
+
+	@Override
+	public String toString() {
+		return "MessageChannel{" +
+				"bidId=" + bidId +
+				", targetUserId=" + targetUserId +
+				", username='" + username + '\'' +
+				'}';
+	}
 }

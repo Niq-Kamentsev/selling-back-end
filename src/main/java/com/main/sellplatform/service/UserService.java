@@ -36,6 +36,9 @@ public class UserService {
 //        userDao2.deleteUser(id);
 //    }
 
+    public com.main.sellplatform.entitymanager.testobj.User getTestUserByEmail(String email) {
+        return userDao.getTestUserByEmail(email);
+    }
     public User getUserByEmail(String email) {
         return userDao.getUserByEmail(email);
     }

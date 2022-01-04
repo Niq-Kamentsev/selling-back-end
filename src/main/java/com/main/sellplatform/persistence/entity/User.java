@@ -4,6 +4,9 @@ import com.main.sellplatform.entitymanager.GeneralObject;
 import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;
 import com.main.sellplatform.persistence.entity.enums.Role;
+
+import java.util.Objects;
+
 @Objtype(1)
 public class User extends GeneralObject {
 
@@ -22,7 +25,7 @@ public class User extends GeneralObject {
     @Attribute(attrTypeId = 65)
     private String activationCode;
     @Attribute(attrTypeId = 64)
-    private boolean isActive;
+    private Boolean isActive;
 
     public String getActivationCode() {
         return activationCode;
@@ -108,5 +111,18 @@ public class User extends GeneralObject {
                 ", activationCode='" + activationCode + '\'' +
                 ", isActive=" + isActive +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return isActive == user.isActive && email.equals(user.email) && password.equals(user.password) && firstName.equals(user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phoneNumber, user.phoneNumber) && role == user.role && Objects.equals(activationCode, user.activationCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, password, firstName, lastName, phoneNumber, role, activationCode, isActive);
     }
 }

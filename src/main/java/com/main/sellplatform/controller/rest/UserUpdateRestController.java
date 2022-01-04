@@ -30,7 +30,7 @@ public class UserUpdateRestController {
     @PreAuthorize("hasAnyAuthority('user:update')")
     @PutMapping(value = "/updatePassword")
     public ResponseEntity<?> updateUserPassword(@RequestBody @Valid UserUpdatePasswordDTO requestDTO, HttpServletRequest request, HttpServletResponse response){
-        User userByEmail = userUpdateService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        com.main.sellplatform.persistence.entity.User userByEmail = userUpdateService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         userUpdateService.updateUserPassword(userByEmail, requestDTO.getNewPassword(), requestDTO.getOldPassword());
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request,response, null);

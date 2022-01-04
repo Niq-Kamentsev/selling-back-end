@@ -1,7 +1,6 @@
 package com.main.sellplatform.controller.rest;
 
 import com.main.sellplatform.entitymanager.testdao.LotDao2;
-import com.main.sellplatform.entitymanager.testobj.Lot;
 import com.main.sellplatform.persistence.dao.MessageDao;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.service.UserService;
@@ -52,9 +51,4 @@ public class UserRestController {
 //        userService.deleteUser(id);
 //    }
 
-
-    @GetMapping("/getWB")
-    public Lot[] getAllWB() {
-        return lotDao2.getAllLots(null,null);
-    }
 }

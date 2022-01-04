@@ -24,7 +24,7 @@ public class UserUpdateService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void updateUserPassword(User user, String newPassword, String oldPassword) throws UserPasswordException {
+    public void updateUserPassword(com.main.sellplatform.persistence.entity.User user, String newPassword, String oldPassword) throws UserPasswordException {
         if (!passwordEncoder.matches(oldPassword, user.getPassword())){
             throw new UserPasswordException("old password incorrect");
         }
@@ -35,9 +35,9 @@ public class UserUpdateService {
 
     }
 
-    public void updateUserEmail(User user, String newEmail) throws EmailException{
+    public void updateUserEmail(com.main.sellplatform.persistence.entity.User user, String newEmail) throws EmailException{
         System.out.println(user.getId());
-        User userByEmail = userDao.getUserByEmail(newEmail);
+        com.main.sellplatform.persistence.entity.User userByEmail = userDao.getUserByEmail(newEmail);
         if(!Objects.isNull(userByEmail)){
             throw new EmailException("such email already exists", newEmail);
         }
@@ -47,7 +47,7 @@ public class UserUpdateService {
     }
 
     public User getUserByEmail (String email) throws UserNotFoundByEmailException{
-        User userByEmail = userDao.getUserByEmail(email);
+        com.main.sellplatform.persistence.entity.User userByEmail = userDao.getUserByEmail(email);
         if (userByEmail.getId() == null)
             throw new UserNotFoundByEmailException("user with such mail does not exist", email);
         return userByEmail;

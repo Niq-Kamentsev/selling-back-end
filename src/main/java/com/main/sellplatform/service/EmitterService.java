@@ -27,7 +27,7 @@ public class EmitterService {
 		}
 		return emitter;
 	}
-	
+
 	public void removeEmitter(Long userId) {
 		SseEmitter emitter = emitters.get(userId);
 		if(emitter != null) {

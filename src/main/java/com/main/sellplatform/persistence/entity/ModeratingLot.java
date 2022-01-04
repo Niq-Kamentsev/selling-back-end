@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 public class ModeratingLot {
     private Long id;
-    @NotNull
     private User moderator;
     @NotNull
     private Lot lot;
@@ -24,11 +23,11 @@ public class ModeratingLot {
         this.id = id;
     }
 
-    public User getModerator() {
+    public com.main.sellplatform.persistence.entity.User getModerator() {
         return moderator;
     }
 
-    public void setModerator(User moderator) {
+    public void setModerator(com.main.sellplatform.persistence.entity.User moderator) {
         this.moderator = moderator;
     }
 

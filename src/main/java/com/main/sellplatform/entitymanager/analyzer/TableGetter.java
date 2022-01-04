@@ -19,7 +19,7 @@ import java.util.Objects;
 
 public class TableGetter {
 
-    public static String getSqlGet(Class<?> clazz, String wher, Integer ref_id) {
+    public static String getSqlGet(Class<?> clazz, String wher, Integer ref_id, int level) {
         StringBuilder sql = new StringBuilder();
 
         List<Field> extensions = new ArrayList<>();
@@ -38,7 +38,7 @@ public class TableGetter {
         where.append("\nWHERE OBJ_").append(objectType_id).append(".object_type_id = ").append(objectType_id);
 
         for (Field field : extensions) {
-            String foreign = getSqlGet(field.getType(), null,null);
+            String foreign = getSqlGet(field.getType(), null,null, level+1);
             String[] foreigns = foreign.split("SELECT |FROM |WHERE");
             select.append(", ").append(foreigns[1]);
             String[] froms = foreigns[2].split("LEFT JOIN");
@@ -53,29 +53,30 @@ public class TableGetter {
         for (Field field : associations) {
             Integer curOT = field.getType().getAnnotation(Objtype.class).value();
             Integer curRT = field.getAnnotation(Reference.class).attributeId();
-            String foreign = getSqlGet(field.getType(), null, curRT);
-            String[] foreigns = foreign.split("SELECT |FROM |WHERE");
-            String[] selects = foreigns[1].split(", ");
-            //select.append(", ").append(foreigns[1]);
-            for (String sel : selects) {
-                sel = sel.replace(" ", "");
-                sel = sel.replace("\n", "");
-                sel = sel.substring(0, sel.length() - 1);
-                select.append(", ").append(sel).append("_REF").append(field.getAnnotation(Reference.class).attributeId()).append("\"");
-            }
+            if(level<2) {
+                String foreign = getSqlGet(field.getType(), null, curRT, level + 1);
+                String[] foreigns = foreign.split("SELECT |FROM |WHERE");
+                String[] selects = foreigns[1].split(", ");
+                //select.append(", ").append(foreigns[1]);
+                for (String sel : selects) {
+                    sel = sel.replace(" ", "");
+                    sel = sel.replace("\n", "");
+                    sel = sel.substring(0, sel.length() - 1);
+                    select.append(", ").append(sel).append("_REF").append(field.getAnnotation(Reference.class).attributeId()).append("\"");
+                }
 
-			String[] froms = foreigns[2].split("LEFT JOIN");
-			from.append("\nLEFT JOIN OBJREFERENCE OBJ_").append(curOT).append("_REF").append(curRT).append("_REF")
-					.append(" ON OBJ_").append(objectType_id).append(ref_id == null ? "" : ("_REF" + ref_id))
-					.append(".object_id = ").append("OBJ_").append(curOT).append("_REF").append(curRT)
-					.append("_REF.object_id").append("\nLEFT JOIN OBJECTS OBJ_").append(curOT).append("_REF")
-					.append(curRT).append(" ON OBJ_").append(curOT).append("_REF").append(curRT)
-					.append("_REF.reference = ").append("OBJ_").append(curOT).append("_REF").append(curRT)
-					.append(".object_id");
-            for (int i = 1; i < froms.length; ++i) {
-                from.append(" LEFT JOIN ").append(froms[i]);//.append("_REF").append(field.getAnnotation(Reference.class).attributeId()).append("");
+                String[] froms = foreigns[2].split("LEFT JOIN");
+                from.append("\nLEFT JOIN OBJREFERENCE OBJ_").append(curOT)
+                        .append("_REF").append(curRT).append("_REF")
+                        .append(" ON OBJ_").append(objectType_id).append(ref_id == null ? "" : ("_REF" + ref_id)).append(".object_id = ").append("OBJ_").append(curOT)
+                        .append("_REF").append(curRT).append("_REF.object_id")
+                        .append("\nLEFT JOIN OBJECTS OBJ_").append(curOT).append("_REF").append(curRT)
+                        .append(" ON OBJ_").append(curOT).append("_REF").append(curRT).append("_REF.reference = ")
+                        .append("OBJ_").append(curOT).append("_REF").append(curRT).append(".object_id");
+                for (int i = 1; i < froms.length; ++i) {
+                    from.append(" LEFT JOIN ").append(froms[i]);//.append("_REF").append(field.getAnnotation(Reference.class).attributeId()).append("");
+                }
             }
-
             where.append(" AND (OBJ_").append(curOT).append("_REF").append(curRT).append(".object_type_id = ").append(curOT)
                     .append(" OR OBJ_").append(curOT).append("_REF").append(curRT).append(".object_type_id IS NULL").append(")")
                     .append(" AND (OBJ_").append(curOT).append("_REF").append(curRT).append("_REF.attr_id = ").append(curRT)
@@ -311,6 +312,7 @@ public class TableGetter {
                 || Objects.requireNonNull(myAccessor.getPropertyType(field)).isAssignableFrom(Double.class) && value!=null) {
             value = Double.parseDouble(value.toString().replace(",", "."));
         }
+        if(Objects.requireNonNull(myAccessor.getPropertyType(field)).isAssignableFrom(Boolean.class)&&value==null) value = Boolean.FALSE;
         myAccessor.setPropertyValue(field, value);
     }
 
