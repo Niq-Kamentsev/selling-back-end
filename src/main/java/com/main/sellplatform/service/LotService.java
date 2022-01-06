@@ -176,7 +176,7 @@ public class LotService {
     }
 
     public Lot getBuyableLot(Long id) {
-        Lot res = lotDao2.getLotById(id, "(OBJ_3ATTR_17 = 'NO_BIDS' OR OBJ_3ATTR_17 = 'BIDDING')");
+        Lot res = lotDao2.getLotById(id, queries.whereBuyableLot());
         if (res != null) res.setOwner(null);
         return res;
     }
