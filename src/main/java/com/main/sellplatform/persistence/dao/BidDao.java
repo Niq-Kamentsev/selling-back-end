@@ -36,4 +36,10 @@ public class BidDao {
     public Bid getBidById(Long id, String where) {
         return (Bid) entityManager.getObjectById(Bid.class, id, where, null);
     }
+
+    public Bid getLastBidOfLot(Long lotId) {
+        List<Object> statements = new ArrayList<>();
+        statements.add(lotId);
+        return entityManager.getObjectByWhere(Bid.class, queries.whereByLastBid(), statements);
+    }
 }

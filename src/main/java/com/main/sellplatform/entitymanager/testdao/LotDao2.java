@@ -5,7 +5,10 @@ import com.main.sellplatform.entitymanager.EntityManager;
 import com.main.sellplatform.entitymanager.analyzer.Queries;
 
 
+import com.main.sellplatform.entitymanager.testobj.Bid;
+import com.main.sellplatform.persistence.dao.BidDao;
 import com.main.sellplatform.persistence.entity.Lot;
+import com.main.sellplatform.persistence.entity.enums.LotStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,16 +22,22 @@ import java.util.List;
 public class LotDao2 {
     private final EntityManager entityManager;
     private final Queries queries;
+    private final BidDao bidDao;
 
     @Autowired
-    public LotDao2(EntityManager entityManager, Queries queries) {
+    public LotDao2(EntityManager entityManager, Queries queries, BidDao bidDao) {
         this.entityManager = entityManager;
         this.queries = queries;
+        this.bidDao = bidDao;
     }
 
     public List<Lot> getAllLots() {
         Object[] allObjects = entityManager.getAllObjects(Lot.class);
-        Lot[] lots = Arrays.stream(allObjects).toArray(Lot[]::new);
+        Lot[] lots = new Lot[allObjects.length];
+        for (int i = 0; i < allObjects.length; ++i) {
+            lots[i] = (Lot) allObjects[i];
+            getCurPrice(lots[i]);
+        }
         return Lists.newArrayList(lots);
     }
 
@@ -39,6 +48,7 @@ public class LotDao2 {
         List<Lot> lots = new ArrayList<>();
         for (Object object : objects) {
             lots.add((Lot) object);
+            getCurPrice((Lot) object);
         }
         return lots;
     }
@@ -55,12 +65,15 @@ public class LotDao2 {
         Lot[] lots = new Lot[objects.length];
         for (int i = 0; i < objects.length; ++i) {
             lots[i] = (Lot) objects[i];
+            getCurPrice(lots[i]);
         }
         return lots;
     }
 
     public Lot getLotById(Long lotId, String where) {
-        return (Lot) entityManager.getObjectById(Lot.class, lotId, where, null);
+        Lot res = (Lot) entityManager.getObjectById(Lot.class, lotId, where, null);
+        getCurPrice(res);
+        return res;
     }
 
 
@@ -68,4 +81,15 @@ public class LotDao2 {
         return entityManager.merge(lot);
     }
 
+    private void getCurPrice(Lot lot) {
+        if (lot == null) return;
+        LotStatus status = lot.getStatus();
+        if (status == LotStatus.NO_BIDS) {
+            lot.countCurrentPrice();
+        } else {
+            Bid bid = bidDao.getLastBidOfLot(lot.getId());
+            if (bid == null) lot.countCurrentPrice();
+            else lot.setCurrentPrice(bid.getPrice());
+        }
+    }
 }

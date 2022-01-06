@@ -19,22 +19,23 @@ import java.util.Date;
 public class Lot extends GeneralObject {
 
 
-    @Reference(attributeId = 11 , fetch = Reference.FetchType.EAGER)
+    @Reference(attributeId = 11, fetch = Reference.FetchType.EAGER)
     private User owner;
 
     @Attribute(attrTypeId = 12)
     private String name;
 
 
-    @Attribute(attrTypeId = 14,  number = true)
+    @Attribute(attrTypeId = 14, number = true)
     private Double startPrice;
 
 
-    @Attribute(attrTypeId = 15,  number = true)
+    @Attribute(attrTypeId = 15, number = true)
     private Double minPrice;
 
+    private Double currentPrice;
 
-    @Attribute(attrTypeId = 16,  number = true)
+    @Attribute(attrTypeId = 16, number = true)
     private Double endPrice;
 
     @Attribute(attrTypeId = 17)
@@ -170,6 +171,21 @@ public class Lot extends GeneralObject {
         this.deliveryAddress = deliveryAddress;
     }
 
+    public Double countCurrentPrice() {
+        Date today = new Date();
+        if (today.getTime() > getEndDate().getTime()) {
+            setCurrentPrice(getMinPrice());
+            return getMinPrice();
+        }
+        long dateDiff = today.getTime() - getStartDate().getTime();
+        long dayDiff = (dateDiff / (1000 * 60 * 60 * 24)) % 365;
+        long period = ((getEndDate().getTime() - getStartDate().getTime()) / (1000 * 60 * 60 * 24)) % 365;
+        double step = (getStartPrice() - getMinPrice()) / period;
+        double curPrice = getStartPrice() - (dayDiff * step);
+        setCurrentPrice(curPrice);
+        return getCurrentPrice();
+    }
+
     @Override
     public String toString() {
         return "Lot{" +
@@ -188,5 +204,13 @@ public class Lot extends GeneralObject {
                 ", deliveryAddress='" + deliveryAddress + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    public Double getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public void setCurrentPrice(Double currentPrice) {
+        this.currentPrice = currentPrice;
     }
 }

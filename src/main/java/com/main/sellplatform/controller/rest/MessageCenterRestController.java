@@ -2,6 +2,7 @@ package com.main.sellplatform.controller.rest;
 
 import java.util.concurrent.TimeUnit;
 
+import com.main.sellplatform.entitymanager.testobj.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -92,5 +93,16 @@ public class MessageCenterRestController {
 		} else {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
+	}
+
+	@PreAuthorize("hasAnyAuthority('user:write')")
+	@PostMapping(value = "/sendLotMessage")
+	public ResponseEntity<?> sendLotMessage(@RequestBody MessageDTO body) {
+		com.main.sellplatform.persistence.entity.User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+		Message message = messageService.saveLotMessage(body, userByEmail);
+		if (message != null)
+			return ResponseEntity.ok().build();
+		else
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 }
