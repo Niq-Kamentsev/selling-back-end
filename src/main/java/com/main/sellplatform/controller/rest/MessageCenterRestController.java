@@ -2,7 +2,6 @@ package com.main.sellplatform.controller.rest;
 
 import java.util.concurrent.TimeUnit;
 
-import com.main.sellplatform.entitymanager.testobj.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.main.sellplatform.controller.dto.messagedto.MessageDTO;
+import com.main.sellplatform.entitymanager.testobj.Message;
 import com.main.sellplatform.persistence.entity.User;
 import com.main.sellplatform.service.EmitterService;
 import com.main.sellplatform.service.MessageService;
@@ -55,28 +55,29 @@ public class MessageCenterRestController {
 		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 		return ResponseEntity.ok(messageService.getMessages(userByEmail.getId(), targetUser, bidId, null));
 	}
-	
+
 	@PreAuthorize("hasAnyAuthority('user:read')")
 	@GetMapping(value = "/getNewMessages", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<?> getNewMessages(@RequestParam Long targetUser, @RequestParam Long bidId, @RequestParam Long lastMessageId) {
+	public ResponseEntity<?> getNewMessages(@RequestParam Long targetUser, @RequestParam Long bidId,
+			@RequestParam Long lastMessageId) {
 		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 		return ResponseEntity.ok(messageService.getMessages(userByEmail.getId(), targetUser, bidId, lastMessageId));
 	}
 
 	@PreAuthorize("hasAnyAuthority('user:read')")
 	@GetMapping(value = "/subscribe")
-	public SseEmitter subscribe() {
+	public SseEmitter subscribe(@RequestParam Long emitterId) {
 		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-		SseEmitter emitter = emitterService.getEmitter(userByEmail.getId());
+		SseEmitter emitter = emitterService.getEmitter(userByEmail.getId(), emitterId);
 		System.out.println("user with id:" + userByEmail.getId() + " subscribed");
 		return emitter;
 	}
 
 	@PreAuthorize("hasAnyAuthority('user:read')")
 	@GetMapping(value = "/unsubscribe")
-	public ResponseEntity<?> unsubscribe() {
+	public ResponseEntity<?> unsubscribe(@RequestParam Long emitterId) {
 		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-		emitterService.removeEmitter(userByEmail.getId());
+		emitterService.removeEmitter(userByEmail.getId(), emitterId);
 		return ResponseEntity.ok().build();
 	}
 
@@ -98,7 +99,8 @@ public class MessageCenterRestController {
 	@PreAuthorize("hasAnyAuthority('user:write')")
 	@PostMapping(value = "/sendLotMessage")
 	public ResponseEntity<?> sendLotMessage(@RequestBody MessageDTO body) {
-		com.main.sellplatform.persistence.entity.User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+		com.main.sellplatform.persistence.entity.User userByEmail = userService
+				.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 		Message message = messageService.saveLotMessage(body, userByEmail);
 		if (message != null)
 			return ResponseEntity.ok().build();

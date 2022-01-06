@@ -4,6 +4,7 @@ public class MessageChannel {
 	private Long bidId;
 	private Long targetUserId;
 	private String username;
+	private String lotName;
 
 	public Long getBidId() {
 		return bidId;
@@ -29,13 +30,17 @@ public class MessageChannel {
 		this.username = username;
 	}
 
+	public String getLotName() {
+		return lotName;
+	}
+
+	public void setLotName(String lotName) {
+		this.lotName = lotName;
+	}
 
 	@Override
 	public String toString() {
-		return "MessageChannel{" +
-				"bidId=" + bidId +
-				", targetUserId=" + targetUserId +
-				", username='" + username + '\'' +
-				'}';
+		return "MessageChannel{" + "bidId=" + bidId + ", targetUserId=" + targetUserId + ", username='" + username
+				+ '\'' + ", lotName='" + lotName + '\'' + '}';
 	}
 }

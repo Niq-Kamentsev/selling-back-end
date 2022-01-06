@@ -13,36 +13,50 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class EmitterService {
 
 	private static final long EMITTER_TIMEOUT = TimeUnit.MINUTES.toMillis(1);
-	private Map<Long, SseEmitter> emitters = new HashMap<>();
+	private Map<Long, Map<Long, SseEmitter>> emitters = new HashMap<>();
 
-	public SseEmitter getEmitter(Long userId) {
-		SseEmitter emitter = emitters.get(userId);
-		if(emitter == null) {
+	public SseEmitter getEmitter(Long userId, Long emitterId) {
+		Map<Long, SseEmitter> userEmitters = emitters.get(userId);
+		SseEmitter emitter = null;
+		if (userEmitters != null) {
+			emitter = userEmitters.get(emitterId);
+		} else {
+			userEmitters = new HashMap<>();
+			emitters.put(userId, userEmitters);
+		}
+		if (emitter == null) {
 			emitter = new SseEmitter(EMITTER_TIMEOUT);
 			emitter.onTimeout(() -> {
-				this.removeEmitter(userId);
+				this.removeEmitter(userId, emitterId);
 				System.out.println("onTimeout: " + userId);
 			});
-			emitters.put(userId, emitter);
+			userEmitters.put(emitterId, emitter);
 		}
 		return emitter;
 	}
 
-	public void removeEmitter(Long userId) {
-		SseEmitter emitter = emitters.get(userId);
-		if(emitter != null) {
-			emitter.complete();
+	public synchronized void removeEmitter(Long userId, Long emitterId) {
+		Map<Long, SseEmitter> userEmitters = emitters.get(userId);
+		if (userEmitters != null) {
+			SseEmitter emitter = userEmitters.get(emitterId);
+			if (emitter != null) {
+				emitter.complete();
+			}
+			userEmitters.remove(emitterId);
 		}
-		emitters.remove(userId);
 	}
 
 	public void pushNotification(Long targetUserId, Long senderUserId) {
-		SseEmitter emitter = emitters.get(targetUserId);
-		if (emitter != null) {
-			try {
-				emitter.send(senderUserId, MediaType.APPLICATION_JSON);
-			} catch (IOException e) {
-				e.printStackTrace();
+		Map<Long, SseEmitter> userEmitters = emitters.get(targetUserId);
+		if (userEmitters != null) {
+			for (SseEmitter emitter : userEmitters.values()) {
+				if (emitter != null) {
+					try {
+						emitter.send(SseEmitter.event().data(senderUserId, MediaType.APPLICATION_JSON));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	}
