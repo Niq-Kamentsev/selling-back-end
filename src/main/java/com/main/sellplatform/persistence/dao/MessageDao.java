@@ -45,6 +45,8 @@ public class MessageDao {
 		statements.add(userId);
 		statements.add(userId);
 		statements.add("WON");
+		statements.add(userId);
+		statements.add(userId);
 		try {
 			objects = entityManager.getObjectsByIdSeq(Bid.class, queries.selectMessageChannel(), statements);
 		} catch (SecurityException e) {
@@ -56,6 +58,7 @@ public class MessageDao {
 			Bid bid = (Bid) targetObject;
 			MessageChannel channel = new MessageChannel();
 			channel.setBidId(bid.getId());
+			channel.setLotName(bid.getLot().getName());
 			if (bid.getUser().getId() != userId) {
 				channel.setTargetUserId(bid.getUser().getId());
 				channel.setUsername(bid.getUser().getFirstName());
