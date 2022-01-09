@@ -177,6 +177,10 @@ public class Lot extends GeneralObject {
             setCurrentPrice(getMinPrice());
             return getMinPrice();
         }
+        if(today.getTime()<getStartDate().getTime()){
+            setCurrentPrice(getStartPrice());
+            return getStartPrice();
+        }
         long dateDiff = today.getTime() - getStartDate().getTime();
         long dayDiff = (dateDiff / (1000 * 60 * 60 * 24)) % 365;
         long period = ((getEndDate().getTime() - getStartDate().getTime()) / (1000 * 60 * 60 * 24)) % 365;
