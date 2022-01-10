@@ -90,4 +90,8 @@ public class Queries {
     public String whereByFinBid() {
         return get("bid.where.finBid");
     }
+
+    public String whereByLastBid() {
+        return get("bid.where.lastBid");
+    }
 }

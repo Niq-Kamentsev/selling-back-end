@@ -50,7 +50,7 @@ public class LotRestControler {
         lotService.createLot(lot);
     }
 
-    //@PreAuthorize("hasAnyAuthority('user:read')")
+    @PreAuthorize("hasAnyAuthority('user:read')")
     @GetMapping(value = "/getLots")
     public ResponseEntity<List<Lot>> getLot(LotFilterDTO filterDTO) {
         List<Lot> publishedLot = lotService.getPublishedLot(filterDTO);
@@ -61,9 +61,22 @@ public class LotRestControler {
         return ResponseEntity.ok(publishedLot);
     }
 
+
+
+    @PostMapping(value = "/setUser")
+    public ResponseEntity<?> updateCustomer(LotDto lotDto){
+        User userAuth = userDao.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Lot lot = lotDto.getLot(userAuth);
+        lot.setOwner(userAuth);
+        lotService.updateCustomer(lot);
+        return ResponseEntity.ok("ok");
+    }
+
+
     @GetMapping("/buyableLot/{id}")
     public Lot getBuyableLot(@PathVariable Long id) {
-        return lotService.getBuyableLot(id);
+        Lot buyableLot = lotService.getBuyableLot(id);
+        return buyableLot;
     }
 
 }
