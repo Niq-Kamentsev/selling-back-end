@@ -7,6 +7,7 @@ import com.main.sellplatform.entitymanager.annotation.Objtype;
 import com.main.sellplatform.entitymanager.annotation.Reference;
 import com.main.sellplatform.persistence.entity.Lot;
 import com.main.sellplatform.persistence.entity.User;
+import com.main.sellplatform.persistence.entity.enums.BidStatus;
 
 import java.util.Date;
 
@@ -20,7 +21,7 @@ public class Bid extends GeneralObject {
     @JsonFormat(pattern="dd.MM.yyyy hh:mm")
     Date date;
     @Attribute(attrTypeId = 36)
-    String status;
+    BidStatus status;
     @Attribute(attrTypeId = 38)
     Double price;
 
@@ -48,11 +49,11 @@ public class Bid extends GeneralObject {
         this.date = date;
     }
 
-    public String getStatus() {
+    public BidStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(BidStatus status) {
         this.status = status;
     }
 

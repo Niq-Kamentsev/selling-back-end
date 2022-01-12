@@ -42,8 +42,6 @@ public class MessageDao {
 		List<MessageChannel> result = new ArrayList<>();
 		Object[] objects = null;
 		List<Object> statements = new ArrayList<>();
-		statements.add(userId);
-		statements.add(userId);
 		statements.add("WON");
 		statements.add(userId);
 		statements.add(userId);
