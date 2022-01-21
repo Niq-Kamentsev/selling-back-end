@@ -44,7 +44,7 @@ public class LotService {
             //    return "OBJ_3ATTR_17";
             case CATEGORY:
                 return "OBJ_3ATTR_18";
-            case PRICE:
+            case STARTPRICE:
                 return "OBJ_3ATTR_14";
             //case "StartDate":
             //    return "OBJ_3ATTR_21";
@@ -123,7 +123,7 @@ public class LotService {
         if (categories != null) {
             filterWhere.append(" AND lower(OBJ_3ATTR_18) IN (");
             for (LotFilterDTO.Category category : categories) {
-                filterWhere.append("'").append(category.toString().toLowerCase()).append("',");
+                filterWhere.append("'").append(category.toString().toLowerCase().replace('_',' ')).append("',");
             }
             filterWhere.delete(filterWhere.length() - 1, filterWhere.length());
             filterWhere.append(") ");
@@ -146,7 +146,7 @@ public class LotService {
 
         String search = filter.getSearch();
         if (search != null && !search.isEmpty()) {
-            filterWhere.append(" AND (INSTR(OBJ_3ATTR_12, ?) > 0 OR INSTR(OBJ_3DESCR, ?) > 0)");
+            filterWhere.append(" AND (INSTR(upper(OBJ_3ATTR_12), upper(?)) > 0 OR INSTR(upper(OBJ_3DESCR), upper(?)) > 0)");
             statements.add(search);
             statements.add(search);
         }

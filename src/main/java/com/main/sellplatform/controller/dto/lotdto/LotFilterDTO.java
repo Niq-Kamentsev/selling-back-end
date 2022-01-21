@@ -61,12 +61,24 @@ public class LotFilterDTO {
         this.search = search;
     }
 
+    @Override
+    public String toString() {
+        return "LotFilterDTO{" +
+                "minPrice=" + minPrice +
+                ", maxPrice=" + maxPrice +
+                ", categories=" + categories +
+                ", sortColumn=" + sortColumn +
+                ", asc=" + asc +
+                ", search='" + search + '\'' +
+                '}';
+    }
+
 
     public enum Category {
-        TOYS, ELECTRONIC_DEVICE, FURNITURE, DECORATION
+        TOYS, ELECTRONIC_DEVICES, FURNITURE, DECORATION
     }
 
     public enum Column {
-        NAME, PRICE, CATEGORY
+        NAME, STARTPRICE, CATEGORY
     }
 }

@@ -177,7 +177,7 @@ public class Lot extends GeneralObject {
             setCurrentPrice(getMinPrice());
             return getMinPrice();
         }
-        if(today.getTime()<getStartDate().getTime()){
+        if (today.getTime() < getStartDate().getTime()) {
             setCurrentPrice(getStartPrice());
             return getStartPrice();
         }

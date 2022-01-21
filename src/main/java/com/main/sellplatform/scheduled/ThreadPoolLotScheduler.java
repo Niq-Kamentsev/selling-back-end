@@ -59,7 +59,7 @@ public class ThreadPoolLotScheduler {
                 if(lot.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(LocalDate.now())){
                     lot.setStatus(LotStatus.SOLD);
                     Bid lastBidOfLot = bidDao.getLastBidOfLot(lot.getId());
-                    lastBidOfLot.setStatus(BidStatus.WINNING);
+                    lastBidOfLot.setStatus(BidStatus.WINNING.toString());
                     lotDao2.saveLot(lot);
                     bidDao.makeBid(lastBidOfLot);
 

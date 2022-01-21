@@ -53,6 +53,9 @@ public class LotRestControler {
     @PreAuthorize("hasAnyAuthority('user:read')")
     @GetMapping(value = "/getLots")
     public ResponseEntity<List<Lot>> getLot(LotFilterDTO filterDTO) {
+        System.out.println();
+        System.out.println(filterDTO);
+        System.out.println();
         List<Lot> publishedLot = lotService.getPublishedLot(filterDTO);
         publishedLot.forEach(System.out::println);
         for(Lot lot:publishedLot){
