@@ -55,6 +55,15 @@ public class MessageCenterRestController {
 	}
 
 	@PreAuthorize("hasAnyAuthority('user:read')")
+	@GetMapping(value = "/getPageMessages", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> getPageMessages(@RequestParam Long targetUser, @RequestParam Long bidId,
+			@RequestParam Long pageNum, @RequestParam Long pageSize) {
+		User userByEmail = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+		return ResponseEntity
+				.ok(messageService.getPageMessages(userByEmail.getId(), targetUser, bidId, null, pageNum, pageSize));
+	}
+
+	@PreAuthorize("hasAnyAuthority('user:read')")
 	@GetMapping(value = "/getNewMessages", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<?> getNewMessages(@RequestParam Long targetUser, @RequestParam Long bidId,
 			@RequestParam Long lastMessageId) {

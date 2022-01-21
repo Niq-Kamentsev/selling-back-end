@@ -28,7 +28,8 @@ public class MessageService {
 	private final EmitterService emitterService;
 
 	@Autowired
-	public MessageService(MessageDao messageDao, UserDao userDao, BidDao bidDao, LotDao2 lotDao, BidService bidService, EmitterService emitterService) {
+	public MessageService(MessageDao messageDao, UserDao userDao, BidDao bidDao, LotDao2 lotDao, BidService bidService,
+			EmitterService emitterService) {
 		this.messageDao = messageDao;
 		this.userDao = userDao;
 		this.bidDao = bidDao;
@@ -43,10 +44,21 @@ public class MessageService {
 	}
 
 	public List<Message> getMessages(Long currentUserId, Long targetUser, Long bidId, Long lastMessageId) {
-		List<Message> result = new ArrayList<>();
 		Bid bid = bidDao.getBidById(bidId);
-		for (com.main.sellplatform.entitymanager.testobj.Message msg : messageDao.getMessages(currentUserId, targetUser,
-				bid.getLot().getId(), lastMessageId)) {
+		return this.fillMessagesList(
+				messageDao.getMessages(currentUserId, targetUser, bid.getLot().getId(), lastMessageId));
+	}
+
+	public List<Message> getPageMessages(Long currentUserId, Long targetUser, Long bidId, Long lastMessageId,
+			Long pageNum, Long pageSize) {
+		Bid bid = bidDao.getBidById(bidId);
+		return this.fillMessagesList(messageDao.getPageOfMessages(currentUserId, targetUser, bid.getLot().getId(),
+				lastMessageId, pageNum * pageSize, pageSize));
+	}
+
+	private List<Message> fillMessagesList(List<com.main.sellplatform.entitymanager.testobj.Message> dbMessages) {
+		List<Message> result = new ArrayList<>();
+		for (com.main.sellplatform.entitymanager.testobj.Message msg : dbMessages) {
 			Message message = new Message();
 			message.setId(msg.getId());
 			message.setSender(msg.getSender().getId());
@@ -77,27 +89,28 @@ public class MessageService {
 		return messageDao.saveMessage(result);
 	}
 
+	public com.main.sellplatform.entitymanager.testobj.Message saveLotMessage(MessageDTO message, User userByEmail) {
+		com.main.sellplatform.entitymanager.testobj.Message result = new com.main.sellplatform.entitymanager.testobj.Message();
+		result.setSender(userByEmail);
+		Bid bid = bidService.getFinalBidByLot(message.getLot());
+		if (bid == null)
+			return null;
+		Lot lot = lotDao.getLotById(bid.getLot().getId(), null);
+		if (!userByEmail.equals(lot.getOwner()))
+			return null;
+		List<com.main.sellplatform.entitymanager.testobj.Message> exists = messageDao
+				.getMessages(lot.getOwner().getId(), bid.getUser().getId(), bid.getLot().getId(), null);
+		if (!(exists == null || exists.size() == 0))
+			return result;
 
+		result.setLot(lot);
+		result.setReceiver(bid.getUser());
+		result.setMsg("Hello, " + bid.getUser().getFirstName() + "! You have won the lot \"" + lot.getName()
+				+ "\" with price " + bid.getPrice() + ". Please confirm your order.");
+		result.setDate(Calendar.getInstance().getTime());
 
-    public com.main.sellplatform.entitymanager.testobj.Message saveLotMessage(MessageDTO message, User userByEmail) {
-        com.main.sellplatform.entitymanager.testobj.Message result = new com.main.sellplatform.entitymanager.testobj.Message();
-        result.setSender(userByEmail);
-        Bid bid = bidService.getFinalBidByLot(message.getLot());
-        if (bid == null) return null;
-        Lot lot = lotDao.getLotById(bid.getLot().getId(), null);
-        if (!userByEmail.equals(lot.getOwner())) return null;
-        List<com.main.sellplatform.entitymanager.testobj.Message> exists = messageDao.getMessages(lot.getOwner().getId(),
-                bid.getUser().getId(), bid.getLot().getId(), null);
-        if (!(exists == null || exists.size() == 0)) return result;
-
-        result.setLot(lot);
-        result.setReceiver(bid.getUser());
-        result.setMsg("Hello, " + bid.getUser().getFirstName() + "! You have won the lot \"" + lot.getName() + "\" with price "
-                + bid.getPrice() + ". Please confirm your order.");
-        result.setDate(Calendar.getInstance().getTime());
-
-        com.main.sellplatform.entitymanager.testobj.Message res = messageDao.saveLotMessage(result);
-        emitterService.pushNotification(bid.getUser().getId(), lot.getOwner().getId());
-        return res;
-    }
+		com.main.sellplatform.entitymanager.testobj.Message res = messageDao.saveLotMessage(result);
+		emitterService.pushNotification(bid.getUser().getId(), lot.getOwner().getId());
+		return res;
+	}
 }

@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class TableGetter {
-
-    public static String getSqlGet(Class<?> clazz, String wher, Integer ref_id, int level) {
+	
+    public static String getSqlGet(Class<?> clazz, String wher, Integer ref_id, int level, Long offset, Long nextRowsCount) {
         StringBuilder sql = new StringBuilder();
 
         List<Field> extensions = new ArrayList<>();
@@ -38,7 +38,7 @@ public class TableGetter {
         where.append("\nWHERE OBJ_").append(objectType_id).append(".object_type_id = ").append(objectType_id);
 
         for (Field field : extensions) {
-            String foreign = getSqlGet(field.getType(), null,null, level+1);
+            String foreign = getSqlGet(field.getType(), null,null, level+1, null, null);
             String[] foreigns = foreign.split("SELECT |FROM |WHERE");
             select.append(", ").append(foreigns[1]);
             String[] froms = foreigns[2].split("LEFT JOIN");
@@ -54,7 +54,7 @@ public class TableGetter {
             Integer curOT = field.getType().getAnnotation(Objtype.class).value();
             Integer curRT = field.getAnnotation(Reference.class).attributeId();
             if(level<2) {
-                String foreign = getSqlGet(field.getType(), null, curRT, level + 1);
+                String foreign = getSqlGet(field.getType(), null, curRT, level + 1, null, null);
                 String[] foreigns = foreign.split("SELECT |FROM |WHERE");
                 String[] selects = foreigns[1].split(", ");
                 //select.append(", ").append(foreigns[1]);
@@ -87,9 +87,30 @@ public class TableGetter {
         sql.append(select).append(from).append(where);
 
         if (wher != null) {
-            String whSql = "SELECT * FROM (" + sql + ")";
-            sql = new StringBuilder(whSql);
-            sql.append("\n\t").append(wher);
+        	StringBuilder whSql = new StringBuilder();
+        	whSql.append("WITH ALL_OBJECTS_SELECT").append("\n")
+        	.append("\tAS (")
+        	.append(sql)
+        	.append("\n)");
+        	if(offset != null && nextRowsCount != null) {
+        		whSql.append("\n, FILTERED_OBJECTS_SELECT")
+        		.append("\nAS (")
+        		.append("\nSELECT ROW_NUMBER() OVER (ORDER BY NULL) R, ALL_OBJECTS_SELECT.*")
+        		.append("\n\tFROM ALL_OBJECTS_SELECT")
+        		.append("\n").append(wher)
+        		.append("\n)")
+        		.append("\nSELECT FILTERED_OBJECTS_SELECT.*")
+        		.append("\nFROM FILTERED_OBJECTS_SELECT")
+        		.append("\nWHERE R BETWEEN ").append(offset).append(" AND ").append(offset + nextRowsCount);
+        	} else {
+        		whSql.append("\nSELECT ALL_OBJECTS_SELECT.*")
+        		.append("\nFROM ALL_OBJECTS_SELECT")
+        		.append("\n").append(wher);
+        	}
+//            String whSql = "SELECT * FROM (" + sql + ")";
+//            sql = new StringBuilder(whSql);
+//            sql.append("\n\t").append(wher);
+        	sql = whSql;
         }
 
         return sql.toString();

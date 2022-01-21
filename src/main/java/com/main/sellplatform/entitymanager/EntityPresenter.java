@@ -29,13 +29,16 @@ public class    EntityPresenter {
         this.connector2 = connector2;
     }
 
-    public Object[] get(Class<?> clazz, String where, List<Object> statements) {
+	public Object[] get(Class<?> clazz, String where, List<Object> statements) {
+		return this.get(clazz, where, statements, null, null);
+	}
 
-        String sql = TableGetter.getSqlGet(clazz,where,null,0);
-        System.out.println(sql);
-        return executeGet(clazz, sql, statements);
-    }
+	public Object[] get(Class<?> clazz, String where, List<Object> statements, Long offset, Long nextRowsCount) {
 
+		String sql = TableGetter.getSqlGet(clazz, where, null, 0, offset, nextRowsCount);
+		System.out.println(sql);
+		return executeGet(clazz, sql, statements);
+	}
 
     public Object[] executeGet(Class<?> clazz, String sql, List<Object> statements) {
         return jdbcTemplate.query(con -> {

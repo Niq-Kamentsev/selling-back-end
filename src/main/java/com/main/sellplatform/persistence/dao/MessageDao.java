@@ -2,6 +2,7 @@ package com.main.sellplatform.persistence.dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.main.sellplatform.persistence.entity.Lot;
@@ -71,6 +72,13 @@ public class MessageDao {
 	}
 
 	public List<Message> getMessages(Long currentUserId, Long targetUser, Long targetLotId, Long lastMessageId) {
+		List<Message> messages = this.getPageOfMessages(currentUserId, targetUser, targetLotId, lastMessageId, null, null);
+		Collections.reverse(messages);
+		return messages;
+	}
+
+	public List<Message> getPageOfMessages(Long currentUserId, Long targetUser, Long targetLotId, Long lastMessageId,
+			Long offset, Long nextRowsCount) {
 		List<Object> statements = new ArrayList<>();
 		String sql = null;
 		if (lastMessageId != null) {
@@ -86,7 +94,7 @@ public class MessageDao {
 		statements.add(currentUserId);
 		statements.add(currentUserId);
 		statements.add(targetUser);
-		Object[] messages = entityManager.getAllObjects(Message.class, sql, statements);
+		Object[] messages = entityManager.getPageOfObjects(Message.class, sql, statements, offset, nextRowsCount);
 		List<Message> result = new ArrayList<>();
 		for (Object message : messages) {
 			result.add((Message) message);

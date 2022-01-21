@@ -95,6 +95,19 @@ public class EntityManager {
 
         return objects;
     }
+    
+	public Object[] getPageOfObjects(Class<? extends GeneralObject> clazz, String where, List<Object> statements,
+			Long offset, Long nextRowsCount) {
+		Object[] objects = entityPresenter.get(clazz, (where == null ? "" : "WHERE " + where), statements, offset,
+				nextRowsCount);
+		if (objects == null)
+			return null;
+		for (int i = 0; i < objects.length; ++i) {
+			objects[i] = clazz.cast(objects[i]);
+		}
+		return objects;
+	}
+
     public void delete(@NotNull Object o){
         if(!(o instanceof GeneralObject))throw new IllegalArgumentException("Invalid object type");
         entityPresenter.delete((GeneralObject) o);
