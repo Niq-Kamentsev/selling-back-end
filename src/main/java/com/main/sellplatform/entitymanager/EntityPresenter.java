@@ -32,7 +32,7 @@ public class    EntityPresenter {
     public Object[] get(Class<?> clazz, String where, List<Object> statements) {
 
         String sql = TableGetter.getSqlGet(clazz,where,null,0);
-        System.out.println(sql);
+        //System.out.println(sql);
         return executeGet(clazz, sql, statements);
     }
 

@@ -5,14 +5,7 @@ import com.main.sellplatform.entitymanager.annotation.Attribute;
 import com.main.sellplatform.entitymanager.annotation.Objtype;
 import com.main.sellplatform.entitymanager.annotation.Reference;
 import com.main.sellplatform.persistence.entity.enums.LotStatus;
-import com.main.sellplatform.service.LotService;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Objtype(3)
@@ -33,7 +26,7 @@ public class Lot extends GeneralObject {
     @Attribute(attrTypeId = 15, number = true)
     private Double minPrice;
 
-    private Double currentPrice;
+    private long currentPrice;
 
     @Attribute(attrTypeId = 16, number = true)
     private Double endPrice;
@@ -171,21 +164,21 @@ public class Lot extends GeneralObject {
         this.deliveryAddress = deliveryAddress;
     }
 
-    public Double countCurrentPrice() {
+    public long countCurrentPrice() {
         Date today = new Date();
         if (today.getTime() > getEndDate().getTime()) {
-            setCurrentPrice(getMinPrice());
-            return getMinPrice();
+            setCurrentPrice(Math.round(getMinPrice()));
+            return getCurrentPrice();
         }
         if (today.getTime() < getStartDate().getTime()) {
-            setCurrentPrice(getStartPrice());
-            return getStartPrice();
+            setCurrentPrice(Math.round(getStartPrice()));
+            return getCurrentPrice();
         }
         long dateDiff = today.getTime() - getStartDate().getTime();
         long dayDiff = (dateDiff / (1000 * 60 * 60 * 24)) % 365;
         long period = ((getEndDate().getTime() - getStartDate().getTime()) / (1000 * 60 * 60 * 24)) % 365;
         double step = (getStartPrice() - getMinPrice()) / period;
-        double curPrice = getStartPrice() - (dayDiff * step);
+        long curPrice = Math.round(getStartPrice() - (dayDiff * step));
         setCurrentPrice(curPrice);
         return getCurrentPrice();
     }
@@ -210,11 +203,11 @@ public class Lot extends GeneralObject {
                 '}';
     }
 
-    public Double getCurrentPrice() {
+    public long getCurrentPrice() {
         return currentPrice;
     }
 
-    public void setCurrentPrice(Double currentPrice) {
+    public void setCurrentPrice(long currentPrice) {
         this.currentPrice = currentPrice;
     }
 }

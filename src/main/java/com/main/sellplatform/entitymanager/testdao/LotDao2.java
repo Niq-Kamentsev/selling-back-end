@@ -12,10 +12,7 @@ import com.main.sellplatform.persistence.entity.enums.LotStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -89,7 +86,7 @@ public class LotDao2 {
         } else {
             Bid bid = bidDao.getLastBidOfLot(lot.getId());
             if (bid == null) lot.countCurrentPrice();
-            else lot.setCurrentPrice(bid.getPrice());
+            else lot.setCurrentPrice(Math.round(bid.getPrice()));
         }
     }
 }
