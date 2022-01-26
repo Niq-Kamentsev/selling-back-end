@@ -60,8 +60,17 @@ public class LotRestControler {
         }
         return ResponseEntity.ok(publishedLot);
     }
-
-
+    
+	@PreAuthorize("hasAnyAuthority('user:read')")
+	@GetMapping(value = "/getPageLots")
+	public ResponseEntity<List<Lot>> getPageLot(LotFilterDTO filterDTO, @RequestParam Long page,
+			@RequestParam Long pageSize) {
+		List<Lot> publishedLot = lotService.getPageOfPublishedLots(filterDTO, page, pageSize);
+		for (Lot lot : publishedLot) {
+			lot.setOwner(null);
+		}
+		return ResponseEntity.ok(publishedLot);
+	}
 
     @PostMapping(value = "/setUser")
     public ResponseEntity<?> updateCustomer(LotDto lotDto){

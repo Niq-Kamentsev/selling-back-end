@@ -101,7 +101,7 @@ public class TableGetter {
         		.append("\n)")
         		.append("\nSELECT FILTERED_OBJECTS_SELECT.*")
         		.append("\nFROM FILTERED_OBJECTS_SELECT")
-        		.append("\nWHERE R BETWEEN ").append(offset).append(" AND ").append(offset + nextRowsCount);
+        		.append("\nWHERE R BETWEEN ").append(offset + 1).append(" AND ").append(offset + nextRowsCount);
         	} else {
         		whSql.append("\nSELECT ALL_OBJECTS_SELECT.*")
         		.append("\nFROM ALL_OBJECTS_SELECT")

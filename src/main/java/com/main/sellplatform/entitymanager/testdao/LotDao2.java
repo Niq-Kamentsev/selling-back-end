@@ -52,6 +52,18 @@ public class LotDao2 {
         }
         return lots;
     }
+    
+	public List<Lot> getPageOfLots(String where, List<Object> statements, Long offset, Long nextRowsCount) {
+		Object[] objects = entityManager.getPageOfObjects(Lot.class, where, statements, offset, nextRowsCount);
+		if (objects == null)
+			return null;
+		List<Lot> lots = new ArrayList<>();
+		for (Object object : objects) {
+			lots.add((Lot) object);
+			getCurPrice((Lot) object);
+		}
+		return lots;
+	}
 
 
     public Lot[] getUsersLots(Long userId, String sortCol) {

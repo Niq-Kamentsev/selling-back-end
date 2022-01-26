@@ -102,6 +102,13 @@ public class LotService {
         String filterWhere = filterDTO == null ? "" : getFilters(filterDTO, statements);
         return lotDao2.getAllLots(queries.whereBuyableLot() +(filterWhere.isEmpty() ? "" : filterWhere), statements);
     }
+    
+	public List<Lot> getPageOfPublishedLots(LotFilterDTO filterDTO, Long page, Long pageSize) {
+		List<Object> statements = new ArrayList<>();
+		String filterWhere = filterDTO == null ? "" : getFilters(filterDTO, statements);
+		return lotDao2.getPageOfLots(queries.whereBuyableLot() + (filterWhere.isEmpty() ? "" : filterWhere), statements,
+				page * pageSize, pageSize);
+	}
 
     public List<Lot> findLots(String keyword) {
         return lotDao.findPublishedLots(keyword);
