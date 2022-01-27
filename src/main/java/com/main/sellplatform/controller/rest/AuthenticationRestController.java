@@ -57,6 +57,9 @@ public class AuthenticationRestController {
             response.put("token", token);
 
             response.put("refreshToken", refreshToken.getToken());
+            response.put("firstName", user.getFirstName());
+            response.put("lastName", user.getLastName());
+            response.put("phoneNumber", user.getPhoneNumber());
 
             return ResponseEntity.ok(response);
         }catch (AuthenticationException e){
