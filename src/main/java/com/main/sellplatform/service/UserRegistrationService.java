@@ -39,7 +39,7 @@ public class UserRegistrationService {
         user.setActive(false);
         userDao.saveUser(user);
         String message = String.format("Hello , %s! \n" +
-                "Welcome to our project .Please visit next link: http://localhost:8080/api/v1/registration/activation%s",user.getFirstName(), user.getActivationCode());
+                "Welcome to our project .Please visit next link: http://localhost:8081/api/v1/registration/activation%s",user.getFirstName(), user.getActivationCode());
         mailSender.send(user.getEmail(), "Activated code ",message );
 
         return true;

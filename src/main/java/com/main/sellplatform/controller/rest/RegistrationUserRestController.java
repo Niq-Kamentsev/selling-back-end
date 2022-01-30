@@ -34,7 +34,7 @@ public class RegistrationUserRestController {
         else return new ResponseEntity<>("such user already exists ", HttpStatus.CONFLICT);
     }
 
-    @PostMapping(value = "/activation{code}")
+    @GetMapping(value = "/activation{code}")
     public ResponseEntity<?> activateAccount(@PathVariable String code){
         if(Objects.isNull(code))
             return new ResponseEntity<>("code is empty", HttpStatus.NO_CONTENT);
